@@ -1,0 +1,487 @@
+# SDC Investigator — Implementation Blueprint
+
+**A learning-oriented platform for studying Silent Data Corruption in numerical C++ programs**
+
+This document is the single source of truth for building the system. It is written so you can implement and learn at the same time. Every major design decision is stated explicitly, together with the technology, the reason for the choice, and the concrete steps required.
+
+> **Revision 2, living.** This file is edited as decisions are made. The original blueprint is frozen at [`architecture-v1.md`](architecture-v1.md) and is never edited. Every architectural change is recorded in [`audit-log.md`](audit-log.md). Points marked **OPEN** are not settled yet and carry a decision ID. See [Revision history](#14-revision-history) for the list.
+
+---
+
+## 1. Project Goal
+
+SDC Investigator is an offline, deterministic experiment platform that answers:
+
+1. Where did a single bit-flip first become observable?
+2. How did the corrupted value propagate?
+3. Did the final result change, get absorbed, or stay numerically insignificant?
+4. Which explanations and follow-up experiments are consistent with the evidence?
+5. Are there regions of the program where bit-flips are not catastrophic (candidates for de-prioritization in an arbiter / selective hardening)?
+
+The platform never relies on real radiation. Instead it injects a **single deterministic bit flip** into one arithmetic operation at a chosen occurrence count, records both a clean run and the injected run as bit-exact traces, and produces a self-contained evidence package.
+
+---
+
+## 2. Design Principles (non-negotiable)
+
+| Principle                              | Concrete consequence                                                                         |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Deterministic layer is source of truth | Analyzer decides the outcome; evidence package contains the reasons + event citations        |
+| Every claim is auditable               | Quantitative statements can be re-checked against the raw trace                              |
+| Fully offline                          | No network, no credentials, no external services                                             |
+| Workload source stays plain            | Zero annotations or macros in user code; instrumentation is added by the build               |
+| Bit-exact records                      | Traces store raw IEEE-754 bit patterns, never decimal text                                   |
+| Reproducible everything                | Same sources + flags → identical operation numbering; two clean runs → byte-identical traces |
+
+---
+
+## 3. Technology Stack (locked decisions)
+
+| Layer                    | Technology                                             | Why this choice                                                                                                   |
+| ------------------------ | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Instrumentation          | LLVM IR pass (`opt`)                                   | Most precise and stable place to rewrite floating-point ops; works on any compiler that emits LLVM IR             |
+| Runtime + Analyzer       | C++20 (or later)                                       | Zero-overhead hooks, bit-exact control, easy embedding into the instrumented binary                               |
+| Build system             | CMake + Ninja                                          | Standard, fast, excellent LLVM integration                                                                        |
+| Trace format             | SDCTRACE binary, fixed 40-byte records                | Fixed-size records are randomly indexable, bit patterns are stored natively rather than as hex text, and a torn final record is detected rather than guessed at |
+| Evidence package         | Single JSON file                                       | Self-contained, easy to archive and diff                                                                          |
+| Experiment orchestration | Python 3.11+ (or Rust if you prefer systems languages) | Rapid iteration for sweeps, reporting, and plotting. Start with Python; rewrite hot parts in Rust later if needed |
+| Workloads                | Plain C++                                              | No special libraries required                                                                                     |
+
+**Explicit non-choices**
+
+- No database
+- No micro-services
+- No network dependency
+- No source-level annotations
+
+**Note on the trace format.** Revision 1 used JSONL. The binary format was adopted in ADR-0001 for three reasons that are easy to state and easy to measure. Fixed-size records put event *i* at a computable offset, which is what makes the aligner simple. Bit patterns are the payload, and JSON has no way to carry them except as 20-character hex strings. A sweep multiplies traces by the number of injection sites, and JSONL costs about 113 bytes per event against 40 for binary. The evidence package stays JSON, because that is the artifact humans and downstream tools read.
+
+---
+
+## 4. High-Level Architecture
+
+```
+┌─────────────────── Build ───────────────────┐
+│  plain C++ source  →  LLVM IR pass  →  instrumented binary  │
+└─────────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────── Run ────────────────────┐
+│  runtime witness (count / inject / record)  │
+│              →  trace.sdct                 │
+└─────────────────────────────────────────────┘
+                 │
+                 ▼
+┌───────────────── Analyze ──────────────────┐
+│  deterministic analyzer                     │
+│              →  evidence.json               │
+└─────────────────────────────────────────────┘
+
+Experiment driver (Python/Rust) orchestrates:
+  - building variants
+  - choosing (op_id, occurrence, bit_position)
+  - running clean + injected pairs
+  - collecting evidence packages
+  - producing reports / plots
+```
+
+Two traces always feed the analyzer: the clean baseline and the single-fault run.
+
+---
+
+## 5. Recommended Repository Layout
+
+```
+sdc-investigator/
+├── CMakeLists.txt
+├── README.md
+├── .gitignore
+├── include/sdc/                  # Shared contracts (header-only)
+│   ├── event.hpp
+│   ├── exit_record.hpp
+│   ├── injection.hpp
+│   └── types.hpp
+├── src/
+│   ├── instrumentation/          # LLVM IR pass
+│   │   ├── SDCInstrument.cpp
+│   │   └── CMakeLists.txt
+│   ├── runtime/                  # Linked into instrumented binary
+│   │   ├── witness.cpp
+│   │   ├── recorder.cpp
+│   │   └── CMakeLists.txt
+│   ├── core/                     # Trace I/O
+│   │   ├── trace_writer.cpp
+│   │   ├── trace_reader.cpp
+│   │   └── CMakeLists.txt
+│   └── analyzer/                 # Stand-alone CLI
+│       ├── main.cpp
+│       ├── align.cpp
+│       ├── classify.cpp
+│       ├── audit.cpp
+│       └── CMakeLists.txt
+├── tools/
+│   ├── instrument.sh             # Convenience wrapper around clang + opt
+│   ├── trace_dump.py             # Pretty-print a binary trace
+│   └── study/                    # Experiment drivers (Python)
+│       ├── sweep.py
+│       ├── defenses.py
+│       ├── overhead.py
+│       └── report.py
+├── workloads/
+│   ├── reductions/
+│   ├── solvers/
+│   └── flight_computer/          # Hardened example with lockstep / vote / etc.
+├── docs/
+│   ├── architecture.md           # This document (living spec)
+│   ├── architecture-v1.md        # Frozen original blueprint
+│   ├── trace-format.md           # Normative SDCTRACE binary spec
+│   └── audit-log.md              # Append-only architectural change log
+└── tests/
+    ├── unit/
+    └── integration/
+```
+
+---
+
+## 6. Shared Contracts (`include/sdc`)
+
+Keep these header-only and minimal. They are the only types that cross component boundaries.
+
+```cpp
+// types.hpp
+using OpId = uint32_t;
+using Occurrence = uint64_t;
+using BitPos = uint8_t;          // 0–63 for double, 0–31 for float
+
+// OPEN (ADR-0006): the bit numbering convention is not fixed yet.
+// Recommended: bit 0 is the LSB of the uint64 IEEE-754 pattern, so
+// bit 63 is the sign bit and bits 62..52 are the exponent. This must
+// be settled and documented before the first injection campaign,
+// because it fixes the meaning of every `bit=` argument.
+
+// event.hpp
+struct Event {
+    OpId        op_id;
+    Occurrence  occurrence;
+    uint64_t    operand_bits[2]; // left, right (or unary)
+    uint64_t    result_bits;
+    // Optional: timestamp or call-stack hash for richer analysis later
+};
+
+// injection.hpp
+struct InjectionConfig {
+    OpId        target_op;
+    Occurrence  target_occurrence;
+    BitPos      bit;
+    bool        enabled = false;
+};
+
+// exit_record.hpp
+struct ExitRecord {
+    int         exit_code;
+    bool        detected_by_workload;   // workload’s own check
+    uint64_t    final_result_bits;      // or a hash of the output
+    // Any additional workload-specific summary
+};
+```
+
+---
+
+## 7. Component Specifications
+
+### 7.1 Instrumentation Pass (`src/instrumentation`)
+
+**Responsibility**
+
+- Walk LLVM IR looking for floating-point arithmetic (`fadd`, `fsub`, `fmul`, `fdiv`, `frem`) and the matching intrinsics (`llvm.fma`, `llvm.fmuladd`, `llvm.fabs`, `llvm.sqrt`), plus `fneg` for unary sign flips.
+- Replace each with a call to a runtime hook that receives the original operands and returns the (possibly corrupted) result.
+- Assign a stable `OpId` to each instrumented instruction. The mapping is written to `ops.json`.
+
+**Key implementation notes**
+
+- Use `llvm::DebugLoc` to recover source location.
+- **OPEN (ADR-0003): how the op id is derived.** The obvious key of file plus line plus column plus function plus opcode is not unique. Inlining turns one source multiply into several IR instructions, and the inlined copies carry identical innermost `DebugLoc` values, differing only in their `inlinedAt` chain. Either derive the id from module order, or walk the `inlinedAt` chain and use the whole chain as the key.
+- The same source plus the same compiler flags must always produce the same ids.
+- The pass should be runnable with:
+  ```bash
+  opt -load-pass-plugin=libSDCInstrument.so -passes=sdc-instrument -o instrumented.bc input.bc
+  ```
+
+**Compiler flags**
+
+The workload is compiled with one canonical flag set, and the pass refuses to instrument an instruction carrying a fast-math flag.
+
+```
+-O2 -gline-tables-only
+-ffp-contract=off
+-fno-vectorize -fno-slp-vectorize
+```
+
+Each flag earns its place. Without `-ffp-contract=off`, `a*b+c` becomes a single `llvm.fmuladd` and the two operations are fused into one rounding. Without `-fno-vectorize`, a reduction loop becomes calls to `llvm.vector.reduce.fadd` and the additions happen below the IR, where the pass cannot see them. Without `-gline-tables-only`, column numbers may be absent.
+
+Record the flag string in the trace header, so the analyzer can reject a clean and injected pair that came from different builds.
+
+**Learning focus**: LLVM PassManager, IRBuilder, DebugInfo, ModulePass / FunctionPass.
+
+### 7.2 Runtime Witness (`src/runtime`)
+
+**Responsibility**
+
+- Maintain a global counter per `OpId`.
+- On the configured `(op_id, occurrence)` pair, flip the requested bit in the result before returning it.
+- Record every arithmetic event (or a configurable subset) into the binary trace.
+- At program exit (or via `atexit` / signal handlers) write an `ExitRecord`.
+
+**Critical requirements**
+
+- The injection must be **exactly once** and deterministic.
+- Recording must be crash-safe. The writer appends whole records to an `O_APPEND` file descriptor with one `write` per record. A torn final record shows up as a short read, and the reader treats it as the process having died during recording.
+- Overhead should be measurable (the experiment driver will quantify it).
+
+**Learning focus**: low-overhead instrumentation, signal-safe I/O, IEEE-754 bit manipulation (`std::bit_cast` or unions).
+
+### 7.3 Trace Core (`src/core`)
+
+**Responsibility**
+
+- Binary writer for the `SDCTRACE` format.
+- Strict reader that validates the header, the record type field, and the per-op occurrence monotonicity invariant, and produces a sequence of `Event` plus the final `ExitRecord`.
+
+**Format**
+
+The normative specification lives in [`trace-format.md`](trace-format.md). The short version:
+
+```
+File := Header Record*
+
+Header:  "SDCTRACE" | u32 version | u32 flags | u32 meta_len | u32 record_size | u64 reserved
+         followed by meta_len bytes of UTF-8 JSON metadata
+         (workload name, build id, compiler flags, injection config)
+
+Record (40 bytes, fixed):
+  u32 type        0 = event, 1 = exit
+  u32 op_id
+  u64 occurrence
+  u64 operand0
+  u64 operand1
+  u64 result
+```
+
+For an event record, `operand0` and `operand1` are the operand bit patterns and `result` is the delivered result bits. For the exit record the fields are reused: `operand0` holds the exit code, `operand1` holds the detected flag, `result` holds the final result bits.
+
+All integers are little-endian. The file extension is `.sdct`.
+
+### 7.4 Analyzer (`src/analyzer`)
+
+**Responsibility** (pure, deterministic function)
+
+1. Read clean trace + injected trace + `ops.json`.
+2. Align the two event streams.
+3. Locate the first divergence.
+4. Audit arithmetic consistency (optional but powerful: re-execute the op from recorded operands and check the recorded result).
+5. Classify the outcome according to the taxonomy below.
+6. Emit a self-contained `evidence.json`.
+
+**Alignment**
+
+Revision 1 assumed the two streams are identical up to the injection point. That holds only when the corrupted value does not change control flow. If the corrupted value feeds a comparison, the injected run executes a different sequence of operations, and a prefix comparison is not enough.
+
+**OPEN (ADR-0004): how alignment handles control-flow divergence.** A prefix scan finds the first divergence but says nothing about what happened after it. A sequence alignment over `(op_id, occurrence)` keys would, at the cost of complexity.
+
+**Outcome taxonomy (fixed precedence)**
+
+| Class        | Meaning                                                       |
+| ------------ | ------------------------------------------------------------- |
+| CRASH        | Process died; a readable trace was still produced             |
+| DETECTED     | Workload’s own check raised a flag                            |
+| SDC          | Final result outside acceptance criterion and nothing noticed |
+| MASKED       | Final result stayed inside the acceptance criterion           |
+| INCONCLUSIVE | Evidence is insufficient for a verdict                        |
+
+**OPEN (ADR-0005): the taxonomy has no CORRECTED class.** The defense table in the phased plan says "vote → all corrected", but a corrected run fits none of the five classes. It is not CRASH, not DETECTED, and not SDC. It is arguably MASKED, since the final result is back inside the acceptance criterion, but MASKED means the corruption was absorbed numerically rather than repaired by a mechanism. The distinction matters for the defense study, which is the whole point of that phase.
+
+**Acceptance criterion** is supplied by the experiment (absolute or relative tolerance, or a custom predicate).
+
+**Learning focus**: careful stream alignment, numerical comparison of bit patterns, producing machine-readable yet human-auditable reports.
+
+### 7.5 Experiment Drivers (`tools/study`)
+
+Start in Python for speed of iteration:
+
+- `sweep.py` — iterate over a set of `(op_id, occurrence, bit)` triples, run clean + injected, collect evidence packages.
+- `defenses.py` — drive the hardened flight-computer workload under different redundancy modes.
+- `overhead.py` — measure runtime and binary-size cost of instrumentation.
+- `report.py` — aggregate evidence packages into tables and plots (the classic 14 masked / 50 SDC table lives here).
+
+Later you can re-implement the hot loops in Rust if desired; the evidence packages remain the stable interface.
+
+### 7.6 Workloads
+
+Keep them plain C++. Suggested starter set:
+
+1. Simple reduction (sum / product of an array) — easy to reason about masking.
+2. Iterative linear solver (Jacobi or CG) — interesting propagation.
+3. Hardened flight-computer simulation — six cores, lockstep twins, voting, invariants, checksums. This is where the defense-mode table is generated.
+
+---
+
+## 8. Data Artifacts (contracts)
+
+| Artifact        | Producer        | Key contents                                                                                                                |
+| --------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `ops.json`      | Instrumentation | `op_id → {file, line, column, function, kind}`                                                                              |
+| `trace.sdct`    | Runtime         | binary trace: header + events + exit record                                                                                 |
+| `evidence.json` | Analyzer        | classification, reasons, injected event, first divergence, window of surrounding events, both exit records, source metadata |
+
+The evidence package is the **only** hand-off artifact between the analysis stage and any later consumer (reporting, visualization, arbiter research, etc.). Keep it bounded and self-contained.
+
+**Encoding rule.** Every 64-bit value in `evidence.json` is written as a hex string, for example `"0x3ff0000000000000"`. JSON numbers are decimal, and a 64-bit value exceeds the 2^53 exact range of a JavaScript parser, so a numeric encoding silently loses precision in some readers.
+
+---
+
+## 9. Phased Implementation Plan
+
+### Phase 0 — Skeleton (1–2 days)
+
+- Create the directory layout and top-level CMake.
+- Write the shared headers in `include/sdc`.
+- Build an empty analyzer CLI that just prints “hello”.
+
+### Phase 1 — Trace I/O (2–3 days)
+
+- Implement the binary trace writer + reader in `src/core`.
+- Unit-test round-trip of synthetic events.
+- Add a tiny hand-written “runtime” that emits a known trace; verify the reader.
+
+### Phase 2 — Minimal Runtime + Manual Injection (3–4 days)
+
+- Implement the witness with a hard-coded injection point.
+- Link it into a simple workload (array sum).
+- Produce clean vs injected traces and inspect them with `tools/trace_dump.py`.
+
+### Phase 3 — LLVM Instrumentation Pass (1–2 weeks)
+
+- Learn the LLVM pass infrastructure (the official “Writing an LLVM Pass” tutorial is still the best starting point).
+- Rewrite `fadd`/`fmul`/… into hook calls.
+- Emit `ops.json`.
+- Verify that operation IDs are stable across rebuilds.
+
+### Phase 4 — Full Analyzer (1 week)
+
+- Align two traces.
+- Detect first divergence.
+- Implement the five-class classifier.
+- Emit `evidence.json` with citations back to events.
+
+### Phase 5 — Experiment Drivers & First Sweep (1 week)
+
+- Python driver that can launch a clean + injected pair and collect the evidence package.
+- Run a systematic sweep over a small workload.
+- Produce the first real “masked vs SDC” numbers.
+
+### Phase 6 — Hardened Workload & Defense Study (1–2 weeks)
+
+- Implement the six-core flight-computer simulation.
+- Add the different defense modes (lockstep, vote, invariant, checksum, all).
+- Reproduce (or improve upon) the classic table:
+  ```
+  none      → many SDCs
+  lockstep  → all detected
+  vote      → all corrected
+  …
+  ```
+- Resolve ADR-0005 before this phase produces its numbers, otherwise the "corrected" row has no class to land in.
+
+### Phase 7 — Polish & Measurement
+
+- Overhead numbers (runtime, binary size, trace size).
+- Crash-safety of the recorder.
+- Documentation and example notebooks / reports.
+
+---
+
+## 10. Key Learning Resources (in recommended order)
+
+1. LLVM “Writing an LLVM Pass” + “How to use the new PassManager”
+2. IEEE-754 bit patterns and `std::bit_cast` (C++20)
+3. Binary trace design: framing, fixed-size records, torn-record recovery, and why the payload does not want to be JSON
+4. Deterministic builds and content-addressable operation IDs
+5. Basic numerical analysis: condition numbers, error magnification, masking
+
+---
+
+## 11. Success Criteria for the First Complete Run
+
+You should be able to execute something equivalent to:
+
+```bash
+# Build instrumented binary
+./tools/instrument.sh workloads/reductions/sum.cpp -o sum_instr
+
+# Run clean
+SDC_TRACE=clean.sdct ./sum_instr input.bin
+
+# Run with injection
+SDC_INJECT=op=17,occ=3,bit=42 SDC_TRACE=injected.sdct ./sum_instr input.bin
+
+# Analyze
+./build/analyzer --clean clean.sdct --injected injected.sdct --ops ops.json -o evidence.json
+
+# Inspect
+jq .classification evidence.json
+```
+
+and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / …).
+
+---
+
+## 12. Future Extensions (do not implement yet)
+
+- Selective recording (only record a window around the injection)
+- Multi-bit or multi-site injection campaigns
+- Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening
+- Visualization of value propagation (data-flow graph extracted from the two traces)
+- Support for integer arithmetic or mixed-precision codes
+
+---
+
+## 13. Open Decisions
+
+These are not settled. Each one blocks a specific piece of work.
+
+| ID | Question | Current lean | Blocks |
+| --- | --- | --- | --- |
+| ADR-0003 | How the op id is derived, given that inlining makes source locations ambiguous | Derive from module order, or walk the `inlinedAt` chain and use the whole chain as the key | Phase 3, the `ops.json` schema |
+| ADR-0004 | How alignment handles corruption that changes control flow | Sequence alignment over `(op_id, occurrence)` keys rather than a prefix scan | Phase 4 |
+| ADR-0005 | Whether the outcome taxonomy needs a CORRECTED class | Yes, add it | Phase 4 classifier, Phase 6 defense table |
+| ADR-0006 | The bit numbering convention | Bit 0 is the LSB of the uint64 IEEE-754 pattern | Phase 2, every `bit=` argument |
+
+Settled in this revision:
+
+| ID | Decision |
+| --- | --- |
+| ADR-0001 | Trace format is binary `SDCTRACE`, not JSONL |
+| ADR-0002 | One canonical compiler flag set, and the pass rejects fast-math IR |
+
+---
+
+## 14. Revision history
+
+This document is the living spec. The frozen original is [`architecture-v1.md`](architecture-v1.md). Every change is recorded in full, with reasons and evidence, in [`audit-log.md`](audit-log.md).
+
+| Change ID | Date | Summary | Status |
+| --- | --- | --- | --- |
+| ADR-0001 | 2026-10-29 | Trace format moves from JSONL to the binary `SDCTRACE` format | Accepted |
+| ADR-0002 | 2026-10-29 | Canonical compiler flag set for instrumented builds | Accepted |
+| ADR-0003 | 2026-10-29 | Op id derivation under inlining | Open |
+| ADR-0004 | 2026-10-29 | Trace alignment when corruption changes control flow | Open |
+| ADR-0005 | 2026-10-29 | Outcome taxonomy needs a CORRECTED class | Open |
+| ADR-0006 | 2026-10-29 | Bit position convention | Open |
+
+---
+
+This blueprint is intentionally concrete so you can start coding immediately while still understanding the “why” behind every choice. Treat the evidence package format and the outcome taxonomy as the stable public interface; everything else can evolve as you learn.
+
+When you finish Phase 1 or Phase 2, the next natural question is usually “how do I make the LLVM pass robust?” — that is the right moment to dig deeper into the LLVM documentation and the existing open-source instrumentation passes (e.g., parts of AddressSanitizer or custom floating-point research tools).
+
+Good luck — this is a high-leverage systems + numerical project. Build it carefully and the insights will be real.
