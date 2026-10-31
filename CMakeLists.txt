@@ -17,6 +17,7 @@ add_subdirectory(src/runtime)
 add_subdirectory(src/core)
 add_subdirectory(src/analyzer)
 
+enable_testing()
 add_subdirectory(tests/unit)
 
 add_executable(sum workloads/reductions/sum.cpp)

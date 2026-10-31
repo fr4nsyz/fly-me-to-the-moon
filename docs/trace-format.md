@@ -80,7 +80,17 @@ Every integer is little-endian. The field order is chosen so that no field strad
 | Value | Name | Interpretation |
 | --- | --- | --- |
 | 0 | `EVENT` | `op_id` is the operation, `occurrence` is its visit count, `operand0` and `operand1` are operand bit patterns, `result` is the delivered result bits |
-| 1 | `EXIT` | The final record. `operand0` holds the exit code, `operand1` holds the detected flag, `result` holds the final result bits, and `op_id` and `occurrence` are zero |
+| 1 | `EXIT` | The final record. `operand0` holds the exit code, `operand1` holds the outcome flags, `result` holds the final result bits, and `op_id` and `occurrence` are zero |
+
+The `operand1` word in an `EXIT` record is a flag set, not a boolean:
+
+| Bit | Name | Meaning |
+| --- | --- | --- |
+| 0 | `DETECTED` | The workload's own check raised a flag |
+| 1 | `CORRECTED` | A redundancy mechanism repaired the fault |
+| 2..63 | | Reserved, must be zero |
+
+Version 1 originally defined `operand1` as a single detected boolean. It was widened to a flag set under ADR-0011 so that `CORRECTED` can be recorded distinctly from `DETECTED`, which the outcome taxonomy requires (ADR-0005). Bit 0 keeps its original meaning, so a reader written against the earlier definition still reads the detection signal correctly.
 
 `op_id` values that the reader does not recognize are an error, not something to skip silently.
 

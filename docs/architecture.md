@@ -270,7 +270,7 @@ Record (40 bytes, fixed):
   u64 result
 ```
 
-For an event record, `operand0` and `operand1` are the operand bit patterns and `result` is the delivered result bits. For the exit record the fields are reused: `operand0` holds the exit code, `operand1` holds the detected flag, `result` holds the final result bits.
+For an event record, `operand0` and `operand1` are the operand bit patterns and `result` is the delivered result bits. For the exit record the fields are reused: `operand0` holds the exit code, `operand1` holds the outcome flag set (bit 0 `DETECTED`, bit 1 `CORRECTED`, ADR-0011), `result` holds the final result bits.
 
 All integers are little-endian. The file extension is `.sdct`.
 
@@ -421,23 +421,42 @@ The evidence package is the **only** hand-off artifact between the analysis stag
 You should be able to execute something equivalent to:
 
 ```bash
-# Build instrumented binary
-./tools/instrument.sh workloads/reductions/sum.cpp -o sum_instr
+# Build instrumented binary (compiles to bitcode, runs the pass, links the runtime)
+./tools/instrument.sh workloads/reductions/sum_plain.cpp -o build/sum_instr
 
 # Run clean
-SDC_TRACE=clean.sdct ./sum_instr input.bin
+SDC_WORKLOAD=sum_plain SDC_BUILD_ID=<id> SDC_COMPILER_FLAGS='<flags>' \
+  SDC_TRACE=clean.sdct ./build/sum_instr 1024
 
 # Run with injection
-SDC_INJECT=op=17,occ=3,bit=42 SDC_TRACE=injected.sdct ./sum_instr input.bin
+SDC_WORKLOAD=sum_plain SDC_BUILD_ID=<id> SDC_COMPILER_FLAGS='<flags>' \
+  SDC_INJECT=op=17,occ=3,bit=42 SDC_TRACE=injected.sdct ./build/sum_instr 1024
 
 # Analyze
-./build/analyzer --clean clean.sdct --injected injected.sdct --ops ops.json -o evidence.json
+./build/src/analyzer/sdc-analyze --clean clean.sdct --injected injected.sdct \
+  --ops build/ops.json -o evidence.json
 
 # Inspect
 jq .classification evidence.json
 ```
 
-and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / …).
+and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / CRASH / INCONCLUSIVE).
+
+**Runtime interface.** The workload is plain C++ with no annotations, so everything the runtime needs comes from the environment.
+
+| Variable | Meaning |
+| --- | --- |
+| `SDC_TRACE` | Path of the trace file to write. Defaults to `trace.sdct`. |
+| `SDC_INJECT` | Injection configuration as `op=<id>,occ=<n>,bit=<b>`. Absent means no injection. |
+| `SDC_WORKLOAD` | Workload name, recorded in the trace metadata. |
+| `SDC_BUILD_ID` | Build identifier, recorded in the trace metadata. The analyzer rejects a clean/injected pair whose build ids differ. |
+| `SDC_COMPILER_FLAGS` | The exact flag string the workload was compiled with, recorded in the trace metadata. |
+
+`SDC_TRACE_PATH`, `SDC_INJECT_OP_ID`, `SDC_INJECT_OCC`, and `SDC_INJECT_BIT` are accepted as alternatives to `SDC_TRACE` and `SDC_INJECT`.
+
+**Analyzer interface.** `sdc-analyze` takes `--clean`, `--injected`, `--ops`, `-o`/`--out`, `--abs-tol`, `--rel-tol`, and `--reference-bits`. When `--reference-bits` is absent the clean run's own final result is used as the reference, which makes the acceptance criterion the baseline the platform is built around.
+
+**Reporting API.** A workload that wants to state its own verdict calls `sdc_report_result(value)`, `sdc_report_detected()`, or `sdc_report_corrected()`. None of these are required: the runtime uses the last delivered result as the final result, so a plain workload still produces a meaningful exit record.
 
 ---
 
@@ -468,6 +487,7 @@ Settled in this revision:
 | ADR-0003 | Op id assigned in deterministic module order; debug locations for readability only |
 | ADR-0005 | Taxonomy adds `CORRECTED` class with precedence rules |
 | ADR-0006 | Bit 0 = LSB of uint64 IEEE-754 pattern (bit 63 sign, 62..52 exponent) |
+| ADR-0011 | Exit record `operand1` is a flag set: bit 0 DETECTED, bit 1 CORRECTED |
 
 ---
 
@@ -487,6 +507,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0008 | 2026-10-31 | Defense semantics: replicate before critical section, vote after, protect voter; injection before replication = common-mode | Proposed |
 | ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Proposed |
 | ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Proposed |
+| ADR-0011 | 2026-10-31 | Exit record detection word becomes a flag set (DETECTED, CORRECTED) | Accepted |
 
 ---
 

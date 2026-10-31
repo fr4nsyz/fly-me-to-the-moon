@@ -80,7 +80,11 @@ void TraceWriter::write_exit(const ExitRecord& exit_rec) {
     rec.op_id = 0;
     rec.occurrence = 0;
     rec.operand0 = static_cast<uint64_t>(static_cast<uint32_t>(exit_rec.exit_code));
-    rec.operand1 = exit_rec.detected_by_workload ? 1ULL : 0ULL;
+    // ADR-0011: operand1 is an outcome flag set. Bit 0 is DETECTED, bit 1 is
+    // CORRECTED. Bit 0 keeps the meaning the original version 1 definition gave it.
+    rec.operand1 = 0;
+    if (exit_rec.detected_by_workload) rec.operand1 |= 1ULL;
+    if (exit_rec.corrected_by_mechanism) rec.operand1 |= 2ULL;
     rec.result = exit_rec.final_result_bits;
     write(fd_, &rec, sizeof(rec));
     wrote_exit_ = true;

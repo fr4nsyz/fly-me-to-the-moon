@@ -274,3 +274,26 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 **Impact.** `docs/architecture.md` sections 3,4,9.7,18. `viewer/` with vendored Three.js.
 
 **Follow-up.** Define trajectory log schema.
+
+### ADR-0011 — The exit record's detection word becomes a flag set
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** Version 1 of the trace format defined the exit record's `operand1` as "the detected flag", a single boolean. ADR-0005 added a `CORRECTED` class to the outcome taxonomy, which requires the analyzer to distinguish a run that a redundancy mechanism repaired from a run where the workload merely noticed the fault. A single boolean cannot carry both signals.
+
+**Decision.** `operand1` in an exit record becomes a flag set. Bit 0 is `DETECTED` and keeps the meaning the original definition gave it. Bit 1 is `CORRECTED`. Bits 2 and up are reserved and must be zero.
+
+**Why.** The two signals have different implications and the defense study is the point of Phase 6. A lockstep pair detects a mismatch but cannot repair it, so it belongs in `DETECTED`. A TMR vote repairs the fault, so it belongs in `CORRECTED`. Collapsing them into one boolean would erase the result that phase exists to produce.
+
+Bit 0 keeps its original position and meaning, so a reader written against the earlier definition still reads the detection signal correctly. Widening the existing word in place is smaller and less disruptive than adding a field, and it keeps the record at 40 bytes, which is what makes the index arithmetic in the aligner work.
+
+**Evidence.** The runtime now carries three separate signals out of the workload: `sdc_report_result` (the final result bits), `sdc_report_detected` (the workload noticed), and `sdc_report_corrected` (a mechanism repaired it). The exit record has room for all three: the exit code in `operand0`, the two flags in `operand1`, and the final result bits in `result`.
+
+The runtime also needs a default final result, because the workload source is required to stay plain with no annotations. The runtime tracks the last delivered result bit pattern and uses it unless the workload called `sdc_report_result` to override it. A plain workload therefore still produces a meaningful exit record.
+
+**Rejected.** Adding a second exit record type, rejected because the record size is fixed at 40 bytes for the index arithmetic and a second type doubles the reader's branching for one extra bit. Overloading `op_id` or `occurrence` in the exit record, rejected because the format spec requires both to be zero there, and a record that violates its own spec is not auditable.
+
+**Impact.** `docs/trace-format.md` section 2.3. `docs/architecture.md` section 7.3. `include/sdc/exit_record.hpp`. `src/core/trace_writer.cpp` and `src/core/trace_reader.cpp`. `src/runtime/runtime.cpp`. `src/analyzer/classify.cpp` and `src/analyzer/evidence.cpp`.
+
+**Follow-up.** The version number stays at 1 because the change is backward compatible on read. If a future change makes the record layout incompatible, the version goes to 2 and the reader must reject the older shape rather than guess.

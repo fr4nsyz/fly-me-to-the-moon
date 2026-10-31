@@ -99,7 +99,8 @@ Trace TraceReader::read(const std::string& path) {
         } else if (r.type == 1) { // EXIT
             trace.has_exit = true;
             trace.exit_record.exit_code = static_cast<int>(static_cast<uint32_t>(r.operand0));
-            trace.exit_record.detected_by_workload = (r.operand1 != 0);
+            trace.exit_record.detected_by_workload = (r.operand1 & 1ULL) != 0;
+            trace.exit_record.corrected_by_mechanism = (r.operand1 & 2ULL) != 0;
             trace.exit_record.final_result_bits = r.result;
             break;
         } else {
