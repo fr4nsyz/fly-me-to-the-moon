@@ -21,3 +21,7 @@ add_subdirectory(tests/unit)
 
 add_executable(sum workloads/reductions/sum.cpp)
 target_link_libraries(sum PRIVATE sdc_runtime)
+
+if(LLVM_FOUND)
+  include(AddLLVM)
+endif()

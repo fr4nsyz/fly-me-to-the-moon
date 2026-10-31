@@ -91,4 +91,40 @@ double runtime_f64_add(OpId op_id, double lhs, double rhs) {
     return res;
 }
 
+double runtime_f64_mul(OpId op_id, double lhs, double rhs) {
+    if (!g_inited) runtime_init();
+    
+    double res = lhs * rhs;
+    Occurrence occ = ++g_count[op_id];
+    
+    uint64_t lb = std::bit_cast<uint64_t>(lhs);
+    uint64_t rb = std::bit_cast<uint64_t>(rhs);
+    uint64_t rbits = std::bit_cast<uint64_t>(res);
+    
+    if (g_inj_enabled && op_id == g_inj_op && occ == g_inj_occ) {
+        if (g_inj_bit < 64) {
+            rbits ^= (uint64_t)1ULL << g_inj_bit;
+            res = std::bit_cast<double>(rbits);
+        }
+    }
+    
+    Event ev;
+    ev.op_id = op_id;
+    ev.occurrence = occ;
+    ev.operand_bits[0] = lb;
+    ev.operand_bits[1] = rb;
+    ev.result_bits = std::bit_cast<uint64_t>(res);
+    g_writer.write_event(ev);
+    
+    return res;
+}
+
 } // namespace sdc
+
+extern "C" double sdc_runtime_f64_add_hook(uint32_t op_id, double lhs, double rhs) {
+    return sdc::runtime_f64_add(static_cast<sdc::OpId>(op_id), lhs, rhs);
+}
+
+extern "C" double sdc_runtime_f64_mul_hook(uint32_t op_id, double lhs, double rhs) {
+    return sdc::runtime_f64_mul(static_cast<sdc::OpId>(op_id), lhs, rhs);
+}
