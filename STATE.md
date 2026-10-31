@@ -258,8 +258,23 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 - ADR-0003 accepted (module-order op ids), ADR-0005 accepted (CORRECTED), ADR-0006 accepted (bit 0 = LSB).
 - ADR-0007-0010 proposed in docs.
 
+## Phase status
+- Phase 0 skeleton: done
+- Phase 1 trace I/O: done
+- Phase 2 runtime + manual injection: done
+- Phase 3 LLVM pass (fadd/fsub/fmul/fdiv, real ops.json): done
+- Phase 4 analyzer (align, audit, classify, evidence): done
+- Phase 5 drivers + first sweep: done. 200-trial campaign, seed 1337, in `results/sweep_sum_plain/`. 83.0% SDC, 17.0% MASKED.
+- Phase 6 moon mission + defenses: next
+- Phase 7 viewer: after
+
+## Measured results
+- Instrumentation overhead on `sum_plain`: 3.9x median wall time, 40.0 bytes per event.
+- Campaign bit-region split: low mantissa masked 30/128, exponent masked 1/35.
+- Trial traces are deleted after analysis unless `--keep-traces` is passed.
+
 ## Next move
-1. Create private repo `fr4nsyz/fly-me-to-the-moon-videos`.
-2. Start Phase 0: directory layout, top-level CMake, shared headers in `include/sdc`, analyzer CLI prints "hello".
-3. Spike: minimal LLVM 23 pass plugin rewriting one `fadd` into a runtime hook, build with Homebrew clang, load into `opt`, write/read one trace record.
-4. Proceed to Phases 1-5, then 6 (moon), then 7 (viewer).
+1. Phase 6: hand-rolled C++ plant and instrumented FSW for the surface-to-lunar-landing mission.
+2. Defense modes: none, lockstep, vote/TMR, invariant, checksum, all, measured equally (ADR-0008).
+3. Replicate before the critical section, vote after it, protect the voter. Injection before replication is a common-mode fault and is reported separately.
+4. Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).
