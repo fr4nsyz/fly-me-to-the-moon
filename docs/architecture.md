@@ -511,6 +511,7 @@ Settled in this revision:
 | ADR-0012 | Random injection: the runtime resolves the site from a plan, seeded by `SDC_SEED` |
 | ADR-0013 | Ratifies ADR-0003, ADR-0005, ADR-0007 to ADR-0010 |
 | ADR-0014 | Alignment is a prefix scan on key and payload; no resynchronization |
+| ADR-0015 | Unit tests use GoogleTest 1.18 from Homebrew |
 
 ---
 
@@ -534,6 +535,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0012 | 2026-10-31 | Random injection resolves its site in the runtime from a driver-built plan | Accepted |
 | ADR-0013 | 2026-10-31 | Ratify ADR-0003, ADR-0005, ADR-0007 to ADR-0010 | Accepted |
 | ADR-0014 | 2026-10-31 | Alignment is a prefix scan on key and payload | Accepted |
+| ADR-0015 | 2026-10-31 | Unit tests use GoogleTest | Accepted |
 
 ---
 

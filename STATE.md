@@ -88,6 +88,7 @@ Relevant because it overlaps with this session's findings.
 |---|---|
 | LLVM | 23.1.4 at `/opt/homebrew/opt/llvm` (`opt`, `llc`, `llvm-config`, `lib/cmake/llvm`) |
 | CMake / Ninja | 4.4.3 / 1.13.2 |
+| GoogleTest | 1.18.0 via Homebrew, `/opt/homebrew/lib/cmake/GTest` |
 | Python | System `python3` is 3.10.5. Use `/opt/homebrew/bin/python3.14`; `tools/study/sweep.py` reproduces the stored seed-1337 sweep with it. |
 | Target | arm64-apple-darwin24.6.0 (current machine). Measurements above were taken on darwin25.6.0. |
 

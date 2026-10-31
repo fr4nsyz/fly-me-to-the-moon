@@ -2,24 +2,32 @@
 #include "trace_reader.hpp"
 #include "sdc/event.hpp"
 #include "sdc/exit_record.hpp"
-#include <cassert>
+#include <gtest/gtest.h>
 #include <cstdio>
+#include <string>
 #include <unistd.h>
-#include <iostream>
 
 using namespace sdc;
 
 namespace {
 
-const char* kPath = "/tmp/sdc_test_trace.sdct";
+class TraceIo : public ::testing::Test {
+protected:
+    void SetUp() override {
+        path_ = std::string("/tmp/sdc_test_") +
+                ::testing::UnitTest::GetInstance()->current_test_info()->name() + ".sdct";
+    }
+    void TearDown() override { std::remove(path_.c_str()); }
+    std::string path_;
+};
 
-void test_round_trip() {
+TEST_F(TraceIo, RoundTrip) {
     const std::string meta =
         "{\"workload\":\"test\",\"build_id\":\"abc\",\"compiler_flags\":\"-O2\","
         "\"schema\":1,\"inject\":{}}";
 
     TraceWriter w;
-    assert(w.open(kPath, meta));
+    ASSERT_TRUE(w.open(path_.c_str(), meta));
 
     Event e1;
     e1.op_id = 1; e1.occurrence = 1;
@@ -45,22 +53,22 @@ void test_round_trip() {
     w.close();
 
     TraceReader r;
-    Trace t = r.read(kPath);
-    assert(r.error().empty());
-    assert(t.metadata_json == meta);
-    assert(t.events.size() == 2);
-    assert(t.has_exit);
-    assert(t.events[0].op_id == 1);
-    assert(t.events[0].operand_bits[0] == 0x3ff0000000000000ULL);
-    assert(t.events[1].result_bits == 0x4010000000000000ULL);
-    assert(t.exit_record.final_result_bits == e2.result_bits);
-    assert(!t.exit_record.detected_by_workload);
-    assert(!t.exit_record.corrected_by_mechanism);
+    Trace t = r.read(path_.c_str());
+    ASSERT_EQ(r.error(), "");
+    EXPECT_EQ(t.metadata_json, meta);
+    ASSERT_EQ(t.events.size(), 2u);
+    EXPECT_TRUE(t.has_exit);
+    EXPECT_EQ(t.events[0].op_id, 1u);
+    EXPECT_EQ(t.events[0].operand_bits[0], 0x3ff0000000000000ULL);
+    EXPECT_EQ(t.events[1].result_bits, 0x4010000000000000ULL);
+    EXPECT_EQ(t.exit_record.final_result_bits, e2.result_bits);
+    EXPECT_FALSE(t.exit_record.detected_by_workload);
+    EXPECT_FALSE(t.exit_record.corrected_by_mechanism);
 }
 
-void test_exit_flags() {
+TEST_F(TraceIo, ExitFlags) {
     TraceWriter w;
-    assert(w.open(kPath, "{}"));
+    ASSERT_TRUE(w.open(path_.c_str(), "{}"));
 
     ExitRecord er;
     er.exit_code = 3;
@@ -71,18 +79,18 @@ void test_exit_flags() {
     w.close();
 
     TraceReader r;
-    Trace t = r.read(kPath);
-    assert(r.error().empty());
-    assert(t.has_exit);
-    assert(t.exit_record.exit_code == 3);
-    assert(t.exit_record.detected_by_workload);
-    assert(t.exit_record.corrected_by_mechanism);
-    assert(t.exit_record.final_result_bits == 0xdeadbeefcafef00dULL);
+    Trace t = r.read(path_.c_str());
+    ASSERT_EQ(r.error(), "");
+    ASSERT_TRUE(t.has_exit);
+    EXPECT_EQ(t.exit_record.exit_code, 3);
+    EXPECT_TRUE(t.exit_record.detected_by_workload);
+    EXPECT_TRUE(t.exit_record.corrected_by_mechanism);
+    EXPECT_EQ(t.exit_record.final_result_bits, 0xdeadbeefcafef00dULL);
 }
 
-void test_torn_final_record() {
+TEST_F(TraceIo, TornFinalRecordIsDiscarded) {
     TraceWriter w;
-    assert(w.open(kPath, "{}"));
+    ASSERT_TRUE(w.open(path_.c_str(), "{}"));
 
     Event e;
     e.op_id = 1; e.occurrence = 1;
@@ -90,59 +98,46 @@ void test_torn_final_record() {
     w.write_event(e);
     w.close();
 
-    // Truncate the file mid-record. The reader must discard the partial tail
-    // rather than fail, and must report no exit record.
     const long full_size = 32 + 2 + 40; // header + "{}" metadata + one record
-    assert(::truncate(kPath, full_size - 20) == 0);
+    ASSERT_EQ(::truncate(path_.c_str(), full_size - 20), 0);
 
     TraceReader r;
-    Trace t = r.read(kPath);
-    assert(r.error().empty());
-    assert(t.events.empty());
-    assert(!t.has_exit);
+    Trace t = r.read(path_.c_str());
+    EXPECT_EQ(r.error(), "");
+    EXPECT_TRUE(t.events.empty());
+    EXPECT_FALSE(t.has_exit);
 }
 
-void test_rejects_bad_magic() {
+TEST_F(TraceIo, RejectsBadMagic) {
     TraceWriter w;
-    assert(w.open(kPath, "{}"));
+    ASSERT_TRUE(w.open(path_.c_str(), "{}"));
     w.close();
 
-    std::FILE* f = std::fopen(kPath, "r+b");
-    assert(f != nullptr);
+    std::FILE* f = std::fopen(path_.c_str(), "r+b");
+    ASSERT_NE(f, nullptr);
     std::fputs("NOTATRAC", f);
     std::fclose(f);
 
     TraceReader r;
-    r.read(kPath);
-    assert(r.error() == "bad magic");
+    r.read(path_.c_str());
+    EXPECT_EQ(r.error(), "bad magic");
 }
 
-void test_rejects_non_monotonic_occurrence() {
+TEST_F(TraceIo, RejectsNonMonotonicOccurrence) {
     TraceWriter w;
-    assert(w.open(kPath, "{}"));
+    ASSERT_TRUE(w.open(path_.c_str(), "{}"));
 
     Event e;
     e.op_id = 1;
     e.occurrence = 5;
     w.write_event(e);
-    e.occurrence = 3; // goes backwards for the same op_id
+    e.occurrence = 3;
     w.write_event(e);
     w.close();
 
     TraceReader r;
-    r.read(kPath);
-    assert(r.error() == "non-monotonic occurrence");
+    r.read(path_.c_str());
+    EXPECT_EQ(r.error(), "non-monotonic occurrence");
 }
 
 } // namespace
-
-int main() {
-    test_round_trip();
-    test_exit_flags();
-    test_torn_final_record();
-    test_rejects_bad_magic();
-    test_rejects_non_monotonic_occurrence();
-    std::remove(kPath);
-    std::cout << "ok" << std::endl;
-    return 0;
-}
