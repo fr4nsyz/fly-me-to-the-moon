@@ -195,7 +195,7 @@ struct ExitRecord {
 
 **Responsibility**
 
-- Walk LLVM IR looking for floating-point arithmetic (`fadd`, `fsub`, `fmul`, `fdiv`, `frem`) and the matching intrinsics (`llvm.fma`, `llvm.fmuladd`, `llvm.fabs`, `llvm.sqrt`), plus `fneg` for unary sign flips.
+- Walk LLVM IR looking for double-precision `fadd`, `fsub`, `fmul`, `fdiv`, and calls to `llvm.sqrt.f64` (ADR-0019). Not yet instrumented: `frem`, `fneg`, the intrinsics `llvm.fma`, `llvm.fmuladd`, `llvm.fabs`, and math library calls such as `sin`, `cos`, `atan2`.
 - Replace each with a call to a runtime hook that receives the original operands and returns the (possibly corrupted) result.
 - Assign a stable `OpId` to each instrumented instruction. The mapping is written to `ops.json`.
 
@@ -485,6 +485,9 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 - Replication that survives -O2 (compiler barriers, separate TUs, or `optnone` replicas); see ADR-0017
 - Onboard guidance that retargets in flight instead of a precomputed mission plan; see ADR-0016
 - Attitude dynamics and atmosphere drag in the moon plant
+- Noisy sensors with a navigation filter in the moon flight software (ADR-0018)
+- Powered descent to a chosen landing site instead of where braking ends (ADR-0018)
+- Instrumenting math library calls (`sin`, `cos`, `atan2`) as one operation each (ADR-0019)
 
 ---
 
@@ -517,6 +520,8 @@ Settled in this revision:
 | ADR-0015 | Unit tests use GoogleTest 1.18 from Homebrew |
 | ADR-0016 | Moon mission: full trip in 3D, point-mass physics, precomputed plan, per-phase campaigns |
 | ADR-0017 | Moon FSW builds at -O0; TMR and lockstep written in FSW source |
+| ADR-0018 | Powered descent: 15 km start, two-phase guidance, LM-class vehicle, plant-computed landing score |
+| ADR-0019 | The pass instruments `llvm.sqrt` |
 
 ---
 
@@ -543,6 +548,8 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0015 | 2026-10-31 | Unit tests use GoogleTest | Accepted |
 | ADR-0016 | 2026-10-31 | Moon mission model: full trip in 3D, simplified physics, precomputed plan, per-phase campaigns | Accepted |
 | ADR-0017 | 2026-10-31 | Moon FSW builds at -O0; task-level TMR and lockstep in FSW source | Accepted |
+| ADR-0018 | 2026-10-31 | Powered descent design and moon build plumbing | Accepted |
+| ADR-0019 | 2026-10-31 | The pass instruments llvm.sqrt | Accepted |
 
 ---
 
@@ -560,7 +567,9 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 
 **Campaigns:** Every trial flies the whole mission. Faults are drawn per phase, with equal trials per phase.
 
-**Success criterion:** The plant's true touchdown state within position/velocity tolerance (tolerances open, ADR-0016 follow-up).
+**Success criterion:** The plant's true touchdown state, scored as max(vertical speed / 3 m/s, horizontal speed / 1.2 m/s, distance from the clean run's touchdown / 1000 m); a score up to 1 passes (ADR-0018).
+
+**Powered descent (ADR-0018):** Starts from a circular 15 km lunar orbit. Braking at full throttle against the Moon-relative velocity, then a final descent with thrust straight up and a proportional controller tracking a target descent rate. Lunar Module descent-class vehicle. Perfect sensors; the flight software converts to Moon-relative terms itself, ahead of guidance.
 
 **Trajectory log:** `trajectory.json` written by the plant/driver, consumed only by the Three.js HUD. Separate from `SDCTRACE`.
 
