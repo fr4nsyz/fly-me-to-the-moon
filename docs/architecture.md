@@ -287,7 +287,7 @@ All integers are little-endian. The file extension is `.sdct`.
 
 **Alignment**
 
-Revision 1 assumed the two streams are identical up to the injection point. That holds only when the corrupted value does not change control flow. If the corrupted value feeds a comparison, the injected run executes a different sequence of operations, and a prefix comparison is not enough.
+Revision 1 assumed the two streams are identical up to the injection point, and flagged that a corrupted value feeding a comparison makes the injected run execute a different sequence of operations. That does not defeat a prefix scan: the injected event itself records the flipped result, so it mismatches on payload before any branch it feeds can execute.
 
 **Decided (ADR-0014): the first divergence is the first index where the `(op_id, occurrence)` key or the payload differs.** A single fault always mismatches on payload at the injected event before control flow can change, so a prefix scan reports the injection point. A structural mismatch is a divergence at its own index; there is no resynchronization.
 
