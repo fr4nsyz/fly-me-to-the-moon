@@ -441,3 +441,51 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `tools/instrument.sh`. `docs/architecture.md` sections 7.1, 9, 12, 16. `workloads/moon/fsw/`.
 
 **Follow-up.** None.
+
+### ADR-0018 — Powered descent: start state, guidance rule, vehicle, sensors, landing score, build
+
+**Date:** 2026-10-31
+**Status:** Accepted. Refines ADR-0016.
+
+**Proposed.** Step 2 of the Phase 6 build order needs a descent the flight software can fly, a vehicle that can fly it, a rule for judging the landing, and a build that instruments only the flight software.
+
+**Decision.**
+- Start: circular lunar orbit at 15 km altitude at a chosen mission time, built from the Moon's position and velocity. The ephemeris gains a velocity function.
+- Guidance, two phases. Braking: full throttle against the Moon-relative velocity. Final descent: thrust straight up, with throttle set by a proportional controller that tracks a target descent rate shrinking with altitude.
+- Vehicle: generic engine with Apollo Lunar Module descent-class numbers (about 15,100 kg at start, about 6,900 kg dry, about 45 kN, Isp about 311 s), verified against a source before coding.
+- Sensors: perfect. The flight software's navigation stage converts the Earth-centered state to Moon-relative terms using its own Moon ephemeris, then derives altitude and descent rate. This stage runs before guidance, so under TMR a fault in it reaches every replica (common-mode).
+- Landing score, computed by the plant at touchdown: max(vertical speed / 3 m/s, horizontal speed / 1.2 m/s, distance from the clean run's touchdown point / 1000 m). Speeds are relative to the rotating lunar surface; the Moon is tidally locked, so it rotates at its orbital rate. No touchdown within the time limit scores infinity. The plant reports the score with `sdc_report_result`. The analyzer runs with reference 0.0 and `--abs-tol 1`: a score up to 1 passes; above 1, or NaN, is SDC. A hard landing is SDC, not CRASH; CRASH means the process died.
+- Build: `workloads/moon/fsw/` is instrumented with the moon profile (ADR-0017). `workloads/moon/sim/` and the plant are compiled normally. `tools/instrument.sh --profile moon` merges the flight software TUs with `llvm-link`, runs the pass, then internalizes every flight software symbol except `fsw_tick`.
+
+**Why.** Two-phase descent is about 30-40 lines and stable (estimated), and fits a demo that should stay out of the weeds. Lunar Module numbers are proven to cover this descent. Perfect sensors still give a navigation stage with real arithmetic ahead of guidance. Scoring in the plant keeps the judge on ground truth. One scalar score fits the analyzer's existing tolerance check, so the analyzer and the trace format stay unchanged. Internalizing is required because shared headers compile to `linkonce_odr` functions, and the linker would otherwise keep one copy for both sides: either the plant gets hooks, or the flight software loses them, with no build error.
+
+**Evidence.**
+- At -O0, `Vec3` `a + b` compiles to `call @_ZN4moonplENS_4Vec3ES0_`, defined `linkonce_odr`.
+- `src/analyzer/main.cpp:138-150`: `within_abs` and `within_rel` are both false for NaN, so a NaN score is outside tolerance.
+
+**Rejected.** Apollo polynomial guidance to a chosen site: about 3-4x the code (estimated). Noisy sensors with a filter: needs seeded noise to keep clean runs identical. Multiple metrics in the exit record: needs trace format and analyzer changes. Judging the landing in the flight software: the judge must be ground truth.
+
+**Limitations.** The lander touches down where braking ends, not at a chosen site; position is judged against the clean run. Touchdown tolerances follow the Lunar Module's gear limits (to verify). Sensors are perfect.
+
+**Impact.** New `workloads/moon/fsw/`, `workloads/moon/sim/`. `workloads/moon/common/moon_ephemeris.hpp` (velocity). `tools/instrument.sh`. `docs/architecture.md` sections 12, 15.
+
+**Follow-up.** Verify the Lunar Module numbers and gear limits before coding. Choose the time limit. Still open: how defenses report DETECTED and CORRECTED; how the runtime learns phase boundaries; the clean-vs-clean determinism check.
+
+### ADR-0019 — The pass instruments llvm.sqrt
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** The pass hooks only `fadd`, `fsub`, `fmul`, and `fdiv`. `std::sqrt` compiles to the intrinsic `llvm.sqrt.f64`, so square roots are never faulted, and the descent guidance computes distances with them.
+
+**Decision.** Calls to `llvm.sqrt.f64` become calls to `sdc_runtime_f64_sqrt_hook(op_id, x)`. The event records `x` in `operand0` and zero in `operand1`. `ops.json` records the kind as `sqrt`. The audit recomputes with `std::sqrt`, which IEEE 754 requires to be correctly rounded, so the recomputation is exact. Calls into the math library (`sin`, `cos`, `atan2`) stay uninstrumented.
+
+**Why.** A square root is one hardware instruction, as exposed to a fault as an add. Leaving it out would exclude every distance and altitude computation in the guidance from the campaign.
+
+**Evidence.** At -O0, `std::sqrt(x)` is `call double @llvm.sqrt.f64` in IR and `fsqrt d0, d0` on arm64. `src/instrumentation/SDCInstrument.cpp` selects only `BinaryOperator`.
+
+**Rejected.** Leaving the gap: biases results for guidance math. Instrumenting math library calls now: the descent rule does not use them.
+
+**Impact.** `src/instrumentation/SDCInstrument.cpp`, `src/runtime/runtime.{hpp,cpp}`, `src/core/op_kind.cpp`, `src/analyzer/audit.cpp`, `docs/trace-format.md` section 2, `docs/architecture.md` section 7.1.
+
+**Follow-up.** Math library calls, as one operation each with the flip on the result, when guidance first needs trigonometry.
