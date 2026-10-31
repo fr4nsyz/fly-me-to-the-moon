@@ -289,7 +289,7 @@ All integers are little-endian. The file extension is `.sdct`.
 
 Revision 1 assumed the two streams are identical up to the injection point. That holds only when the corrupted value does not change control flow. If the corrupted value feeds a comparison, the injected run executes a different sequence of operations, and a prefix comparison is not enough.
 
-**OPEN (ADR-0004): how alignment handles control-flow divergence.** A prefix scan finds the first divergence but says nothing about what happened after it. A sequence alignment over `(op_id, occurrence)` keys would, at the cost of complexity.
+**Decided (ADR-0014): the first divergence is the first index where the `(op_id, occurrence)` key or the payload differs.** A single fault always mismatches on payload at the injected event before control flow can change, so a prefix scan reports the injection point. A structural mismatch is a divergence at its own index; there is no resynchronization.
 
 **Outcome taxonomy (fixed precedence)**
 
@@ -491,7 +491,7 @@ These are not settled. Each one blocks a specific piece of work.
 
 | ID | Question | Current lean | Blocks |
 | --- | --- | --- | --- |
-| ADR-0004 | How alignment handles corruption that changes control flow | Sequence alignment over `(op_id, occurrence)` keys rather than a prefix scan | Phase 4 |
+| (none) | | | |
 
 Settled in this revision:
 
@@ -500,10 +500,17 @@ Settled in this revision:
 | ADR-0001 | Trace format is binary `SDCTRACE`, not JSONL |
 | ADR-0002 | One canonical compiler flag set, and the pass rejects fast-math IR |
 | ADR-0003 | Op id assigned in deterministic module order; debug locations for readability only |
+| ADR-0004 | Alignment is a prefix scan on key and payload (ADR-0014) |
 | ADR-0005 | Taxonomy adds `CORRECTED` class with precedence rules |
 | ADR-0006 | Bit 0 = LSB of uint64 IEEE-754 pattern (bit 63 sign, 62..52 exponent) |
+| ADR-0007 | Moon workload: full surface to lunar landing, hand-rolled plant |
+| ADR-0008 | Defense semantics: replicate before, vote after, protect the voter |
+| ADR-0009 | Only FSW translation units are instrumented |
+| ADR-0010 | Separate `trajectory.json`, offline Three.js HUD |
 | ADR-0011 | Exit record `operand1` is a flag set: bit 0 DETECTED, bit 1 CORRECTED |
 | ADR-0012 | Random injection: the runtime resolves the site from a plan, seeded by `SDC_SEED` |
+| ADR-0013 | Ratifies ADR-0003, ADR-0005, ADR-0007 to ADR-0010 |
+| ADR-0014 | Alignment is a prefix scan on key and payload; no resynchronization |
 
 ---
 
@@ -516,15 +523,17 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0001 | 2026-10-29 | Trace format moves from JSONL to the binary `SDCTRACE` format | Accepted |
 | ADR-0002 | 2026-10-29 | Canonical compiler flag set for instrumented builds | Accepted |
 | ADR-0003 | 2026-10-29 | Op id derivation under inlining (module order) | Accepted |
-| ADR-0004 | 2026-10-29 | Trace alignment when corruption changes control flow | Open |
+| ADR-0004 | 2026-10-29 | Trace alignment when corruption changes control flow | Accepted |
 | ADR-0005 | 2026-10-29 | Outcome taxonomy adds CORRECTED class | Accepted |
 | ADR-0006 | 2026-10-29 | Bit position convention (LSB 0) | Accepted |
-| ADR-0007 | 2026-10-31 | Moon workload: full surface→lunar landing, hand-rolled plant, FSW-only instrumentation | Proposed |
-| ADR-0008 | 2026-10-31 | Defense semantics: replicate before critical section, vote after, protect voter; injection before replication = common-mode | Proposed |
-| ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Proposed |
-| ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Proposed |
+| ADR-0007 | 2026-10-31 | Moon workload: full surface→lunar landing, hand-rolled plant, FSW-only instrumentation | Accepted |
+| ADR-0008 | 2026-10-31 | Defense semantics: replicate before critical section, vote after, protect voter; injection before replication = common-mode | Accepted |
+| ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Accepted |
+| ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Accepted |
 | ADR-0011 | 2026-10-31 | Exit record detection word becomes a flag set (DETECTED, CORRECTED) | Accepted |
 | ADR-0012 | 2026-10-31 | Random injection resolves its site in the runtime from a driver-built plan | Accepted |
+| ADR-0013 | 2026-10-31 | Ratify ADR-0003, ADR-0005, ADR-0007 to ADR-0010 | Accepted |
+| ADR-0014 | 2026-10-31 | Alignment is a prefix scan on key and payload | Accepted |
 
 ---
 
