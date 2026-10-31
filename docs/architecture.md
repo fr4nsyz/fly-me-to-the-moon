@@ -325,7 +325,7 @@ Keep them plain C++. Suggested starter set:
 
 1. Simple reduction (sum / product of an array) — easy to reason about masking.
 2. Iterative linear solver (Jacobi or CG) — interesting propagation.
-3. Hardened flight-computer simulation — six cores, lockstep twins, voting, invariants, checksums. This is where the defense-mode table is generated.
+3. Hardened moon flight software (ADR-0016, ADR-0017): lockstep, TMR, invariants, checksums. This is where the defense-mode table is generated.
 4. Moon mission (full surface → lunar landing) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the Three.js HUD.
 
 ---
@@ -398,7 +398,7 @@ The same seed always produces the same campaign. See ADR-0012 for how the inject
 
 ### Phase 6 — Hardened Workload & Defense Study (1–2 weeks)
 
-- Implement the six-core flight-computer simulation (FSW). Plant is separate and not instrumented.
+- Implement the moon plant and flight software per ADR-0016, built with the -O0 profile (ADR-0017). Plant is separate and not instrumented.
 - Add the different defense modes (lockstep, vote, invariant, checksum, all).
 - Reproduce (or improve upon) the classic table using the settled taxonomy (CORRECTED for vote/TMR when corrected):
   ```
@@ -482,6 +482,9 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 - Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening
 - Visualization of value propagation (data-flow graph extracted from the two traces)
 - Support for integer arithmetic or mixed-precision codes
+- Replication that survives -O2 (compiler barriers, separate TUs, or `optnone` replicas); see ADR-0017
+- Onboard guidance that retargets in flight instead of a precomputed mission plan; see ADR-0016
+- Attitude dynamics and atmosphere drag in the moon plant
 
 ---
 
@@ -512,6 +515,8 @@ Settled in this revision:
 | ADR-0013 | Ratifies ADR-0003, ADR-0005, ADR-0007 to ADR-0010 |
 | ADR-0014 | Alignment is a prefix scan on key and payload; no resynchronization |
 | ADR-0015 | Unit tests use GoogleTest 1.18 from Homebrew |
+| ADR-0016 | Moon mission: full trip in 3D, point-mass physics, precomputed plan, per-phase campaigns |
+| ADR-0017 | Moon FSW builds at -O0; TMR and lockstep written in FSW source |
 
 ---
 
@@ -536,26 +541,32 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0013 | 2026-10-31 | Ratify ADR-0003, ADR-0005, ADR-0007 to ADR-0010 | Accepted |
 | ADR-0014 | 2026-10-31 | Alignment is a prefix scan on key and payload | Accepted |
 | ADR-0015 | 2026-10-31 | Unit tests use GoogleTest | Accepted |
+| ADR-0016 | 2026-10-31 | Moon mission model: full trip in 3D, simplified physics, precomputed plan, per-phase campaigns | Accepted |
+| ADR-0017 | 2026-10-31 | Moon FSW builds at -O0; task-level TMR and lockstep in FSW source | Accepted |
 
 ---
 
-## 15. Moon Mission Specification (ADR-0007)
+## 15. Moon Mission Specification (ADR-0007, ADR-0016)
 
-**Goal:** Full surface → lunar landing. The workload is a research platform to study SDC effects on a mission.
+**Goal:** A recognizable full Earth-to-Moon trip that demonstrates SDC effects on a mission.
 
-**Plant (not instrumented):** Hand-rolled C++ 3D dynamics (MIT). Simplified but deterministic; Earth surface launch context, translunar injection, coast, lunar orbit insertion, powered descent, landing. Accepts FSW commands; produces state to log.
+**Phases:** Ascent → Parking orbit → TLI → Coast → LOI → Powered Descent → Landing.
 
-**FSW (instrumented):** Our C++ GNC + defense logic. Instrumented TUs only.
+**Plant (not instrumented):** Hand-rolled C++ (MIT). 3D point mass: position, velocity, propellant mass. Rotating Earth with a real launch latitude; the Moon on a fixed circular orbit inclined to Earth's equator. Earth and Moon gravity only; no drag, no Sun, no attitude dynamics. Fixed-step RK4. Deterministic.
 
-**Phases:** Ascent → TLI → Coast → LOI → Powered Descent → Landing.
+**FSW (instrumented, -O0 per ADR-0017):** Executes a precomputed mission plan with a simple closed-loop rule per phase. Ticks at 10 Hz during ascent, burns, and descent; 1 Hz during coast.
 
-**Success criterion:** Landing within position/velocity tolerance (defined in `workloads/moon/` specs).
+**Mission plan:** Burn times, directions, and targets come from a tuning script run once against the clean simulation. Limitation: the plan fits only the nominal trajectory, so the FSW cannot retarget after a fault and results lean pessimistic. The plan is tied to one launch date and geometry.
+
+**Campaigns:** Every trial flies the whole mission. Faults are drawn per phase, with equal trials per phase.
+
+**Success criterion:** The plant's true touchdown state within position/velocity tolerance (tolerances open, ADR-0016 follow-up).
 
 **Trajectory log:** `trajectory.json` written by the plant/driver, consumed only by the Three.js HUD. Separate from `SDCTRACE`.
 
 ## 16. Defense Semantics (ADR-0008)
 
-- **Replication:** Replicate the critical computation before the critical section (three replicas for TMR).
+- **Replication:** Replicate the critical computation before the critical section (three replicas for TMR). Replication is task-level in FSW source, built at -O0 so the replicas and voter survive (ADR-0017).
 - **Voting:** Vote after the computation, before using the result.
 - **Voter protection:** The voter must be hardened or protected; do not rely on an unprotected voter.
 - **Injection timing:** Injecting before replication corrupts all replicas identically (common-mode). The campaign must respect this.
