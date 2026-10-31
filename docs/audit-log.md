@@ -297,3 +297,30 @@ The runtime also needs a default final result, because the workload source is re
 **Impact.** `docs/trace-format.md` section 2.3. `docs/architecture.md` section 7.3. `include/sdc/exit_record.hpp`. `src/core/trace_writer.cpp` and `src/core/trace_reader.cpp`. `src/runtime/runtime.cpp`. `src/analyzer/classify.cpp` and `src/analyzer/evidence.cpp`.
 
 **Follow-up.** The version number stays at 1 because the change is backward compatible on read. If a future change makes the record layout incompatible, the version goes to 2 and the reader must reject the older shape rather than guess.
+
+### ADR-0012 — Random injection resolves its site in the runtime, from a plan built by the driver
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** The campaign needs to try many injection sites without hand-picking each one. The choice of site has to be random enough to be interesting and reproducible enough to be auditable, and it has to be recorded so a reviewer can re-run the exact same fault.
+
+**Decision.** The runtime gains a random injection mode. The driver writes an injection plan, a text file listing every operation that actually executes together with the number of times it executes. The runtime reads the plan, seeds `std::rand` from `SDC_SEED`, and draws one operation, one occurrence within that operation, and one bit position. The resolved triple is written into the trace metadata, so every run records exactly which site it hit.
+
+The interface is `SDC_INJECT=random`, `SDC_SEED=<n>`, `SDC_INJECT_PLAN=<path>`, and `SDC_INJECT_BIT_RANGE=<lo>-<hi>`.
+
+**Why.** Resolving the site in the runtime rather than in the driver keeps the whole decision in one place, and it means the runtime knows the occurrence counts that make a site reachable. A driver that picked the triple would need the counts anyway, and it would need to guess whether the operation is on a path the workload actually takes.
+
+The plan is built from a clean run, which solves the reachability problem exactly: an operation the compiler optimized away never appears in the clean trace, so it never enters the plan, and the campaign never wastes a trial on an unreachable site.
+
+Recording the resolved triple is what makes the campaign auditable. `std::rand` is specified by the C standard only up to its algorithm, so the sequence for a given seed can differ between C library implementations. The platform's reproducibility requirement is that the same binary and inputs give the same result, which holds. But a recorded result must also be replayable on another machine, and that is what the metadata buys: any run can be reproduced exactly with the manual `SDC_INJECT=op=..,occ=..,bit=..` form, regardless of which libc produced the original choice.
+
+**Evidence.** A 200-trial campaign with seed 1337 against the `sum_plain` workload produced identical injection sites and verdicts across two independent runs. The results are in `results/sweep_sum_plain/`.
+
+The measured distribution shows the expected structure. 83.0 percent of the trials classified as SDC and 17.0 percent as MASKED, and the split by bit region is the interesting part: a fault in the low mantissa masked 30 times out of 128, while a fault in the exponent masked only once out of 35. A fault high in the mantissa or in the exponent changes the value by orders of magnitude, and a fault in the low mantissa is a rounding-sized change that the accumulation absorbs.
+
+**Rejected.** Picking the site in the Python driver, rejected because the driver cannot know how many times each operation executes without reading a clean trace, and the logic would be split across two languages. Using a stronger PRNG than `std::rand`, rejected as unnecessary: the sequence only has to be reproducible for a given binary, and the metadata makes the resolved site portable. Recording a timestamp or a process id with the seed, rejected because the trace format forbids anything that varies between two clean runs.
+
+**Impact.** `src/runtime/runtime.cpp`. `tools/sdctrace.py`, a Python reader for the trace format. `tools/study/sweep.py`, the campaign driver. `tools/study/report.py`, the cross-sweep comparison table. `tools/study/overhead.py`, the instrumentation cost measurement.
+
+**Follow-up.** The plan format is a text file with one `op_id max_occurrence` pair per line. It is internal to the driver and the runtime, and is not part of the trace format contract.

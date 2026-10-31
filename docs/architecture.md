@@ -384,6 +384,18 @@ The evidence package is the **only** hand-off artifact between the analysis stag
 - Run a systematic sweep over a small workload.
 - Produce the first real “masked vs SDC” numbers.
 
+**Delivered.** `tools/study/sweep.py` runs a campaign of random single-bit faults and aggregates the verdicts. `tools/study/report.py` compares several campaigns side by side, which is how the Phase 6 defense table is built. `tools/study/overhead.py` measures the instrumentation cost. `tools/sdctrace.py` is a Python reader for the trace format.
+
+The campaign interface:
+
+```bash
+./tools/study/sweep.py --binary build/sum_plain_instr --ops build/ops.json \
+    --out results/sweep_sum_plain --trials 200 --seed 1337 \
+    --workload sum_plain --build-id <id> --compiler-flags '<flags>' 1024
+```
+
+The same seed always produces the same campaign. See ADR-0012 for how the injection site is resolved and why the resolved site is recorded in the trace metadata.
+
 ### Phase 6 — Hardened Workload & Defense Study (1–2 weeks)
 
 - Implement the six-core flight-computer simulation (FSW). Plant is separate and not instrumented.
@@ -447,7 +459,10 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 | Variable | Meaning |
 | --- | --- |
 | `SDC_TRACE` | Path of the trace file to write. Defaults to `trace.sdct`. |
-| `SDC_INJECT` | Injection configuration as `op=<id>,occ=<n>,bit=<b>`. Absent means no injection. |
+| `SDC_INJECT` | Injection configuration as `op=<id>,occ=<n>,bit=<b>`. The literal `random` selects a site at random. Absent means no injection. |
+| `SDC_SEED` | Seed for random injection. The same seed always resolves the same site. |
+| `SDC_INJECT_PLAN` | Path to the injection plan for random mode. One `op_id max_occurrence` pair per line. |
+| `SDC_INJECT_BIT_RANGE` | Inclusive bit range for random mode, `lo-hi`. Defaults to `0-63`. |
 | `SDC_WORKLOAD` | Workload name, recorded in the trace metadata. |
 | `SDC_BUILD_ID` | Build identifier, recorded in the trace metadata. The analyzer rejects a clean/injected pair whose build ids differ. |
 | `SDC_COMPILER_FLAGS` | The exact flag string the workload was compiled with, recorded in the trace metadata. |
@@ -488,6 +503,7 @@ Settled in this revision:
 | ADR-0005 | Taxonomy adds `CORRECTED` class with precedence rules |
 | ADR-0006 | Bit 0 = LSB of uint64 IEEE-754 pattern (bit 63 sign, 62..52 exponent) |
 | ADR-0011 | Exit record `operand1` is a flag set: bit 0 DETECTED, bit 1 CORRECTED |
+| ADR-0012 | Random injection: the runtime resolves the site from a plan, seeded by `SDC_SEED` |
 
 ---
 
@@ -508,6 +524,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Proposed |
 | ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Proposed |
 | ADR-0011 | 2026-10-31 | Exit record detection word becomes a flag set (DETECTED, CORRECTED) | Accepted |
+| ADR-0012 | 2026-10-31 | Random injection resolves its site in the runtime from a driver-built plan | Accepted |
 
 ---
 

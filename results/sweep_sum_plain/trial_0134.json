@@ -1,0 +1,318 @@
+{
+  "schema": 1,
+  "classification": "SDC",
+  "reasons": [
+    "the final result is outside the acceptance criterion and nothing noticed the fault",
+    "the injected value propagated to the final result"
+  ],
+  "final_result_outside_tolerance": true,
+  "corrected_by_mechanism": false,
+  "alignment": {
+    "diverged": true,
+    "matched_events": 2079,
+    "clean_event_count": 4096,
+    "injected_event_count": 4096
+  },
+  "injected_event": {
+    "op_id": 4,
+    "occurrence": 16,
+    "operand0": "0x404c8e0000000000",
+    "operand1": "0x4020880000000000",
+    "result": "0x4050580010000000",
+    "source": {
+      "file": "workloads/reductions/sum_plain.cpp",
+      "line": 12,
+      "column": 19,
+      "function": "main",
+      "kind": "fadd"
+    },
+    "audit": {
+      "recomputed": "0x4050580000000000",
+      "consistent": false
+    },
+    "event_index": 2079
+  },
+  "clean_event": {
+    "op_id": 4,
+    "occurrence": 16,
+    "operand0": "0x404c8e0000000000",
+    "operand1": "0x4020880000000000",
+    "result": "0x4050580000000000",
+    "source": {
+      "file": "workloads/reductions/sum_plain.cpp",
+      "line": 12,
+      "column": 19,
+      "function": "main",
+      "kind": "fadd"
+    },
+    "audit": {
+      "recomputed": "0x4050580000000000",
+      "consistent": true
+    },
+    "event_index": 2079
+  },
+  "window": [
+    {
+      "source": "injected",
+      "event_index": 2074,
+      "event": {
+        "op_id": 3,
+        "occurrence": 14,
+        "operand0": "0x4005000000000000",
+        "operand1": "0x4005000000000000",
+        "result": "0x401b900000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 31,
+          "function": "main",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x401b900000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2075,
+      "event": {
+        "op_id": 4,
+        "occurrence": 14,
+        "operand0": "0x4045540000000000",
+        "operand1": "0x401b900000000000",
+        "result": "0x4048c60000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 19,
+          "function": "main",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x4048c60000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2076,
+      "event": {
+        "op_id": 3,
+        "occurrence": 15,
+        "operand0": "0x4006000000000000",
+        "operand1": "0x4006000000000000",
+        "result": "0x401e400000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 31,
+          "function": "main",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x401e400000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2077,
+      "event": {
+        "op_id": 4,
+        "occurrence": 15,
+        "operand0": "0x4048c60000000000",
+        "operand1": "0x401e400000000000",
+        "result": "0x404c8e0000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 19,
+          "function": "main",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x404c8e0000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2078,
+      "event": {
+        "op_id": 3,
+        "occurrence": 16,
+        "operand0": "0x4007000000000000",
+        "operand1": "0x4007000000000000",
+        "result": "0x4020880000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 31,
+          "function": "main",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x4020880000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2079,
+      "event": {
+        "op_id": 4,
+        "occurrence": 16,
+        "operand0": "0x404c8e0000000000",
+        "operand1": "0x4020880000000000",
+        "result": "0x4050580010000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 19,
+          "function": "main",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x4050580000000000",
+          "consistent": false
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2080,
+      "event": {
+        "op_id": 3,
+        "occurrence": 17,
+        "operand0": "0x4008000000000000",
+        "operand1": "0x4008000000000000",
+        "result": "0x4022000000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 31,
+          "function": "main",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x4022000000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2081,
+      "event": {
+        "op_id": 4,
+        "occurrence": 17,
+        "operand0": "0x4050580010000000",
+        "operand1": "0x4022000000000000",
+        "result": "0x4052980010000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 19,
+          "function": "main",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x4052980010000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2082,
+      "event": {
+        "op_id": 3,
+        "occurrence": 18,
+        "operand0": "0x3ff0000000000000",
+        "operand1": "0x3ff0000000000000",
+        "result": "0x3ff0000000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 31,
+          "function": "main",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x3ff0000000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2083,
+      "event": {
+        "op_id": 4,
+        "occurrence": 18,
+        "operand0": "0x4052980010000000",
+        "operand1": "0x3ff0000000000000",
+        "result": "0x4052d80010000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 19,
+          "function": "main",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x4052d80010000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 2084,
+      "event": {
+        "op_id": 3,
+        "occurrence": 19,
+        "operand0": "0x3ff2000000000000",
+        "operand1": "0x3ff2000000000000",
+        "result": "0x3ff4400000000000",
+        "source": {
+          "file": "workloads/reductions/sum_plain.cpp",
+          "line": 12,
+          "column": 31,
+          "function": "main",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x3ff4400000000000",
+          "consistent": true
+        }
+      }
+    }
+  ],
+  "clean_exit": {
+    "exit_code": 0,
+    "detected_by_workload": false,
+    "corrected_by_mechanism": false,
+    "final_result": "0x40b1743800000000"
+  },
+  "injected_exit": {
+    "exit_code": 0,
+    "detected_by_workload": false,
+    "corrected_by_mechanism": false,
+    "final_result": "0x40b1743800400000"
+  },
+  "inject": {
+    "enabled": true,
+    "op_id": 4,
+    "occurrence": 16,
+    "bit": 28,
+    "mode": "random",
+    "seed": 1062483
+  }
+}

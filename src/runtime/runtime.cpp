@@ -4,9 +4,11 @@
 #include "sdc/exit_record.hpp"
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <unordered_map>
 #include <string>
 #include <sstream>
+#include <vector>
 #include <bit>
 
 namespace sdc {
@@ -14,13 +16,26 @@ namespace sdc {
 static TraceWriter g_writer;
 static std::unordered_map<OpId, Occurrence> g_count;
 static bool g_inited = false;
-static std::string inj_op;
-static std::string inj_occ;
-static std::string inj_bit;
 static OpId g_inj_op = 0;
 static Occurrence g_inj_occ = 0;
 static BitPos g_inj_bit = 0;
 static bool g_inj_enabled = false;
+
+// Random injection mode. The driver supplies a plan of candidate operations
+// with the number of times each one actually executes, and the runtime picks
+// one of them with std::rand seeded from SDC_SEED.
+enum class InjectMode { Manual, Random };
+
+struct InjectPlanEntry {
+    OpId       op_id;
+    Occurrence max_occurrence;
+};
+
+static InjectMode g_inj_mode = InjectMode::Manual;
+static std::vector<InjectPlanEntry> g_inj_plan;
+static unsigned g_inj_seed = 0;
+static int g_inj_bit_lo = 0;
+static int g_inj_bit_hi = 63;
 static std::uint64_t g_final_result_bits = 0;
 static bool g_result_reported = false;
 static bool g_detected = false;
@@ -29,6 +44,53 @@ static bool g_corrected = false;
 static std::string get_env(const char* k) {
     const char* v = std::getenv(k);
     return v ? std::string(v) : std::string();
+}
+
+
+// The injection plan is a text file, one candidate per line:
+//   <op_id> <max_occurrence>
+// Lines starting with '#' are comments. It is produced by the campaign driver
+// from a clean run, so every listed operation is known to execute.
+static void load_inject_plan(const std::string& path) {
+    if (path.empty()) return;
+    std::ifstream in(path);
+    if (!in) {
+        std::fprintf(stderr, "sdc: cannot open inject plan '%s'\n", path.c_str());
+        return;
+    }
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.empty() || line[0] == '#') continue;
+        std::istringstream ss(line);
+        OpId op_id = 0;
+        Occurrence max_occ = 0;
+        if (!(ss >> op_id >> max_occ)) continue;
+        if (max_occ == 0) continue;
+        g_inj_plan.push_back({op_id, max_occ});
+    }
+}
+
+// Pick one injection site from the plan with std::rand.
+//
+// The seed alone determines the choice, so the same seed always produces the
+// same injection. The resolved triple is written into the trace metadata, so
+// the campaign is auditable even if the C library's rand sequence differs
+// between platforms.
+static void resolve_random_injection() {
+    if (g_inj_plan.empty()) {
+        std::fprintf(stderr, "sdc: random injection requested but the plan is empty\n");
+        return;
+    }
+
+    std::srand(g_inj_seed);
+
+    const std::size_t plan_index = static_cast<std::size_t>(std::rand()) % g_inj_plan.size();
+    const InjectPlanEntry& entry = g_inj_plan[plan_index];
+
+    g_inj_op = entry.op_id;
+    g_inj_occ = 1 + static_cast<Occurrence>(std::rand()) % entry.max_occurrence;
+    g_inj_bit = static_cast<BitPos>(g_inj_bit_lo + std::rand() % (g_inj_bit_hi - g_inj_bit_lo + 1));
+    g_inj_enabled = true;
 }
 
 void runtime_init() {
@@ -43,35 +105,58 @@ void runtime_init() {
 
     // The injection configuration. SDC_INJECT is the documented interface and
     // carries all three fields in one value: "op=17,occ=3,bit=42".
+    // SDC_INJECT=random switches to random selection.
     // The individual variables are accepted as an alternative.
-    std::string inj = get_env("SDC_INJECT");
-    if (!inj.empty()) {
-        std::string op, occ, bit;
-        std::stringstream ss(inj);
-        std::string part;
-        while (std::getline(ss, part, ',')) {
-            const std::size_t eq = part.find('=');
-            if (eq == std::string::npos) continue;
-            const std::string key = part.substr(0, eq);
-            const std::string value = part.substr(eq + 1);
-            if (key == "op") op = value;
-            else if (key == "occ") occ = value;
-            else if (key == "bit") bit = value;
-        }
-        inj_op = op;
-        inj_occ = occ;
-        inj_bit = bit;
+    const std::string inj = get_env("SDC_INJECT");
+
+    if (inj == "random" || inj == "rand") {
+        g_inj_mode = InjectMode::Random;
     } else {
-        inj_op = get_env("SDC_INJECT_OP_ID");
-        inj_occ = get_env("SDC_INJECT_OCC");
-        inj_bit = get_env("SDC_INJECT_BIT");
+        std::string op, occ, bit;
+        if (!inj.empty()) {
+            std::stringstream ss(inj);
+            std::string part;
+            while (std::getline(ss, part, ',')) {
+                const std::size_t eq = part.find('=');
+                if (eq == std::string::npos) continue;
+                const std::string key = part.substr(0, eq);
+                const std::string value = part.substr(eq + 1);
+                if (key == "op") op = value;
+                else if (key == "occ") occ = value;
+                else if (key == "bit") bit = value;
+            }
+        } else {
+            op = get_env("SDC_INJECT_OP_ID");
+            occ = get_env("SDC_INJECT_OCC");
+            bit = get_env("SDC_INJECT_BIT");
+        }
+
+        if (!op.empty() && !occ.empty() && !bit.empty()) {
+            g_inj_op = static_cast<OpId>(std::stoul(op));
+            g_inj_occ = static_cast<Occurrence>(std::stoull(occ));
+            g_inj_bit = static_cast<BitPos>(std::stoul(bit));
+            g_inj_enabled = true;
+        }
     }
 
-    if (!inj_op.empty() && !inj_occ.empty() && !inj_bit.empty()) {
-        g_inj_op = static_cast<OpId>(std::stoul(inj_op));
-        g_inj_occ = static_cast<Occurrence>(std::stoull(inj_occ));
-        g_inj_bit = static_cast<BitPos>(std::stoul(inj_bit));
-        g_inj_enabled = true;
+    if (g_inj_mode == InjectMode::Random) {
+        const std::string seed_text = get_env("SDC_SEED");
+        g_inj_seed = seed_text.empty() ? 0u : static_cast<unsigned>(std::stoul(seed_text));
+
+        const std::string range = get_env("SDC_INJECT_BIT_RANGE");
+        if (!range.empty()) {
+            const std::size_t dash = range.find('-');
+            if (dash != std::string::npos) {
+                g_inj_bit_lo = std::stoi(range.substr(0, dash));
+                g_inj_bit_hi = std::stoi(range.substr(dash + 1));
+            }
+        }
+        if (g_inj_bit_lo < 0) g_inj_bit_lo = 0;
+        if (g_inj_bit_hi > 63) g_inj_bit_hi = 63;
+        if (g_inj_bit_hi < g_inj_bit_lo) g_inj_bit_hi = g_inj_bit_lo;
+
+        load_inject_plan(get_env("SDC_INJECT_PLAN"));
+        resolve_random_injection();
     }
 
     std::string workload = get_env("SDC_WORKLOAD");
@@ -84,7 +169,12 @@ void runtime_init() {
     std::string meta = "{\"workload\":\"" + workload + "\",\"build_id\":\"" + build_id +
                        "\",\"compiler_flags\":\"" + flags + "\",\"schema\":1,\"inject\":{";
     if (g_inj_enabled) {
-        meta += "\"enabled\":true,\"op_id\":" + inj_op + ",\"occurrence\":" + inj_occ + ",\"bit\":" + inj_bit;
+        meta += "\"enabled\":true,\"op_id\":" + std::to_string(g_inj_op) +
+                ",\"occurrence\":" + std::to_string(g_inj_occ) +
+                ",\"bit\":" + std::to_string(static_cast<unsigned>(g_inj_bit));
+        if (g_inj_mode == InjectMode::Random) {
+            meta += ",\"mode\":\"random\",\"seed\":" + std::to_string(g_inj_seed);
+        }
     } else {
         meta += "\"enabled\":false";
     }
