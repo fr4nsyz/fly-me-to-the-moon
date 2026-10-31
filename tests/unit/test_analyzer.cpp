@@ -51,7 +51,7 @@ void test_align_detects_divergence() {
     assert(r.matched == 4);
 }
 
-void test_align_resyncs_after_structural_change() {
+void test_align_reports_structural_change_as_divergence() {
     Trace clean;
     Trace injected;
     for (int i = 0; i < 10; ++i) {
@@ -64,9 +64,28 @@ void test_align_resyncs_after_structural_change() {
     injected.events.insert(injected.events.begin() + 5, extra);
 
     AlignmentResult r = align_traces(clean, injected);
-    // The aligner resynchronizes and finds the streams agree again.
-    assert(!r.diverged);
-    assert(r.matched == 10);
+    assert(r.diverged);
+    assert(r.clean_index == 5);
+    assert(r.injected_index == 5);
+    assert(r.matched == 5);
+}
+
+void test_align_reports_injection_before_control_flow_change() {
+    Trace clean;
+    Trace injected;
+    for (int i = 0; i < 10; ++i) {
+        Event e = make_event(1, i + 1, 0x3ff0000000000000ULL, 0x3ff0000000000000ULL, 0x4000000000000000ULL);
+        clean.events.push_back(e);
+        if (i >= 5 && i <= 7) continue;
+        if (i == 4) e.result_bits ^= 1ULL << 40;
+        injected.events.push_back(e);
+    }
+
+    AlignmentResult r = align_traces(clean, injected);
+    assert(r.diverged);
+    assert(r.clean_index == 4);
+    assert(r.injected_index == 4);
+    assert(r.matched == 4);
 }
 
 void test_audit_detects_corruption() {
@@ -138,7 +157,8 @@ void test_classification_names() {
 int main() {
     test_align_identical();
     test_align_detects_divergence();
-    test_align_resyncs_after_structural_change();
+    test_align_reports_structural_change_as_divergence();
+    test_align_reports_injection_before_control_flow_change();
     test_audit_detects_corruption();
     test_classify_precedence();
     test_classification_names();
