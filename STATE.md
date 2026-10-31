@@ -281,5 +281,5 @@ Phase 6 build order (ADR-0016). The user wants to understand this phase deeply: 
 3. Defenses in FSW source at -O0 (ADR-0017): lockstep, TMR, invariant, checksum.
 4. Add LOI, coast, TLI, ascent, each as a new campaign phase. Mission plan from a tuning script.
 5. Per-phase sweep and the final table.
-Open before or during step 2: touchdown tolerances (MASKED vs SDC), how the runtime learns phase boundaries, clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results).
+Open before or during step 2: touchdown tolerances (MASKED vs SDC), how the runtime learns phase boundaries, clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, checksum vs the ALU-result fault model (checksums protect memory, faults hit op results), and fault coverage of math functions: the pass only hooks `fadd`/`fsub`/`fmul`/`fdiv` (`SDCInstrument.cpp:77`), so `std::sqrt` (IR `llvm.sqrt`, one `fsqrt` instruction on arm64) and libm calls (`sin`, `cos`, `atan2`) are never faulted. Candidate fix: a one-operand hook for `llvm.sqrt`, and treating each libm call as one op with the flip on its result.
 Then Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).

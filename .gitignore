@@ -26,3 +26,8 @@ venv/
 .DS_Store
 .vscode/
 .idea/
+
+# LaTeX build output
+docs/math/*.aux
+docs/math/*.log
+docs/math/*.out
