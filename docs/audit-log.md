@@ -369,3 +369,25 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/analyzer/align.cpp`, `src/analyzer/align.hpp`, `tests/unit/test_analyzer.cpp`. `docs/architecture.md` sections 7.4, 13, 14.
 
 **Follow-up.** If a multi-fault mode or a nondeterministic workload is added, a structural divergence ahead of any payload mismatch is now reported at its true index, and the classifier sees it.
+
+### ADR-0015 — Unit tests use GoogleTest
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** The unit tests used `assert` from `<cassert>` with a hand-written `main`. No document recorded a test framework decision.
+
+**Decision.** Unit tests use GoogleTest 1.18, found through `find_package(GTest CONFIG)` from the Homebrew install, and registered per test case with `gtest_discover_tests`.
+
+**Why.** `assert` compiles to nothing when `NDEBUG` is defined, so a Release build of the old tests passed without checking anything. The main driver is Phase 6: flight software tests need gMock to stand in for flight-specific dependencies (sensors, the plant, voters, mission-phase sequencing) with call expectations and scripted returns, which plain `assert` and doctest do not provide. GoogleTest also prints actual and expected values on failure, and `TEST_P` covers the matrix of defense modes and bit regions. The project already depends on a system-installed Homebrew LLVM, so a system-installed GoogleTest adds no new class of dependency and keeps the build offline.
+
+**Evidence.**
+- Homebrew googletest 1.18.0 links and runs with Homebrew clang 23.1.4, including `std::string` across the library boundary.
+- `ctest -j8` runs 12 discovered tests and all pass, in both the default build and a `-DCMAKE_BUILD_TYPE=Release` build.
+- A deliberately wrong expectation reports `Expected equality of these values: r.clean_index Which is: 5, 6u`.
+
+**Rejected.** Plain `assert`, because `NDEBUG` silently disables it. doctest, because it has no mocking library and weaker parameterized tests than `TEST_P`. FetchContent, because it downloads at configure time and breaks offline builds.
+
+**Impact.** `tests/unit/CMakeLists.txt`, `tests/unit/test_trace_io.cpp`, `tests/unit/test_analyzer.cpp`. Each trace I/O test now writes its own file under `/tmp`, so parallel `ctest` runs do not collide.
+
+**Follow-up.** None.
