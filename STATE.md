@@ -250,10 +250,16 @@ Convention for edits: change the living spec, then append an audit-log entry nam
 
 The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 
+## Decisions (locked)
+- Plant: hand-rolled C++ 3D dynamics (MIT). FSW instrumented only.
+- Mission: full surface → lunar landing.
+- Defenses: none/lockstep/vote/TMR/invariant/checksum/all (measured equally).
+- Viewer: Three.js HUD, vendored offline, reads trajectory.json + evidence.json.
+- ADR-0003 accepted (module-order op ids), ADR-0005 accepted (CORRECTED), ADR-0006 accepted (bit 0 = LSB).
+- ADR-0007-0010 proposed in docs.
+
 ## Next move
-
-The document set exists and the repository is published. The next useful piece of work is Phase 0 of the living spec, which is unimplemented: the directory layout, the top-level CMake, the shared headers in `include/sdc`, and an analyzer CLI that prints "hello".
-
-Before Phase 3 starts, settle ADR-0003, because the `ops.json` schema depends on it.
-
-Useful follow-on: a preflight script that compiles a workload with the canonical flags from ADR-0002 and prints the op inventory. It answers "what will the pass actually see" in about twenty lines, before the pass exists, and it would settle part of ADR-0003 by showing how many distinct op sites a real workload has.
+1. Create private repo `fr4nsyz/fly-me-to-the-moon-videos`.
+2. Start Phase 0: directory layout, top-level CMake, shared headers in `include/sdc`, analyzer CLI prints "hello".
+3. Spike: minimal LLVM 23 pass plugin rewriting one `fadd` into a runtime hook, build with Homebrew clang, load into `opt`, write/read one trace record.
+4. Proceed to Phases 1-5, then 6 (moon), then 7 (viewer).

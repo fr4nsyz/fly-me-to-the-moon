@@ -46,6 +46,7 @@ The platform never relies on real radiation. Instead it injects a **single deter
 | Evidence package         | Single JSON file                                       | Self-contained, easy to archive and diff                                                                          |
 | Experiment orchestration | Python 3.11+ (or Rust if you prefer systems languages) | Rapid iteration for sweeps, reporting, and plotting. Start with Python; rewrite hot parts in Rust later if needed |
 | Workloads                | Plain C++                                              | No special libraries required                                                                                     |
+| Visualization            | Three.js, vendored offline                             | The mission HUD is a browser artifact; vendoring preserves the offline guarantee                                  |
 
 **Explicit non-choices**
 
@@ -86,6 +87,8 @@ Experiment driver (Python/Rust) orchestrates:
 ```
 
 Two traces always feed the analyzer: the clean baseline and the single-fault run.
+
+The 3D viewer is a read-only consumer: it renders `trajectory.json` and annotates it with `evidence.json`. It never feeds back into the analyzer.
 
 ---
 
@@ -130,7 +133,9 @@ sdc-investigator/
 ├── workloads/
 │   ├── reductions/
 │   ├── solvers/
-│   └── flight_computer/          # Hardened example with lockstep / vote / etc.
+│   └── moon/                     # Plant + instrumented FSW, lockstep / vote / etc.
+│       ├── plant/                # Hand-rolled dynamics, not instrumented
+│       └── fsw/                  # Instrumented flight software
 ├── docs/
 │   ├── architecture.md           # This document (living spec)
 │   ├── architecture-v1.md        # Frozen original blueprint
@@ -153,11 +158,8 @@ using OpId = uint32_t;
 using Occurrence = uint64_t;
 using BitPos = uint8_t;          // 0–63 for double, 0–31 for float
 
-// OPEN (ADR-0006): the bit numbering convention is not fixed yet.
-// Recommended: bit 0 is the LSB of the uint64 IEEE-754 pattern, so
-// bit 63 is the sign bit and bits 62..52 are the exponent. This must
-// be settled and documented before the first injection campaign,
-// because it fixes the meaning of every `bit=` argument.
+// ADR-0006 (accepted): bit 0 is the LSB of the uint64 IEEE-754 pattern.
+// bit 63 is the sign bit, bits 62..52 are the exponent. This is fixed.
 
 // event.hpp
 struct Event {
@@ -200,7 +202,8 @@ struct ExitRecord {
 **Key implementation notes**
 
 - Use `llvm::DebugLoc` to recover source location.
-- **OPEN (ADR-0003): how the op id is derived.** The obvious key of file plus line plus column plus function plus opcode is not unique. Inlining turns one source multiply into several IR instructions, and the inlined copies carry identical innermost `DebugLoc` values, differing only in their `inlinedAt` chain. Either derive the id from module order, or walk the `inlinedAt` chain and use the whole chain as the key.
+- **ADR-0003 (accepted): op id derivation.** The op id is assigned in deterministic module order of instrumented instructions encountered by the pass (in traversal order). Collisions from inlined source locations are avoided by not relying on (file,line,column,fn,opcode) alone. The `ops.json` entry stores debug location for human readability, but the identity key is module order. The mapping is written at pass time and is stable for identical sources, flags, and LLVM version.
+- Only translation units in the instrumented set are rewritten. For the moon mission, **only FSW TUs** are instrumented; plant TUs are compiled without the pass.
 - The same source plus the same compiler flags must always produce the same ids.
 - The pass should be runnable with:
   ```bash
@@ -294,11 +297,12 @@ Revision 1 assumed the two streams are identical up to the injection point. That
 | ------------ | ------------------------------------------------------------- |
 | CRASH        | Process died; a readable trace was still produced             |
 | DETECTED     | Workload’s own check raised a flag                            |
+| CORRECTED    | A redundancy mechanism (e.g. TMR vote) corrected the corruption before producing the final result; outcome is within acceptance criterion |
 | SDC          | Final result outside acceptance criterion and nothing noticed |
-| MASKED       | Final result stayed inside the acceptance criterion           |
+| MASKED       | Final result stayed inside the acceptance criterion with no correction mechanism applied |
 | INCONCLUSIVE | Evidence is insufficient for a verdict                        |
 
-**OPEN (ADR-0005): the taxonomy has no CORRECTED class.** The defense table in the phased plan says "vote → all corrected", but a corrected run fits none of the five classes. It is not CRASH, not DETECTED, and not SDC. It is arguably MASKED, since the final result is back inside the acceptance criterion, but MASKED means the corruption was absorbed numerically rather than repaired by a mechanism. The distinction matters for the defense study, which is the whole point of that phase.
+**ADR-0005 (accepted): add CORRECTED.** The taxonomy distinguishes correction by mechanism (CORRECTED) from absorption (MASKED). Precedence: if a correction mechanism was applied and the corrected output is valid, classify CORRECTED (not MASKED); if correction was attempted but failed, classify SDC or DETECTED as appropriate.
 
 **Acceptance criterion** is supplied by the experiment (absolute or relative tolerance, or a custom predicate).
 
@@ -322,6 +326,7 @@ Keep them plain C++. Suggested starter set:
 1. Simple reduction (sum / product of an array) — easy to reason about masking.
 2. Iterative linear solver (Jacobi or CG) — interesting propagation.
 3. Hardened flight-computer simulation — six cores, lockstep twins, voting, invariants, checksums. This is where the defense-mode table is generated.
+4. Moon mission (full surface → lunar landing) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the Three.js HUD.
 
 ---
 
@@ -381,19 +386,20 @@ The evidence package is the **only** hand-off artifact between the analysis stag
 
 ### Phase 6 — Hardened Workload & Defense Study (1–2 weeks)
 
-- Implement the six-core flight-computer simulation.
+- Implement the six-core flight-computer simulation (FSW). Plant is separate and not instrumented.
 - Add the different defense modes (lockstep, vote, invariant, checksum, all).
-- Reproduce (or improve upon) the classic table:
+- Reproduce (or improve upon) the classic table using the settled taxonomy (CORRECTED for vote/TMR when corrected):
   ```
   none      → many SDCs
   lockstep  → all detected
   vote      → all corrected
   …
   ```
-- Resolve ADR-0005 before this phase produces its numbers, otherwise the "corrected" row has no class to land in.
 
-### Phase 7 — Polish & Measurement
+### Phase 7 — Viewer & Polish
 
+- Implement Three.js mission-control HUD (vendored offline). Reads only `trajectory.json` + `evidence.json`.
+- Show clean vs injected trajectories, injection point, first divergence, outcome badge (CORRECTED/SDC/MASKED/DETECTED/CRASH).
 - Overhead numbers (runtime, binary size, trace size).
 - Crash-safety of the recorder.
 - Documentation and example notebooks / reports.
@@ -451,10 +457,7 @@ These are not settled. Each one blocks a specific piece of work.
 
 | ID | Question | Current lean | Blocks |
 | --- | --- | --- | --- |
-| ADR-0003 | How the op id is derived, given that inlining makes source locations ambiguous | Derive from module order, or walk the `inlinedAt` chain and use the whole chain as the key | Phase 3, the `ops.json` schema |
 | ADR-0004 | How alignment handles corruption that changes control flow | Sequence alignment over `(op_id, occurrence)` keys rather than a prefix scan | Phase 4 |
-| ADR-0005 | Whether the outcome taxonomy needs a CORRECTED class | Yes, add it | Phase 4 classifier, Phase 6 defense table |
-| ADR-0006 | The bit numbering convention | Bit 0 is the LSB of the uint64 IEEE-754 pattern | Phase 2, every `bit=` argument |
 
 Settled in this revision:
 
@@ -462,6 +465,9 @@ Settled in this revision:
 | --- | --- |
 | ADR-0001 | Trace format is binary `SDCTRACE`, not JSONL |
 | ADR-0002 | One canonical compiler flag set, and the pass rejects fast-math IR |
+| ADR-0003 | Op id assigned in deterministic module order; debug locations for readability only |
+| ADR-0005 | Taxonomy adds `CORRECTED` class with precedence rules |
+| ADR-0006 | Bit 0 = LSB of uint64 IEEE-754 pattern (bit 63 sign, 62..52 exponent) |
 
 ---
 
@@ -473,12 +479,50 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | --- | --- | --- | --- |
 | ADR-0001 | 2026-10-29 | Trace format moves from JSONL to the binary `SDCTRACE` format | Accepted |
 | ADR-0002 | 2026-10-29 | Canonical compiler flag set for instrumented builds | Accepted |
-| ADR-0003 | 2026-10-29 | Op id derivation under inlining | Open |
+| ADR-0003 | 2026-10-29 | Op id derivation under inlining (module order) | Accepted |
 | ADR-0004 | 2026-10-29 | Trace alignment when corruption changes control flow | Open |
-| ADR-0005 | 2026-10-29 | Outcome taxonomy needs a CORRECTED class | Open |
-| ADR-0006 | 2026-10-29 | Bit position convention | Open |
+| ADR-0005 | 2026-10-29 | Outcome taxonomy adds CORRECTED class | Accepted |
+| ADR-0006 | 2026-10-29 | Bit position convention (LSB 0) | Accepted |
+| ADR-0007 | 2026-10-31 | Moon workload: full surface→lunar landing, hand-rolled plant, FSW-only instrumentation | Proposed |
+| ADR-0008 | 2026-10-31 | Defense semantics: replicate before critical section, vote after, protect voter; injection before replication = common-mode | Proposed |
+| ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Proposed |
+| ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Proposed |
 
 ---
+
+## 15. Moon Mission Specification (ADR-0007)
+
+**Goal:** Full surface → lunar landing. The workload is a research platform to study SDC effects on a mission.
+
+**Plant (not instrumented):** Hand-rolled C++ 3D dynamics (MIT). Simplified but deterministic; Earth surface launch context, translunar injection, coast, lunar orbit insertion, powered descent, landing. Accepts FSW commands; produces state to log.
+
+**FSW (instrumented):** Our C++ GNC + defense logic. Instrumented TUs only.
+
+**Phases:** Ascent → TLI → Coast → LOI → Powered Descent → Landing.
+
+**Success criterion:** Landing within position/velocity tolerance (defined in `workloads/moon/` specs).
+
+**Trajectory log:** `trajectory.json` written by the plant/driver, consumed only by the Three.js HUD. Separate from `SDCTRACE`.
+
+## 16. Defense Semantics (ADR-0008)
+
+- **Replication:** Replicate the critical computation before the critical section (three replicas for TMR).
+- **Voting:** Vote after the computation, before using the result.
+- **Voter protection:** The voter must be hardened or protected; do not rely on an unprotected voter.
+- **Injection timing:** Injecting before replication corrupts all replicas identically (common-mode). The campaign must respect this.
+- **Modes:** `none`, `lockstep`, `vote/TMR`, `invariant`, `checksum`, `all` — all measured equally.
+
+## 17. Instrumentation Scope (ADR-0009)
+
+- **FSW TUs only:** Instrument translation units that implement flight software logic.
+- **Plant untouched:** Dynamics/plant code is not instrumented; no hooks injected there.
+- **Build integration:** Instrumentation applied via the LLVM pass in the FSW build path only.
+
+## 18. Viewer (ADR-0010)
+
+- **Three.js HUD:** Vendored offline (no CDN). Reads `trajectory.json` + `evidence.json`.
+- **Display:** Clean vs injected trajectories, injection point, first divergence, outcome badge.
+- **Separation:** Never reads `SDCTRACE` directly; consumes only published artifacts.
 
 This blueprint is intentionally concrete so you can start coding immediately while still understanding the “why” behind every choice. Treat the evidence package format and the outcome taxonomy as the stable public interface; everything else can evolve as you learn.
 

@@ -183,18 +183,94 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 ### ADR-0006 — Bit position convention
 
 **Date:** 2026-10-29
-**Status:** Open
+**Status:** Accepted
 
 **Proposed.** `BitPos` is a `uint8_t` covering 0 to 63 for double and 0 to 31 for float, but the blueprint never says which end of the pattern bit 0 is.
 
-**Decision.** Not yet made. The leaning is bit 0 as the LSB of the uint64 IEEE-754 pattern, which puts the sign bit at 63 and the exponent at bits 62 down to 52.
+**Decision.** Bit 0 is the LSB of the uint64 IEEE-754 bit pattern. bit 63 is the sign bit, bits 62..52 are the exponent.
 
-**Why.** The convention fixes the meaning of every `bit=` argument in every campaign and every evidence package. Changing it later would silently invalidate every previously collected result, so it has to be fixed and documented before the first injection campaign.
+**Why.** Fixes the meaning of every `bit=` argument before the first injection campaign; prevents silent invalidation of results.
 
-**Evidence.** No measurement needed. The consequence of signing bit 0 as the MSB instead is that flipping bit 0 would flip the sign, which is a much more destructive and much less interesting default than flipping a mantissa bit.
+**Evidence.** No measurement needed. Flipping LSB is a small perturbation in mantissa context; sign/exponent conventions follow standard uint64 view of IEEE-754 bits.
 
-**Rejected.** Nothing rejected yet.
+**Rejected.** Bit 0 as MSB (would make bit 0 flips sign-dominant by default).
 
-**Impact.** `docs/architecture.md` section 6. The runtime's bit-flip routine. The `bit=` argument in every driver.
+**Impact.** `docs/architecture.md` section 6. Runtime bit-flip routine. All drivers and evidence packages.
 
-**Follow-up.** Blocks Phase 2.
+**Follow-up.** None.
+
+### ADR-0007 — Moon workload: full surface→lunar landing, hand-rolled plant, FSW-only instrumentation
+
+**Date:** 2026-10-31
+**Status:** Proposed
+
+**Proposed.** Use JEOD/Trick or hand-rolled plant for a full mission. User chose hand-rolled C++ plant for a clean MIT-licensed portfolio repo.
+
+**Decision.** Mission is full surface → lunar landing. Plant is hand-rolled C++ 3D dynamics (not instrumented). FSW is our C++ GNC+defenses (instrumented). Phases: Ascent → TLI → Coast → LOI → Powered Descent → Landing. Success = landing within position/velocity tolerance. Trajectory logged separately for viewer.
+
+**Why.** Portfolio clarity (single MIT license), removes LLVM-23/JEOD compatibility risk, keeps instrumentation scope tight.
+
+**Evidence.** License review: NOSA-1.3 is reciprocal; mixed license is possible but noisier for a public portfolio. Basilisk ISC is clean but heavier build. Hand-rolled is fastest path to clean repo.
+
+**Rejected.** JEOD/Trick (NOSA mixed license/obligations), Basilisk (heavier spike) — both viable but less clean for this goal.
+
+**Impact.** `docs/architecture.md` sections 3,5,6,7.4,9.6,15. `workloads/moon/{plant,fsw}/`. Trajectory log format.
+
+**Follow-up.** Define trajectory log schema in next iteration; keep `SDCTRACE` unchanged.
+
+### ADR-0008 — Defense semantics
+
+**Date:** 2026-10-31
+**Status:** Proposed
+
+**Proposed.** Define how TMR/lockstep/invariants/checksums behave with injection.
+
+**Decision.** Replicate before critical section, vote after, protect the voter. Injection before replication corrupts all replicas identically (common-mode). Modes: `none`, `lockstep`, `vote/TMR`, `invariant`, `checksum`, `all` — measured equally.
+
+**Why.** Prevents common TMR pitfall (injecting after replication) and makes the comparison fair across modes.
+
+**Evidence.** Standard redundancy design; matches "vote → all corrected" goal.
+
+**Rejected.** Injecting after replication (would mask common-mode class of faults).
+
+**Impact.** `docs/architecture.md` section 16. Runtime/injection logic and analyzer classification.
+
+**Follow-up.** Ensure injection targets follow this rule in drivers.
+
+### ADR-0009 — Instrumentation scope: FSW TUs only
+
+**Date:** 2026-10-31
+**Status:** Proposed
+
+**Proposed.** Instrument everything or just FSW.
+
+**Decision.** Only FSW translation units instrumented. Plant TUs compiled without pass.
+
+**Why.** Focuses study on flight computer SDC; plant is oracle/dynamics; reduces trace volume; cleaner separation of concerns.
+
+**Evidence.** Goal is to compare defenses on FSW; plant correctness separate from FSW corruption effects.
+
+**Rejected.** Instrumenting plant (larger traces, blurs responsibility).
+
+**Impact.** `docs/architecture.md` sections 7.1,9.6,17. Build system.
+
+**Follow-up.** Enforce in CMake/build scripts.
+
+### ADR-0010 — Trajectory log + Three.js HUD
+
+**Date:** 2026-10-31
+**Status:** Proposed
+
+**Proposed.** How to visualize mission.
+
+**Decision.** Separate `trajectory.json` from `SDCTRACE`. Three.js HUD vendored offline, reads only trajectory + evidence. No CDN/network.
+
+**Why.** Keeps normative trace format unchanged; viewer is read-only consumer; offline/portable.
+
+**Evidence.** Design principle: fully offline.
+
+**Rejected.** Embedding trajectory in SDCTRACE or fetching assets from CDN.
+
+**Impact.** `docs/architecture.md` sections 3,4,9.7,18. `viewer/` with vendored Three.js.
+
+**Follow-up.** Define trajectory log schema.
