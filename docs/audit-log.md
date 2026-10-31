@@ -119,7 +119,7 @@ The flag string is recorded in the trace header, so the analyzer can reject a cl
 ### ADR-0003 — Op id derivation under inlining
 
 **Date:** 2026-10-29
-**Status:** Open
+**Status:** Accepted (ADR-0013)
 
 **Proposed.** Revision 1 of the blueprint derives the `OpId` from "source location (file + line + column + function + opcode)".
 
@@ -145,7 +145,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 ### ADR-0004 — Trace alignment when corruption changes control flow
 
 **Date:** 2026-10-29
-**Status:** Open
+**Status:** Accepted (ADR-0014)
 
 **Proposed.** Revision 1 says the two streams "should be identical up to the injection point" and the analyzer locates the first divergence.
 
@@ -164,7 +164,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 ### ADR-0005 — The outcome taxonomy needs a CORRECTED class
 
 **Date:** 2026-10-29
-**Status:** Open
+**Status:** Accepted (ADR-0013)
 
 **Proposed.** Revision 1 fixes five classes: CRASH, DETECTED, SDC, MASKED, INCONCLUSIVE. The same document's Phase 6 expects a defense table with a "vote → all corrected" row.
 
@@ -202,7 +202,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 ### ADR-0007 — Moon workload: full surface→lunar landing, hand-rolled plant, FSW-only instrumentation
 
 **Date:** 2026-10-31
-**Status:** Proposed
+**Status:** Accepted (ADR-0013)
 
 **Proposed.** Use JEOD/Trick or hand-rolled plant for a full mission. User chose hand-rolled C++ plant for a clean MIT-licensed portfolio repo.
 
@@ -221,7 +221,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 ### ADR-0008 — Defense semantics
 
 **Date:** 2026-10-31
-**Status:** Proposed
+**Status:** Accepted (ADR-0013)
 
 **Proposed.** Define how TMR/lockstep/invariants/checksums behave with injection.
 
@@ -240,7 +240,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 ### ADR-0009 — Instrumentation scope: FSW TUs only
 
 **Date:** 2026-10-31
-**Status:** Proposed
+**Status:** Accepted (ADR-0013)
 
 **Proposed.** Instrument everything or just FSW.
 
@@ -259,7 +259,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 ### ADR-0010 — Trajectory log + Three.js HUD
 
 **Date:** 2026-10-31
-**Status:** Proposed
+**Status:** Accepted (ADR-0013)
 
 **Proposed.** How to visualize mission.
 
@@ -324,3 +324,48 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/runtime/runtime.cpp`. `tools/sdctrace.py`, a Python reader for the trace format. `tools/study/sweep.py`, the campaign driver. `tools/study/report.py`, the cross-sweep comparison table. `tools/study/overhead.py`, the instrumentation cost measurement.
 
 **Follow-up.** The plan format is a text file with one `op_id max_occurrence` pair per line. It is internal to the driver and the runtime, and is not part of the trace format contract.
+
+### ADR-0013 — Ratify ADR-0003, ADR-0005, and ADR-0007 to ADR-0010
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** ADR-0003 and ADR-0005 were logged as Open and ADR-0007 to ADR-0010 as Proposed. The living spec and the code already treated ADR-0003 and ADR-0005 as settled, so the log disagreed with both.
+
+**Decision.** All six are accepted as written. ADR-0003 resolves to op ids in deterministic module order, with debug locations carried in `ops.json` for readability only. ADR-0005 resolves to adding the `CORRECTED` class.
+
+**Why.** Phases 3 to 5 were built on ADR-0003 and ADR-0005, and Phase 6 builds on ADR-0007 to ADR-0010. The log has to state what the code depends on.
+
+**Evidence.**
+- ADR-0003: `src/instrumentation/SDCInstrument.cpp` assigns `++opId` in module iteration order.
+- ADR-0005: `src/analyzer/classify.cpp` emits `CORRECTED`. ADR-0011 defines the exit-record bit that carries it.
+- ADR-0007 to ADR-0010: user decision, 2026-10-31.
+
+**Rejected.** For ADR-0003, keying on the full `inlinedAt` chain: it gives source-anchored ids but adds a chain walk and still needs a tiebreaker for identical chains. Module order is collision-free, and `ops.json` restores the source location. For ADR-0005, folding corrected runs into `MASKED`: rejected for the reasons in ADR-0005.
+
+**Impact.** Status lines of ADR-0003, ADR-0005, ADR-0007, ADR-0008, ADR-0009, ADR-0010. `docs/architecture.md` sections 13 and 14. No code change.
+
+**Follow-up.** ADR-0004 stays Open. Phase 4 shipped a bounded-lookahead resynchronization in `src/analyzer/align.cpp` without a recorded decision, and that needs its own entry.
+
+### ADR-0014 — Alignment is a prefix scan on key and payload
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** ADR-0004 left open how alignment handles corruption that changes control flow. Phase 4 shipped a bounded-lookahead resynchronization in `src/analyzer/align.cpp` without a recorded decision: on a key mismatch it searched up to 64 events ahead in both streams for a common key, skipped to it, and did not mark a divergence.
+
+**Decision.** The first divergence is the first index where either the `(op_id, occurrence)` key or the payload differs. The aligner stops there. There is no resynchronization.
+
+**Why.** The runtime records the delivered, flipped result bits, so in a single-fault run the injected event always mismatches the clean event on payload at the same key. Control flow can only change after that event, so a prefix scan always reports the injection point. The resynchronization path only ran when two streams differed structurally with no corrupted value first, which means a nondeterministic workload, and in that case it reported no divergence or a later one.
+
+**Evidence.**
+- `src/runtime/runtime.cpp` writes `result_bits` after the bit flip.
+- Probe against the Phase 4 aligner: a flip at event 4 followed by skipped events 5 to 7 reported divergence at 4. Skipped events 5 to 7 with no flip reported `diverged=false` and `matched=10` against a 7-event injected stream. A skipped event 5 followed by a flip at 8 reported divergence at 8.
+- `tests/unit/test_analyzer.cpp`: `test_align_reports_structural_change_as_divergence` fails against the resynchronizing aligner and passes after this change. `test_align_reports_injection_before_control_flow_change` passes on both.
+- The 200-trial seed-1337 sweep on `sum_plain` reproduces `results/sweep_sum_plain/report.md` exactly after this change.
+
+**Rejected.** Bounded-lookahead resynchronization, rejected because it only runs in cases where it gives a wrong answer. Full sequence alignment over keys, rejected because the first divergence is always the injection event, so analysis of what happens after it belongs in evidence windowing, not in the aligner.
+
+**Impact.** `src/analyzer/align.cpp`, `src/analyzer/align.hpp`, `tests/unit/test_analyzer.cpp`. `docs/architecture.md` sections 7.4, 13, 14.
+
+**Follow-up.** If a multi-fault mode or a nondeterministic workload is added, a structural divergence ahead of any payload mismatch is now reported at its true index, and the classifier sees it.

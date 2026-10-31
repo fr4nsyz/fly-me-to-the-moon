@@ -15,9 +15,9 @@ Every measurement below was run on this machine and can be re-run with the comma
 
 | Path | What it is |
 |---|---|
-| `/Users/fr4nsyz/vault/GOLD/` | Current working directory. Git repo, remote `fr4nsyz/fly-me-to-the-moon` (private). Created 2026-10-29 21:49. |
-| `/Users/fr4nsyz/vault/sdc-investigator/` | Built implementation. Git repo, branch `main`, tracks `origin/main`. 9 commits. |
-| `/Users/fr4nsyz/vault/SDC/` | Research repo. `rq.md`, `plan.md`, `sdc.md`, `RESULTS.md`, `ARBITER_2511.04052.pdf`. Background, not implementation. |
+| `/Users/fransys/Documents/fly-me-to-the-moon/` | Current working directory. Git repo, remote `fr4nsyz/fly-me-to-the-moon` (private). Originally created as `/Users/fr4nsyz/vault/GOLD/` on 2026-10-29 21:49. |
+| `/Users/fr4nsyz/vault/sdc-investigator/` | Built implementation. Git repo, branch `main`, tracks `origin/main`. 9 commits. Not present on the current machine. |
+| `/Users/fr4nsyz/vault/SDC/` | Research repo. `rq.md`, `plan.md`, `sdc.md`, `RESULTS.md`, `ARBITER_2511.04052.pdf`. Background, not implementation. Not present on the current machine. |
 
 `GOLD/` was created one minute after `sdc-investigator/docs/architecture.md` was touched (21:48, content unchanged). Whether `GOLD/` is a clean-room rebuild or a scratch directory is not established. **Ask before assuming.**
 
@@ -88,8 +88,8 @@ Relevant because it overlaps with this session's findings.
 |---|---|
 | LLVM | 23.1.4 at `/opt/homebrew/opt/llvm` (`opt`, `llc`, `llvm-config`, `lib/cmake/llvm`) |
 | CMake / Ninja | 4.4.3 / 1.13.2 |
-| Python | System is 3.9.6, too old. Use `/opt/homebrew/opt/python@3.12/bin/python3.12` or `uv`. |
-| Target | arm64-apple-darwin25.6.0 |
+| Python | System `python3` is 3.10.5. Use `/opt/homebrew/bin/python3.14`; `tools/study/sweep.py` reproduces the stored seed-1337 sweep with it. |
+| Target | arm64-apple-darwin24.6.0 (current machine). Measurements above were taken on darwin25.6.0. |
 
 Notes that will save time later:
 
@@ -256,7 +256,7 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 - Defenses: none/lockstep/vote/TMR/invariant/checksum/all (measured equally).
 - Viewer: Three.js HUD, vendored offline, reads trajectory.json + evidence.json.
 - ADR-0003 accepted (module-order op ids), ADR-0005 accepted (CORRECTED), ADR-0006 accepted (bit 0 = LSB).
-- ADR-0007-0010 proposed in docs.
+- ADR-0007-0010 accepted via ADR-0013. ADR-0004 closed by ADR-0014 (prefix-scan alignment).
 
 ## Phase status
 - Phase 0 skeleton: done
