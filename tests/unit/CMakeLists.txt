@@ -10,5 +10,10 @@ target_include_directories(test_analyzer PRIVATE
 )
 target_link_libraries(test_analyzer PRIVATE sdc_analyzer_core GTest::gtest_main)
 
+add_executable(test_vec3 test_vec3.cpp)
+target_include_directories(test_vec3 PRIVATE ${CMAKE_SOURCE_DIR}/workloads/moon/common)
+target_link_libraries(test_vec3 PRIVATE GTest::gtest_main)
+
 gtest_discover_tests(test_trace_io)
 gtest_discover_tests(test_analyzer)
+gtest_discover_tests(test_vec3)
