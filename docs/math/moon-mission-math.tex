@@ -81,4 +81,44 @@ position differs from the true one by up to about $6^\circ$ in longitude and
 $20\,000$ km in distance. $u = L'-\Omega$ is the standard approximation.
 Code: \texttt{moon\_ephemeris.hpp}. Tests: \texttt{test\_moon\_ephemeris.cpp}.
 
+\section{Gravity}
+With $\mathbf{r}$ the spacecraft position, $\mathbf{r}_M$ the Moon position, and
+$r=\lVert\mathbf{r}\rVert$, $r_M=\lVert\mathbf{r}_M\rVert$:
+\begin{equation}
+\mathbf{g} = -\mu_E\frac{\mathbf{r}}{r^3}
+ + \mu_M\left(\frac{\mathbf{r}_M-\mathbf{r}}{\lVert\mathbf{r}_M-\mathbf{r}\rVert^3}
+ - \frac{\mathbf{r}_M}{r_M^3}\right)
+\end{equation}
+The first term is Earth's pull. The Moon contribution is the third-body perturbation:
+the Moon's pull on the spacecraft minus the Moon's pull on Earth. The subtracted part,
+the indirect term, is required because the frame is centered on Earth, which itself
+accelerates toward the Moon. Near Earth the two Moon terms nearly cancel; near the Moon
+the first dominates.
+Code: \texttt{dynamics.cpp}. Tests: \texttt{test\_dynamics.cpp}.
+
+\section{Engine and actuator limits}
+The flight software commands a throttle $\tau$ and a direction $\mathbf{d}$. The plant
+applies the limits of a real engine:
+\begin{equation}
+\tau' = \begin{cases} 1 & \tau > 1\\ \tau & 0 < \tau \le 1\\ 0 & \text{otherwise (including NaN)}\end{cases}
+\end{equation}
+The engine is off ($\tau'=0$) when $\lVert\mathbf{d}\rVert$ is zero, infinite, or NaN,
+or when the mass has reached the dry mass $m_{\mathrm{dry}}$. Otherwise:
+\begin{align}
+F &= \tau' F_{\max} \\
+\mathbf{a}_T &= \frac{F}{m}\,\frac{\mathbf{d}}{\lVert\mathbf{d}\rVert} \\
+\dot m &= -\frac{F}{I_{sp}\,g_0}
+\end{align}
+The direction is normalized, so a corrupted command can point the engine anywhere but
+cannot push harder than full thrust. These limits are physics of the plant, not a
+flight software defense.
+
+\section{Equations of motion}
+\begin{align}
+\dot{\mathbf{r}} &= \mathbf{v} \\
+\dot{\mathbf{v}} &= \mathbf{g}(\mathbf{r}, t) + \mathbf{a}_T \\
+\dot m &= -\frac{F}{I_{sp}\,g_0}
+\end{align}
+Code: \texttt{dynamics.cpp}, function \texttt{derivative}.
+
 \end{document}
