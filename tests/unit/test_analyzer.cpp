@@ -2,9 +2,9 @@
 #include "audit.hpp"
 #include "classify.hpp"
 #include "ops_map.hpp"
-#include <cassert>
+#include <gtest/gtest.h>
 #include <cstdint>
-#include <iostream>
+#include <string>
 
 using namespace sdc;
 
@@ -20,7 +20,7 @@ Event make_event(OpId op_id, Occurrence occ, std::uint64_t a, std::uint64_t b, s
     return e;
 }
 
-void test_align_identical() {
+TEST(Align, Identical) {
     Trace clean;
     Trace injected;
     for (int i = 0; i < 10; ++i) {
@@ -29,11 +29,11 @@ void test_align_identical() {
         injected.events.push_back(e);
     }
     AlignmentResult r = align_traces(clean, injected);
-    assert(!r.diverged);
-    assert(r.matched == 10);
+    EXPECT_FALSE(r.diverged);
+    EXPECT_EQ(r.matched, 10u);
 }
 
-void test_align_detects_divergence() {
+TEST(Align, DetectsDivergence) {
     Trace clean;
     Trace injected;
     for (int i = 0; i < 10; ++i) {
@@ -45,13 +45,13 @@ void test_align_detects_divergence() {
     injected.events[4].result_bits ^= 1ULL;
 
     AlignmentResult r = align_traces(clean, injected);
-    assert(r.diverged);
-    assert(r.clean_index == 4);
-    assert(r.injected_index == 4);
-    assert(r.matched == 4);
+    EXPECT_TRUE(r.diverged);
+    EXPECT_EQ(r.clean_index, 4u);
+    EXPECT_EQ(r.injected_index, 4u);
+    EXPECT_EQ(r.matched, 4u);
 }
 
-void test_align_reports_structural_change_as_divergence() {
+TEST(Align, ReportsStructuralChangeAsDivergence) {
     Trace clean;
     Trace injected;
     for (int i = 0; i < 10; ++i) {
@@ -64,13 +64,13 @@ void test_align_reports_structural_change_as_divergence() {
     injected.events.insert(injected.events.begin() + 5, extra);
 
     AlignmentResult r = align_traces(clean, injected);
-    assert(r.diverged);
-    assert(r.clean_index == 5);
-    assert(r.injected_index == 5);
-    assert(r.matched == 5);
+    EXPECT_TRUE(r.diverged);
+    EXPECT_EQ(r.clean_index, 5u);
+    EXPECT_EQ(r.injected_index, 5u);
+    EXPECT_EQ(r.matched, 5u);
 }
 
-void test_align_reports_injection_before_control_flow_change() {
+TEST(Align, ReportsInjectionBeforeControlFlowChange) {
     Trace clean;
     Trace injected;
     for (int i = 0; i < 10; ++i) {
@@ -82,27 +82,27 @@ void test_align_reports_injection_before_control_flow_change() {
     }
 
     AlignmentResult r = align_traces(clean, injected);
-    assert(r.diverged);
-    assert(r.clean_index == 4);
-    assert(r.injected_index == 4);
-    assert(r.matched == 4);
+    EXPECT_TRUE(r.diverged);
+    EXPECT_EQ(r.clean_index, 4u);
+    EXPECT_EQ(r.injected_index, 4u);
+    EXPECT_EQ(r.matched, 4u);
 }
 
-void test_audit_detects_corruption() {
+TEST(Audit, DetectsCorruption) {
     // 2.0 + 3.0 == 5.0
     Event good = make_event(1, 1, 0x4000000000000000ULL, 0x4008000000000000ULL, 0x4014000000000000ULL);
     AuditResult ok = audit_event(good, OpKind::FAdd);
-    assert(ok.computable);
-    assert(ok.consistent);
+    EXPECT_TRUE(ok.computable);
+    EXPECT_TRUE(ok.consistent);
 
     Event bad = good;
     bad.result_bits ^= 1ULL;
     AuditResult corrupted = audit_event(bad, OpKind::FAdd);
-    assert(corrupted.computable);
-    assert(!corrupted.consistent);
+    EXPECT_TRUE(corrupted.computable);
+    EXPECT_FALSE(corrupted.consistent);
 }
 
-void test_classify_precedence() {
+TEST(Classify, Precedence) {
     VerdictInput vi;
     vi.evidence_sufficient = true;
     vi.clean_has_exit = true;
@@ -110,58 +110,46 @@ void test_classify_precedence() {
 
     // Crash wins over everything else.
     vi.injected_has_exit = false;
-    assert(classify(vi).classification == Classification::CRASH);
+    EXPECT_EQ(classify(vi).classification, Classification::CRASH);
     vi.injected_has_exit = true;
 
     // Corrected wins over detected, because a repair is the stronger result.
     vi.corrected_by_mechanism = true;
     vi.injected_detected = true;
     vi.final_result_outside_tolerance = false;
-    assert(classify(vi).classification == Classification::CORRECTED);
+    EXPECT_EQ(classify(vi).classification, Classification::CORRECTED);
 
     // A repair that did not land inside tolerance is SDC, not CORRECTED.
     vi.final_result_outside_tolerance = true;
-    assert(classify(vi).classification == Classification::SDC);
+    EXPECT_EQ(classify(vi).classification, Classification::SDC);
     vi.corrected_by_mechanism = false;
 
     // Detection without a repair.
     vi.injected_detected = true;
     vi.final_result_outside_tolerance = false;
-    assert(classify(vi).classification == Classification::DETECTED);
+    EXPECT_EQ(classify(vi).classification, Classification::DETECTED);
 
     // Nothing noticed, result outside tolerance.
     vi.injected_detected = false;
     vi.final_result_outside_tolerance = true;
-    assert(classify(vi).classification == Classification::SDC);
+    EXPECT_EQ(classify(vi).classification, Classification::SDC);
 
     // Nothing noticed, result inside tolerance.
     vi.final_result_outside_tolerance = false;
-    assert(classify(vi).classification == Classification::MASKED);
+    EXPECT_EQ(classify(vi).classification, Classification::MASKED);
 
     // Insufficient evidence.
     vi.evidence_sufficient = false;
-    assert(classify(vi).classification == Classification::INCONCLUSIVE);
+    EXPECT_EQ(classify(vi).classification, Classification::INCONCLUSIVE);
 }
 
-void test_classification_names() {
-    assert(std::string(classification_name(Classification::CRASH)) == "CRASH");
-    assert(std::string(classification_name(Classification::CORRECTED)) == "CORRECTED");
-    assert(std::string(classification_name(Classification::DETECTED)) == "DETECTED");
-    assert(std::string(classification_name(Classification::SDC)) == "SDC");
-    assert(std::string(classification_name(Classification::MASKED)) == "MASKED");
-    assert(std::string(classification_name(Classification::INCONCLUSIVE)) == "INCONCLUSIVE");
+TEST(Classify, Names) {
+    EXPECT_EQ(std::string(classification_name(Classification::CRASH)), "CRASH");
+    EXPECT_EQ(std::string(classification_name(Classification::CORRECTED)), "CORRECTED");
+    EXPECT_EQ(std::string(classification_name(Classification::DETECTED)), "DETECTED");
+    EXPECT_EQ(std::string(classification_name(Classification::SDC)), "SDC");
+    EXPECT_EQ(std::string(classification_name(Classification::MASKED)), "MASKED");
+    EXPECT_EQ(std::string(classification_name(Classification::INCONCLUSIVE)), "INCONCLUSIVE");
 }
 
 } // namespace
-
-int main() {
-    test_align_identical();
-    test_align_detects_divergence();
-    test_align_reports_structural_change_as_divergence();
-    test_align_reports_injection_before_control_flow_change();
-    test_audit_detects_corruption();
-    test_classify_precedence();
-    test_classification_names();
-    std::cout << "ok" << std::endl;
-    return 0;
-}
