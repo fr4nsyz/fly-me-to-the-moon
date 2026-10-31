@@ -1,0 +1,84 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,booktabs,geometry}
+\geometry{margin=1in}
+\title{Moon Mission Plant and Flight Software: Mathematics}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Conventions}
+SI units throughout: meters, seconds, kilograms, radians.
+Frame: origin at Earth's center, $z$ along Earth's rotation axis, $x$ toward the
+vernal equinox, axes fixed relative to the stars (Earth-centered equatorial).
+Source: \texttt{workloads/moon/common/}.
+
+\section{Vectors}
+For $\mathbf{a},\mathbf{b}\in\mathbb{R}^3$ and scalar $s$:
+\begin{align}
+\mathbf{a}\cdot\mathbf{b} &= a_x b_x + a_y b_y + a_z b_z \\
+\mathbf{a}\times\mathbf{b} &= (a_y b_z - a_z b_y,\; a_z b_x - a_x b_z,\; a_x b_y - a_y b_x) \\
+\lVert\mathbf{a}\rVert &= \sqrt{\mathbf{a}\cdot\mathbf{a}}
+\end{align}
+The cross product follows the right-hand rule: $\hat{x}\times\hat{y}=\hat{z}$.
+Code: \texttt{vec3.hpp}. Tests: \texttt{test\_vec3.cpp}.
+
+\section{Constants}
+\begin{tabular}{llll}\toprule
+Symbol & Value & Unit & Source\\\midrule
+$\mu_E$ & $3.986004418\times10^{14}$ & m$^3$/s$^2$ & IERS Conventions 2010\\
+$\mu_M$ & $4.902800066\times10^{12}$ & m$^3$/s$^2$ & JPL DE430\\
+$R_E$ & $6\,378\,137$ & m & equatorial radius\\
+$R_M$ & $1\,737\,400$ & m & mean radius\\
+$\omega_E$ & $7.292115\times10^{-5}$ & rad/s & sidereal rotation\\
+$a_M$ & $3.844\times10^{8}$ & m & mean Earth--Moon distance\\
+$\varepsilon$ & $23.439^\circ$ & & obliquity of the ecliptic\\
+$i_M$ & $5.145^\circ$ & & lunar orbit inclination to the ecliptic\\
+$\phi_L$ & $28.573^\circ$ & & launch latitude, Kennedy LC-39A\\
+$g_0$ & $9.80665$ & m/s$^2$ & standard gravity\\\bottomrule
+\end{tabular}
+
+\noindent Code: \texttt{constants.hpp}.
+
+\section{Time}
+Mission time $t$ is seconds since the epoch
+$\mathrm{JD}_0 = 2\,434\,743.5$ (1954-01-01 00:00 UTC; Bart Howard's original
+``Fly Me to the Moon'' sheet music was published in 1954). Julian centuries from J2000:
+\begin{equation}
+T = \frac{\mathrm{JD}_0 + t/86400 - 2\,451\,545.0}{36\,525}
+\end{equation}
+
+\section{Moon ephemeris}
+Circular orbit of radius $a_M$. Mean elements, Meeus,
+\emph{Astronomical Algorithms}, ch.~47, linear terms (higher-order terms change the
+result by about $0.0003^\circ$ at the epoch):
+\begin{align}
+L' &= 218.3164477^\circ + 481\,267.88123421^\circ\,T &&\text{mean longitude}\\
+\Omega &= 125.0445479^\circ - 1934.1362891^\circ\,T &&\text{ascending node}\\
+u &= L' - \Omega &&\text{argument of latitude}
+\end{align}
+Position in the ecliptic frame:
+\begin{equation}
+\mathbf{r}_{\mathrm{ecl}} = a_M\begin{pmatrix}
+\cos\Omega\cos u - \sin\Omega\sin u\cos i_M\\
+\sin\Omega\cos u + \cos\Omega\sin u\cos i_M\\
+\sin u\,\sin i_M\end{pmatrix}
+\end{equation}
+Rotation into the Earth-equatorial frame about $x$ by $\varepsilon$:
+\begin{equation}
+\mathbf{r}_M = \begin{pmatrix}1&0&0\\0&\cos\varepsilon&-\sin\varepsilon\\
+0&\sin\varepsilon&\cos\varepsilon\end{pmatrix}\mathbf{r}_{\mathrm{ecl}}
+\end{equation}
+The orbit's tilt $I$ to Earth's equator follows from
+\begin{equation}
+\cos I = \cos\varepsilon\cos i_M - \sin\varepsilon\sin i_M\cos\Omega
+\end{equation}
+At the epoch, $I = 25.988^\circ$, within the real range
+$18.3^\circ$--$28.6^\circ$ over the 18.6-year nodal cycle.
+
+\paragraph{Limitations.} The real orbit is eccentric ($e\approx0.055$), so the modeled
+position differs from the true one by up to about $6^\circ$ in longitude and
+$20\,000$ km in distance. $u = L'-\Omega$ is the standard approximation.
+Code: \texttt{moon\_ephemeris.hpp}. Tests: \texttt{test\_moon\_ephemeris.cpp}.
+
+\end{document}
