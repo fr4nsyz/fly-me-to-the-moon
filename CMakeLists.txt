@@ -17,8 +17,11 @@ add_subdirectory(src/runtime)
 add_subdirectory(src/core)
 add_subdirectory(src/analyzer)
 
-enable_testing()
-add_subdirectory(tests/unit)
+option(SDC_BUILD_TESTS "Build unit tests (requires GoogleTest)" ON)
+if(SDC_BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests/unit)
+endif()
 
 add_executable(sum workloads/reductions/sum.cpp)
 target_link_libraries(sum PRIVATE sdc_runtime)

@@ -369,3 +369,75 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/analyzer/align.cpp`, `src/analyzer/align.hpp`, `tests/unit/test_analyzer.cpp`. `docs/architecture.md` sections 7.4, 13, 14.
 
 **Follow-up.** If a multi-fault mode or a nondeterministic workload is added, a structural divergence ahead of any payload mismatch is now reported at its true index, and the classifier sees it.
+
+### ADR-0015 — Unit tests use GoogleTest
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** The unit tests used `assert` from `<cassert>` with a hand-written `main`. No document recorded a test framework decision.
+
+**Decision.** Unit tests use GoogleTest 1.18, found through `find_package(GTest CONFIG)` from the Homebrew install, and registered per test case with `gtest_discover_tests`.
+
+**Why.** `assert` compiles to nothing when `NDEBUG` is defined, so a Release build of the old tests passed without checking anything. The main driver is Phase 6: flight software tests need gMock to stand in for flight-specific dependencies (sensors, the plant, voters, mission-phase sequencing) with call expectations and scripted returns, which plain `assert` and doctest do not provide. GoogleTest also prints actual and expected values on failure, and `TEST_P` covers the matrix of defense modes and bit regions. The project already depends on a system-installed Homebrew LLVM, so a system-installed GoogleTest adds no new class of dependency and keeps the build offline.
+
+**Evidence.**
+- Homebrew googletest 1.18.0 links and runs with Homebrew clang 23.1.4, including `std::string` across the library boundary.
+- `ctest -j8` runs 12 discovered tests and all pass, in both the default build and a `-DCMAKE_BUILD_TYPE=Release` build.
+- A deliberately wrong expectation reports `Expected equality of these values: r.clean_index Which is: 5, 6u`.
+
+**Rejected.** Plain `assert`, because `NDEBUG` silently disables it. doctest, because it has no mocking library and weaker parameterized tests than `TEST_P`. FetchContent, because it downloads at configure time and breaks offline builds.
+
+**Impact.** `tests/unit/CMakeLists.txt`, `tests/unit/test_trace_io.cpp`, `tests/unit/test_analyzer.cpp`. Each trace I/O test now writes its own file under `/tmp`, so parallel `ctest` runs do not collide.
+
+**Follow-up.** None.
+
+### ADR-0016 — Moon mission model: full mission in 3D, simplified physics, precomputed plan, per-phase campaigns
+
+**Date:** 2026-10-31
+**Status:** Accepted. Refines ADR-0007.
+
+**Proposed.** ADR-0007 fixes a full surface-to-landing mission but not the model fidelity, the guidance approach, or how faults are distributed across a multi-day mission.
+
+**Decision.**
+- Full mission: ascent, parking orbit, TLI, coast, LOI, powered descent, landing.
+- 3D from the start. Rotating Earth with a real launch latitude. The Moon on a fixed circular orbit inclined to Earth's equator.
+- Point-mass dynamics: position, velocity, propellant mass. Thrust direction is commanded directly, with no attitude dynamics. Earth and Moon gravity only. No atmosphere drag, no Sun.
+- The plant integrates with fixed-step RK4 and is not instrumented (ADR-0009).
+- Flight software ticks at 10 Hz during ascent, burns, and descent, and at 1 Hz during coast.
+- Burn times, directions, and targets come from a tuning script run once against the clean simulation and are stored as mission-plan constants. The flight software executes the plan with simple closed-loop rules per phase.
+- Every trial flies the whole mission. Faults are drawn per phase with equal trials per phase, not uniformly over operations.
+- The outcome is judged on the plant's true state at touchdown.
+
+**Why.** The aim is a recognizable full Earth-to-Moon trip that demonstrates SDC, not a flight-dynamics research code. Point mass with two-body gravity is the textbook level used for early mission planning. The 1 Hz coast rate keeps a trace at about 20M events instead of about 1.3B (estimated, unmeasured). Drawing faults per phase stops the coast phase, which executes about 99% of operations at a uniform rate, from dominating the results.
+
+**Evidence.** Estimates only: about 500 flight software ops per busy tick, which gives about 800 MB per trace. The first measurement of a real trace replaces these numbers.
+
+**Rejected.** Planar mission: rejected in favor of real 3D. Powered descent only: smaller, but not a full trip. One uniform campaign over the full mission: results dominated by coast. Onboard guidance that recomputes burns in flight: too deep for this phase.
+
+**Limitations.** The precomputed plan fits only the nominal trajectory. The flight software cannot retarget after a fault pushes it off course, so some faults that replanning guidance would absorb will classify as SDC; results lean pessimistic. The plan is tied to one launch date and geometry.
+
+**Impact.** `docs/architecture.md` sections 9 (Phase 6), 12, 15. New `workloads/moon/{plant,fsw}/`. New tuning script under `tools/`.
+
+**Follow-up.** Open: touchdown tolerances that separate MASKED from SDC; how the runtime learns phase boundaries; a clean-vs-clean determinism check.
+
+### ADR-0017 — Moon flight software builds at -O0; TMR and lockstep are written in the flight software source
+
+**Date:** 2026-10-31
+**Status:** Accepted. Supersedes ADR-0002 for the moon workload only.
+
+**Proposed.** ADR-0008 requires replicating a computation and voting after it. At the canonical -O2, identical replicas merge and the voter is deleted before the pass runs.
+
+**Decision.** The moon flight software uses its own pinned flag set, `-O0 -gline-tables-only -ffp-contract=off`, selected with `tools/instrument.sh --profile moon`. TMR (three replicas plus a vote) and lockstep (two replicas plus a compare) are written as plain code in the flight software. All other workloads keep the ADR-0002 flags.
+
+**Why.** At -O0 each replica stays a separate call, so a fault inside one replica can spread through its operations before the vote. A fault before replication reaches all replicas identically, which is the common-mode case ADR-0008 asks to measure. The voter uses comparisons, which the pass does not instrument, so it is never faulted; that matches ADR-0008's protected voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
+
+**Evidence.** Three `guidance()` replicas plus `vote()`, built with Homebrew clang 23.1.4. At -O2: one copy of the arithmetic (`fmul`, `fmul`, `fmul`, `fsub`, `ret`) and no voter. At -O0: three `call @guidance` and one `call @vote`.
+
+**Rejected.** Keeping -O2 with compiler barriers (volatile, opaque calls, separate TUs, optnone): out of scope for now. Per-operation TMR inside the runtime: it survives -O2 but votes before a fault can spread and corrects everything by construction.
+
+**Limitations.** Results describe unoptimized flight software. -O0 keeps operations an optimized build would remove, so the set of fault sites differs from an optimized binary.
+
+**Impact.** `tools/instrument.sh`. `docs/architecture.md` sections 7.1, 9, 12, 16. `workloads/moon/fsw/`.
+
+**Follow-up.** None.
