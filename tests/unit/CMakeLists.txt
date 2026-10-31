@@ -1,0 +1,2 @@
+add_executable(test_trace_io test_trace_io.cpp)
+target_link_libraries(test_trace_io PRIVATE sdc_core)

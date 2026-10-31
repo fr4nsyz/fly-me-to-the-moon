@@ -16,3 +16,5 @@ add_subdirectory(src/instrumentation)
 add_subdirectory(src/runtime)
 add_subdirectory(src/core)
 add_subdirectory(src/analyzer)
+
+add_subdirectory(tests/unit)
