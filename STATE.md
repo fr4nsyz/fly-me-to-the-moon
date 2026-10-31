@@ -266,7 +266,7 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 - Phase 3 LLVM pass (fadd/fsub/fmul/fdiv, real ops.json): done
 - Phase 4 analyzer (align, audit, classify, evidence): done
 - Phase 5 drivers + first sweep: done. 200-trial campaign, seed 1337, in `results/sweep_sum_plain/`. 83.0% SDC, 17.0% MASKED.
-- Phase 6 moon mission + defenses: next
+- Phase 6 moon mission + defenses: design decided (ADR-0016, ADR-0017), no code yet
 - Phase 7 viewer: after
 
 ## Measured results
@@ -275,7 +275,11 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 - Trial traces are deleted after analysis unless `--keep-traces` is passed.
 
 ## Next move
-1. Phase 6: hand-rolled C++ plant and instrumented FSW for the surface-to-lunar-landing mission.
-2. Defense modes: none, lockstep, vote/TMR, invariant, checksum, all, measured equally (ADR-0008).
-3. Replicate before the critical section, vote after it, protect the voter. Injection before replication is a common-mode fault and is reported separately.
-4. Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).
+Phase 6 build order (ADR-0016). The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
+1. Plant: 3D point mass, Earth + Moon gravity, RK4. Test: unpowered orbit conserves energy.
+2. Powered descent alone, from a fixed lunar orbit, so a first defense table exists early.
+3. Defenses in FSW source at -O0 (ADR-0017): lockstep, TMR, invariant, checksum.
+4. Add LOI, coast, TLI, ascent, each as a new campaign phase. Mission plan from a tuning script.
+5. Per-phase sweep and the final table.
+Open before or during step 2: touchdown tolerances (MASKED vs SDC), how the runtime learns phase boundaries, clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results).
+Then Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).
