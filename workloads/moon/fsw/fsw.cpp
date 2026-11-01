@@ -1,5 +1,7 @@
 #include "interface.hpp"
+#include "navigation.hpp"
 
 extern "C" void fsw_tick(const moon::Sensors* sensors, moon::EngineCommand* command) {
-    *command = {0.0, sensors->velocity + moon::Vec3{0.0, 0.0, 1.0}};
+    const moon::NavState nav = moon::navigate(*sensors);
+    *command = {0.0, nav.up};
 }
