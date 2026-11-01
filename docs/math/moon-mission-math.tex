@@ -121,6 +121,36 @@ orbit normal (Cassini's laws); the model aligns them. Altitude is above a sphere
 radius $R_M$; there is no terrain.
 Code: \texttt{fsw/navigation.cpp}. Tests: \texttt{test\_navigation.cpp}.
 
+\section{Guidance (flight software)}
+Inputs: the navigation state (Section on navigation) and the mass $m$. Output: throttle
+$\tau$ and direction $\mathbf{d}$; the plant applies the actuator limits.
+
+\paragraph{Braking.} $\tau = 1$, $\mathbf{d} = -\mathbf{u}/\lVert\mathbf{u}\rVert$: full
+thrust against the ground-relative velocity.
+
+\paragraph{Switch.} Braking ends, permanently, when $\lVert\mathbf{u}\rVert < 50$ m/s or
+$h < 2000$ m, whichever comes first.
+
+\paragraph{Final descent.} Target vertical speed and wanted acceleration:
+\begin{align}
+v^{*} &= -\,\mathrm{clamp}\!\left(\frac{h}{10\ \mathrm{s}},\ 1,\ 30\right)\ \text{m/s}\\
+g &= \frac{\mu_M}{(R_M + h)^2}\\
+\mathbf{a}^{*} &= \left(g + k_v\,(v^{*} - v_{\uparrow})\right)\hat{\mathbf{n}}
+ - k_h\,(\mathbf{u} - v_{\uparrow}\hat{\mathbf{n}})
+\end{align}
+with $k_v = 1.0\ \mathrm{s}^{-1}$ and $k_h = 0.5\ \mathrm{s}^{-1}$. If
+$\mathbf{a}^{*}\cdot\hat{\mathbf{n}} \le 0$ the engine is off (a lander cannot thrust toward
+the ground). Otherwise
+\begin{equation}
+\tau = \frac{\lVert\mathbf{a}^{*}\rVert\, m}{F_{\max}}, \qquad \mathbf{d} = \mathbf{a}^{*}
+\end{equation}
+and the plant saturates $\tau$ at 1. On the target descent rate with no drift,
+$\tau = g\,m/F_{\max}$, the hover throttle.
+
+\paragraph{Initial values.} The switch thresholds, the 10 s time constant, the 1 and 30 m/s
+limits, and both gains are starting values, to be tuned against the first full landing.
+Code: \texttt{fsw/guidance.cpp}. Tests: \texttt{test\_guidance.cpp}.
+
 \section{Gravity}
 With $\mathbf{r}$ the spacecraft position, $\mathbf{r}_M$ the Moon position, and
 $r=\lVert\mathbf{r}\rVert$, $r_M=\lVert\mathbf{r}_M\rVert$:
