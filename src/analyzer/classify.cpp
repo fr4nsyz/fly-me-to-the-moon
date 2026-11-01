@@ -5,6 +5,7 @@ namespace sdc {
 const char* classification_name(Classification c) {
     switch (c) {
         case Classification::CRASH: return "CRASH";
+        case Classification::HANG: return "HANG";
         case Classification::CORRECTED: return "CORRECTED";
         case Classification::DETECTED: return "DETECTED";
         case Classification::SDC: return "SDC";
@@ -19,6 +20,12 @@ Verdict classify(const VerdictInput& input) {
     if (!input.evidence_sufficient) {
         verdict.classification = Classification::INCONCLUSIVE;
         verdict.reasons.push_back("insufficient evidence to reach a verdict");
+        return verdict;
+    }
+
+    if (input.timed_out) {
+        verdict.classification = Classification::HANG;
+        verdict.reasons.push_back("injected run exceeded the time limit and was killed");
         return verdict;
     }
 
