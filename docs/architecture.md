@@ -522,6 +522,8 @@ Settled in this revision:
 | ADR-0017 | Moon FSW builds at -O0; TMR and lockstep written in FSW source |
 | ADR-0018 | Powered descent: 15 km start, two-phase guidance, LM-class vehicle, plant-computed landing score |
 | ADR-0019 | The pass instruments `llvm.sqrt` |
+| ADR-0020 | Verified lander numbers; trapezoid Lunar Module touchdown envelope |
+| ADR-0021 | Multi-file build profile and phase markers are workload-generic |
 
 ---
 
@@ -550,6 +552,8 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0017 | 2026-10-31 | Moon FSW builds at -O0; task-level TMR and lockstep in FSW source | Accepted |
 | ADR-0018 | 2026-10-31 | Powered descent design and moon build plumbing | Accepted |
 | ADR-0019 | 2026-10-31 | The pass instruments llvm.sqrt | Accepted |
+| ADR-0020 | 2026-10-31 | Verified lander numbers and the Lunar Module touchdown envelope | Accepted |
+| ADR-0021 | 2026-10-31 | Multi-file build profile and phase markers are workload-generic | Accepted |
 
 ---
 
@@ -567,7 +571,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 
 **Campaigns:** Every trial flies the whole mission. Faults are drawn per phase, with equal trials per phase.
 
-**Success criterion:** The plant's true touchdown state, scored as max(vertical speed / 3 m/s, horizontal speed / 1.2 m/s, distance from the clean run's touchdown / 1000 m); a score up to 1 passes (ADR-0018).
+**Success criterion:** The plant's true touchdown state inside the Lunar Module touchdown envelope and within 1 km of the clean run's touchdown point, combined into one score where up to 1 passes (ADR-0020).
 
 **Powered descent (ADR-0018):** Starts from a circular 15 km lunar orbit. Braking at full throttle against the Moon-relative velocity, then a final descent with thrust straight up and a proportional controller tracking a target descent rate. Lunar Module descent-class vehicle. Perfect sensors; the flight software converts to Moon-relative terms itself, ahead of guidance.
 
