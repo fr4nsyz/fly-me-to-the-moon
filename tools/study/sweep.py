@@ -244,6 +244,7 @@ def write_summary(args, records, baseline, clean_trace):
         "build_id": args.build_id,
         "compiler_flags": args.compiler_flags,
         "seed": args.seed,
+        "persistent": args.persistent,
         "trials": total,
         "bit_range": args.bit_range,
         "classifications": {name: counts.get(name, 0) for name in CLASSES},

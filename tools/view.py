@@ -62,6 +62,32 @@ def demangle(name):
     return base
 
 
+def load_trial(args):
+    """The trial's evidence file, or an equivalent built from summary.json and ops.json."""
+    path = os.path.join(args.sweep, f"trial_{args.trial:04d}.json")
+    if os.path.exists(path):
+        with open(path) as handle:
+            return json.load(handle)
+    with open(os.path.join(args.sweep, "summary.json")) as handle:
+        summary = json.load(handle)
+    record = next((r for r in summary["records"] if r["trial"] == args.trial), None)
+    if record is None:
+        raise SystemExit(f"view: trial {args.trial} is not in {args.sweep}/summary.json")
+    with open(os.path.join(os.path.dirname(os.path.abspath(args.binary)), "ops.json")) as handle:
+        ops = json.load(handle)
+    return {
+        "classification": record["classification"],
+        "reasons": record.get("reasons", []),
+        "inject": {
+            "op_id": record["op_id"],
+            "occurrence": record["occurrence"],
+            "bit": record["bit"],
+            "persistent": summary.get("persistent", False),
+        },
+        "injected_event": {"source": ops.get(str(record["op_id"]), {})},
+    }
+
+
 def summarize(evidence, args):
     inject = evidence.get("inject", {})
     source = (evidence.get("injected_event") or {}).get("source", {})
@@ -107,10 +133,9 @@ def main():
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
-    with open(os.path.join(args.sweep, f"trial_{args.trial:04d}.json")) as handle:
-        evidence = json.load(handle)
+    evidence = load_trial(args)
     inject = evidence.get("inject", {})
-    if not inject.get("enabled", True) or "op_id" not in inject:
+    if not inject.get("enabled", True) or inject.get("op_id") is None:
         raise SystemExit("view: the evidence has no injection site")
 
     with tempfile.TemporaryDirectory() as tmp:

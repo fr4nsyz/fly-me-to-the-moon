@@ -3,6 +3,7 @@
   "build_id": "cdcd5b5e96ffe4c3",
   "compiler_flags": "-O0 -gline-tables-only -ffp-contract=off",
   "seed": 1337,
+  "persistent": true,
   "trials": 200,
   "bit_range": "0-63",
   "classifications": {
