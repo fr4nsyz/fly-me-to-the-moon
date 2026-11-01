@@ -218,24 +218,31 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 **Follow-up.** Trajectory log schema; `SDCTRACE` unchanged.
 
-### ADR-0008 — Defense semantics
+### ADR-0008 — Defense: TMR and lockstep hybrid, modeled on real flight computers
 
 **Date:** 2026-10-31
 **Status:** Accepted (ADR-0013)
 
-**Proposed.** Define how TMR/lockstep/invariants/checksums behave with injection.
+**Proposed.** Define how redundancy defends the flight software against injected faults, and which modes are measured.
 
-**Decision.** Replicate before critical section, vote after, protect the voter. Injection before replication corrupts all replicas identically (common-mode). Modes: `none`, `lockstep`, `vote/TMR`, `invariant`, `checksum`, `all` — measured equally.
+**Decision.** The flight software runs in two modes, chosen at run time with `--defense none|tmr-lockstep`.
+- `none`: one core runs navigation and guidance.
+- `tmr-lockstep`: a hybrid of TMR and lockstep that mimics real rocket flight computers. TMR is defined over three separate computers, and each computer is a lockstep pair of cores running the full flight software. Each computer compares its two cores bit for bit; a computer whose cores disagree goes silent for that tick. The commands of the computers still talking are then compared: with three, the majority wins; with two that agree, that command is used; with two that disagree, the computer with the longer record of agreement is used; with one, it is used. Every computer's phase memory is resynchronized to the chosen computer after each tick.
+- Each core is a distinct template instantiation of the flight software, so each has its own operations and a persistent fault breaks one core, not every copy.
+- The comparisons use instructions the pass does not instrument, so the voter is never faulted.
+- The flight software returns a status flag with its command. The simulation reports it to the runtime: any silenced computer or outvoted command reports CORRECTED.
 
-**Why.** Prevents common TMR pitfall (injecting after replication) and makes the comparison fair across modes.
+**Why.** Real launch vehicles combine the two: SpaceX describes Falcon 9 and Dragon as three computer units, each with two computers checking each other, with commands compared across units, so a unit that disagrees with itself drops out and the vehicle flies on the rest. Lockstep lets each computer tell that it is broken; TMR across computers supplies the backup. On its own, lockstep in a single computer can only detect, with nothing to hand control to, and TMR across copies on one core cannot survive a persistent fault, because every copy runs on the same core.
 
-**Evidence.** Standard redundancy design; matches "vote → all corrected" goal.
+**Evidence.** Aviation Week, "Dragon's Radiation-Tolerant Design" (John Muratore: three computer units, each of which have two computers checking on each other). SpaceNews: a Dragon computer shut down on a 2017 mission and Dragon continued on the other two. The cross-unit voting details come from secondary sources.
 
-**Rejected.** Injecting after replication (would mask common-mode class of faults).
+**Rejected.** TMR and lockstep as separate modes: standalone lockstep never saves a landing, and the comparison obscures how real systems use them. TMR limited to navigation or guidance, and invariant checks: not needed for the demo's question. Checksums: deferred until memory faults exist.
 
-**Impact.** `docs/architecture.md` section 16. Runtime/injection logic and analyzer classification.
+**Limitations.** A fault that hits both cores of one computer identically cannot occur in this model, because each core has its own operations; real designs offset the two cores in time for that case. The six copies make the flight software do about six times the work per tick, which also gives random faults six times as many targets.
 
-**Follow-up.** Ensure injection targets follow this rule in drivers.
+**Impact.** `workloads/moon/common/interface.hpp`, `workloads/moon/fsw/`, `workloads/moon/sim/main.cpp`, the `tools/instrument.sh` invocation (`--keep fsw_configure`), `docs/architecture.md` section 16.
+
+**Follow-up.** Multi-fault campaigns would show the hybrid surviving two broken computers.
 
 ### ADR-0009 — Instrumentation scope: FSW TUs only
 
@@ -418,16 +425,16 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Follow-up.** None.
 
-### ADR-0017 — Moon flight software builds at -O0; TMR and lockstep are written in the flight software source
+### ADR-0017 — Moon flight software builds at -O0; the TMR and lockstep hybrid is written in the flight software source
 
 **Date:** 2026-10-31
 **Status:** Accepted. Supersedes ADR-0002 for the moon workload only.
 
-**Proposed.** ADR-0008 requires replicating a computation and voting after it. At the canonical -O2, identical replicas merge and the voter is deleted before the pass runs.
+**Proposed.** ADR-0008 requires replicating the flight software and comparing the copies. At the canonical -O2, identical copies merge and the comparison is deleted before the pass runs.
 
-**Decision.** The moon flight software uses its own pinned flag set, `-O0 -gline-tables-only -ffp-contract=off`, selected with `tools/instrument.sh --profile moon`. TMR (three replicas plus a vote) and lockstep (two replicas plus a compare) are written as plain code in the flight software. All other workloads keep the ADR-0002 flags.
+**Decision.** The moon flight software uses its own pinned flag set, `-O0 -gline-tables-only -ffp-contract=off`, selected with `tools/instrument.sh --profile o0`. The TMR and lockstep hybrid (ADR-0008) is written as plain code in the flight software. All other workloads keep the ADR-0002 flags.
 
-**Why.** At -O0 each replica stays a separate call, so a fault inside one replica can spread through its operations before the vote. A fault before replication reaches all replicas identically, which is the common-mode case ADR-0008 asks to measure. The voter uses comparisons, which the pass does not instrument, so it is never faulted; that matches ADR-0008's protected voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
+**Why.** At -O0 each copy stays a separate call, so a fault inside one copy spreads through its operations before the comparison. The comparisons use instructions the pass does not instrument, so they are never faulted; that matches ADR-0008's protected voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
 
 **Evidence.** Three `guidance()` replicas plus `vote()`, built with Homebrew clang 23.1.4. At -O2: one copy of the arithmetic (`fmul`, `fmul`, `fmul`, `fsub`, `ret`) and no voter. At -O0: three `call @guidance` and one `call @vote`.
 
@@ -450,7 +457,7 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 - Start: circular equatorial prograde orbit at 15 km: position (R_M + 15 km, 0, 0), velocity (0, sqrt(GM_M / r), 0).
 - Guidance, two phases. Braking: full throttle, split each tick between a vertical part that holds a sink rate chosen to reach 1,500 m as horizontal speed reaches zero, and the remainder against horizontal velocity. Braking ends when horizontal speed drops below 50 m/s or altitude below 500 m. Final descent: thrust along a wanted acceleration that cancels gravity, tracks a target descent rate shrinking with altitude through a proportional controller, and opposes horizontal drift.
 - Vehicle: generic engine with Apollo Lunar Module descent-class numbers (about 15,100 kg at start, about 6,900 kg dry, about 45 kN, Isp about 311 s), verified against a source before coding.
-- Sensors: perfect. The flight software's navigation stage derives altitude, ground-relative velocity, and vertical and horizontal speed from the Moon-centered state. This stage runs before guidance, so under TMR a fault in it reaches every replica (common-mode).
+- Sensors: perfect. The flight software's navigation stage derives altitude, ground-relative velocity, and vertical and horizontal speed from the Moon-centered state. In the TMR and lockstep hybrid, every core runs its own navigation (ADR-0008).
 - Landing score, computed by the plant at touchdown: max(vertical speed / 3 m/s, horizontal speed / 1.2 m/s, distance from the clean run's touchdown point / 1000 m). Speeds are relative to the rotating lunar surface; the Moon is tidally locked, so it rotates at its orbital rate. No touchdown within the time limit scores infinity. The plant reports the score with `sdc_report_result`. The analyzer runs with reference 0.0 and `--abs-tol 1`: a score up to 1 passes; above 1, or NaN, is SDC. A hard landing is SDC, not CRASH; CRASH means the process died.
 - Build: `workloads/moon/fsw/` is instrumented with the moon profile (ADR-0017). `workloads/moon/sim/` and the plant are compiled normally. `tools/instrument.sh --profile moon` merges the flight software TUs with `llvm-link`, runs the pass, then internalizes every flight software symbol except `fsw_tick`.
 
@@ -555,3 +562,25 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/analyzer/{classify.hpp,classify.cpp,main.cpp}`, `tools/study/sweep.py`, `tools/study/report.py`, `tests/unit/test_analyzer.cpp`, `docs/architecture.md` section 7.4.
 
 **Follow-up.** None.
+
+### ADR-0023 — Persistent fault model
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** Every fault flipped one bit in one execution of one operation. On the lunar descent this was always absorbed: the closed loop re-measures the true state every tick, so one bad tick is corrected on the next, and defenses would have nothing to show.
+
+**Decision.** The runtime gains a persistent fault model, selected with `SDC_INJECT_PERSIST=1`: the chosen bit is flipped on every execution of the chosen operation from the chosen occurrence onward, by XOR as in the transient model. The trace metadata records `"persistent":true`. The sweep driver passes it with `--persistent`. The transient model stays the default.
+
+**Why.** A unit that keeps computing one operation wrong is a real failure mode: the defective "mercurial cores" reported in data-center SDC studies compute wrong results repeatably. It also gives redundancy something to outvote or detect on every tick.
+
+**Evidence.**
+- With op 1 (`navigate`, `fsub`), occurrence 1000, bit 20: the persistent trace has op 1 clean for occurrences 1 to 999 and flipped on all 4,279 later executions, with no other corrupted event; the transient trace has exactly one flipped execution.
+- No defenses, seed 1337, 200 trials: transient faults gave 200 MASKED (`results/sweep_moon_none/`); persistent faults gave 34 SDC and 166 MASKED (`results/sweep_moon_persistent_none/`). SDC came from 22 of 35 exponent flips, 3 of 3 sign flips, 9 of 34 high-mantissa flips, and 0 of 128 low-mantissa flips.
+- The 200-trial seed-1337 `sum_plain` sweep without `--persistent` matches the stored results in totals, per bit region, and per operation.
+
+**Rejected.** Stuck-at faults (a bit forced to 0 or 1): a different hardware failure, listed as future work. A fault that persists for a fixed number of ticks: an extra parameter with no clear physical model.
+
+**Impact.** `src/runtime/runtime.cpp`, `tools/study/sweep.py`, `docs/trace-format.md`, `docs/architecture.md` sections 7.2 and 12 and the runtime interface table.
+
+**Follow-up.** Navigation filter to give the flight software state (the other half of the chosen fault-model work). Stuck-at and memory faults in future work.

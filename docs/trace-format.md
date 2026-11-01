@@ -56,7 +56,7 @@ The header prefix is 32 bytes. Records begin at offset `32 + meta_len`.
 | `schema` | integer | yes | Trace schema version, independent of the file format version |
 | `inject` | object | yes | The injection configuration, or an empty object when disabled |
 
-The `inject` object carries `op_id`, `occurrence`, `bit`, and `enabled`. Its presence lets the analyzer confirm that the clean and injected traces really are a matched pair.
+The `inject` object carries `op_id`, `occurrence`, `bit`, and `enabled`, plus `persistent: true` when the persistent fault model was used (ADR-0023). Its presence lets the analyzer confirm that the clean and injected traces really are a matched pair.
 
 The metadata is JSON on purpose. It is variable in shape, read exactly once per file, and never on a hot path. The records carry the data that needs to be fast and compact.
 
