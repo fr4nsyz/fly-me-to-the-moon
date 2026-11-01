@@ -555,3 +555,25 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/analyzer/{classify.hpp,classify.cpp,main.cpp}`, `tools/study/sweep.py`, `tools/study/report.py`, `tests/unit/test_analyzer.cpp`, `docs/architecture.md` section 7.4.
 
 **Follow-up.** None.
+
+### ADR-0023 — Persistent fault model
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** Every fault flipped one bit in one execution of one operation. On the lunar descent this was always absorbed: the closed loop re-measures the true state every tick, so one bad tick is corrected on the next, and defenses would have nothing to show.
+
+**Decision.** The runtime gains a persistent fault model, selected with `SDC_INJECT_PERSIST=1`: the chosen bit is flipped on every execution of the chosen operation from the chosen occurrence onward, by XOR as in the transient model. The trace metadata records `"persistent":true`. The sweep driver passes it with `--persistent`. The transient model stays the default.
+
+**Why.** A unit that keeps computing one operation wrong is a real failure mode: the defective "mercurial cores" reported in data-center SDC studies compute wrong results repeatably. It also gives redundancy something to outvote or detect on every tick.
+
+**Evidence.**
+- With op 1 (`navigate`, `fsub`), occurrence 1000, bit 20: the persistent trace has op 1 clean for occurrences 1 to 999 and flipped on all 4,279 later executions, with no other corrupted event; the transient trace has exactly one flipped execution.
+- No defenses, seed 1337, 200 trials: transient faults gave 200 MASKED (`results/sweep_moon_none/`); persistent faults gave 34 SDC and 166 MASKED (`results/sweep_moon_persistent_none/`). SDC came from 22 of 35 exponent flips, 3 of 3 sign flips, 9 of 34 high-mantissa flips, and 0 of 128 low-mantissa flips.
+- The 200-trial seed-1337 `sum_plain` sweep without `--persistent` matches the stored results in totals, per bit region, and per operation.
+
+**Rejected.** Stuck-at faults (a bit forced to 0 or 1): a different hardware failure, listed as future work. A fault that persists for a fixed number of ticks: an extra parameter with no clear physical model.
+
+**Impact.** `src/runtime/runtime.cpp`, `tools/study/sweep.py`, `docs/trace-format.md`, `docs/architecture.md` sections 7.2 and 12 and the runtime interface table.
+
+**Follow-up.** Navigation filter to give the flight software state (the other half of the chosen fault-model work). Stuck-at and memory faults in future work.

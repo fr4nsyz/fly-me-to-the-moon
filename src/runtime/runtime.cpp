@@ -21,6 +21,7 @@ static OpId g_inj_op = 0;
 static Occurrence g_inj_occ = 0;
 static BitPos g_inj_bit = 0;
 static bool g_inj_enabled = false;
+static bool g_inj_persistent = false;
 
 // Random injection mode. The driver supplies a plan of candidate operations
 // with the number of times each one actually executes, and the runtime picks
@@ -140,6 +141,8 @@ void runtime_init() {
         }
     }
 
+    g_inj_persistent = get_env("SDC_INJECT_PERSIST") == "1";
+
     if (g_inj_mode == InjectMode::Random) {
         const std::string seed_text = get_env("SDC_SEED");
         g_inj_seed = seed_text.empty() ? 0u : static_cast<unsigned>(std::stoul(seed_text));
@@ -176,6 +179,9 @@ void runtime_init() {
         if (g_inj_mode == InjectMode::Random) {
             meta += ",\"mode\":\"random\",\"seed\":" + std::to_string(g_inj_seed);
         }
+        if (g_inj_persistent) {
+            meta += ",\"persistent\":true";
+        }
     } else {
         meta += "\"enabled\":false";
     }
@@ -206,7 +212,7 @@ static double apply_binary(OpId op_id, double lhs, double rhs, double computed) 
     std::uint64_t rb = std::bit_cast<std::uint64_t>(rhs);
     std::uint64_t rbits = std::bit_cast<std::uint64_t>(computed);
 
-    if (g_inj_enabled && op_id == g_inj_op && occ == g_inj_occ) {
+    if (g_inj_enabled && op_id == g_inj_op && (occ == g_inj_occ || (g_inj_persistent && occ > g_inj_occ))) {
         if (g_inj_bit < 64) {
             rbits ^= (std::uint64_t)1ULL << g_inj_bit;
             computed = std::bit_cast<double>(rbits);

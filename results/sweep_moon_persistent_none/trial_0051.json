@@ -1,0 +1,319 @@
+{
+  "schema": 1,
+  "classification": "MASKED",
+  "reasons": [
+    "the final result stayed inside the acceptance criterion",
+    "a divergence occurred but was absorbed before the final result"
+  ],
+  "final_result_outside_tolerance": false,
+  "corrected_by_mechanism": false,
+  "alignment": {
+    "diverged": true,
+    "matched_events": 289957,
+    "clean_event_count": 381838,
+    "injected_event_count": 381838
+  },
+  "injected_event": {
+    "op_id": 19,
+    "occurrence": 12082,
+    "operand0": "0x4118211c8bf67104",
+    "operand1": "0x4118211c8bf67104",
+    "result": "0x424231ed14ebcd23",
+    "source": {
+      "file": "workloads/moon/common/vec3.hpp",
+      "line": 19,
+      "column": 60,
+      "function": "_ZN4moon3dotENS_4Vec3ES0_",
+      "kind": "fmul"
+    },
+    "audit": {
+      "recomputed": "0x424231cd14ebcd23",
+      "consistent": false
+    },
+    "event_index": 289957
+  },
+  "clean_event": {
+    "op_id": 19,
+    "occurrence": 12082,
+    "operand0": "0x4118211c8bf67104",
+    "operand1": "0x4118211c8bf67104",
+    "result": "0x424231cd14ebcd23",
+    "source": {
+      "file": "workloads/moon/common/vec3.hpp",
+      "line": 19,
+      "column": 60,
+      "function": "_ZN4moon3dotENS_4Vec3ES0_",
+      "kind": "fmul"
+    },
+    "audit": {
+      "recomputed": "0x424231cd14ebcd23",
+      "consistent": true
+    },
+    "event_index": 289957
+  },
+  "window": [
+    {
+      "source": "injected",
+      "event_index": 289952,
+      "event": {
+        "op_id": 10,
+        "occurrence": 4028,
+        "operand0": "0x0000000000000000",
+        "operand1": "0x0000000000000000",
+        "result": "0x0000000000000000",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 24,
+          "column": 23,
+          "function": "_ZN4moon5crossENS_4Vec3ES0_",
+          "kind": "fsub"
+        },
+        "audit": {
+          "recomputed": "0x0000000000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289953,
+      "event": {
+        "op_id": 11,
+        "occurrence": 16109,
+        "operand0": "0xc0562d8cb25178fd",
+        "operand1": "0xbff0d6121455a2ed",
+        "result": "0xc055ea346a002271",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 14,
+          "column": 53,
+          "function": "_ZN4moonmiENS_4Vec3ES0_",
+          "kind": "fsub"
+        },
+        "audit": {
+          "recomputed": "0xc055ea346a002271",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289954,
+      "event": {
+        "op_id": 12,
+        "occurrence": 16109,
+        "operand0": "0x406904f8d566ab12",
+        "operand1": "0x40120c5b1c747ac8",
+        "result": "0x40687495fc83073c",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 14,
+          "column": 64,
+          "function": "_ZN4moonmiENS_4Vec3ES0_",
+          "kind": "fsub"
+        },
+        "audit": {
+          "recomputed": "0x40687495fc83073c",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289955,
+      "event": {
+        "op_id": 13,
+        "occurrence": 16109,
+        "operand0": "0x0000000000000000",
+        "operand1": "0x0000000000000000",
+        "result": "0x0000000000000000",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 14,
+          "column": 75,
+          "function": "_ZN4moonmiENS_4Vec3ES0_",
+          "kind": "fsub"
+        },
+        "audit": {
+          "recomputed": "0x0000000000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289956,
+      "event": {
+        "op_id": 18,
+        "occurrence": 12082,
+        "operand0": "0x4139ddce7644639e",
+        "operand1": "0x4139ddce7644639e",
+        "result": "0x4284e89409c080ac",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 19,
+          "column": 48,
+          "function": "_ZN4moon3dotENS_4Vec3ES0_",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x4284e89409c080ac",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289957,
+      "event": {
+        "op_id": 19,
+        "occurrence": 12082,
+        "operand0": "0x4118211c8bf67104",
+        "operand1": "0x4118211c8bf67104",
+        "result": "0x424231ed14ebcd23",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 19,
+          "column": 60,
+          "function": "_ZN4moon3dotENS_4Vec3ES0_",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x424231cd14ebcd23",
+          "consistent": false
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289958,
+      "event": {
+        "op_id": 20,
+        "occurrence": 12082,
+        "operand0": "0x4284e89409c080ac",
+        "operand1": "0x424231ed14ebcd23",
+        "result": "0x42860bb2db0f3d7e",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 19,
+          "column": 54,
+          "function": "_ZN4moon3dotENS_4Vec3ES0_",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x42860bb2db0f3d7e",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289959,
+      "event": {
+        "op_id": 21,
+        "occurrence": 12082,
+        "operand0": "0x0000000000000000",
+        "operand1": "0x0000000000000000",
+        "result": "0x0000000000000000",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 19,
+          "column": 72,
+          "function": "_ZN4moon3dotENS_4Vec3ES0_",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x0000000000000000",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289960,
+      "event": {
+        "op_id": 22,
+        "occurrence": 12082,
+        "operand0": "0x42860bb2db0f3d7e",
+        "operand1": "0x0000000000000000",
+        "result": "0x42860bb2db0f3d7e",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 19,
+          "column": 66,
+          "function": "_ZN4moon3dotENS_4Vec3ES0_",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x42860bb2db0f3d7e",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289961,
+      "event": {
+        "op_id": 14,
+        "occurrence": 8055,
+        "operand0": "0x42860bb2db0f3d7e",
+        "operand1": "0x0000000000000000",
+        "result": "0x413a8f7f9b6f7dbc",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 27,
+          "column": 37,
+          "function": "_ZN4moon4normENS_4Vec3E",
+          "kind": "sqrt"
+        },
+        "audit": {
+          "recomputed": "0x413a8f7f9b6f7dbc",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 289962,
+      "event": {
+        "op_id": 15,
+        "occurrence": 4028,
+        "operand0": "0x4139ddce7644639e",
+        "operand1": "0x413a8f7f9b6f7dbc",
+        "result": "0x3fef29eaeac41ada",
+        "source": {
+          "file": "workloads/moon/common/vec3.hpp",
+          "line": 17,
+          "column": 55,
+          "function": "_ZN4moondvENS_4Vec3Ed",
+          "kind": "fdiv"
+        },
+        "audit": {
+          "recomputed": "0x3fef29eaeac41ada",
+          "consistent": true
+        }
+      }
+    }
+  ],
+  "clean_exit": {
+    "exit_code": 0,
+    "detected_by_workload": false,
+    "corrected_by_mechanism": false,
+    "final_result": "0x3fd4fb8a146d604c"
+  },
+  "injected_exit": {
+    "exit_code": 0,
+    "detected_by_workload": false,
+    "corrected_by_mechanism": false,
+    "final_result": "0x3fd4fb8e1ce227d6"
+  },
+  "inject": {
+    "enabled": true,
+    "op_id": 19,
+    "occurrence": 12082,
+    "bit": 37,
+    "mode": "random",
+    "seed": 405206,
+    "persistent": true
+  }
+}

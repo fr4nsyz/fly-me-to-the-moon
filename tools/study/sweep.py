@@ -150,6 +150,7 @@ def run_campaign(args):
                 "SDC_SEED": str(seed),
                 "SDC_INJECT_PLAN": plan_path,
                 "SDC_INJECT_BIT_RANGE": args.bit_range,
+                "SDC_INJECT_PERSIST": "1" if args.persistent else "",
                 "SDC_WORKLOAD": args.workload,
                 "SDC_BUILD_ID": args.build_id,
                 "SDC_COMPILER_FLAGS": args.compiler_flags,
@@ -340,6 +341,11 @@ def main():
     parser.add_argument("--build-id", default="unknown")
     parser.add_argument("--compiler-flags", default="unknown")
     parser.add_argument("--bit-range", default="0-63")
+    parser.add_argument(
+        "--persistent",
+        action="store_true",
+        help="flip the chosen bit on every execution of the op from the chosen occurrence on",
+    )
     parser.add_argument(
         "--analyzer-args",
         default="",

@@ -254,7 +254,7 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 ## Decisions (locked)
 - Plant: hand-rolled C++ 3D dynamics (MIT). FSW instrumented only.
 - Mission: powered lunar descent in a Moon-centered frame (ADR-0007, ADR-0016).
-- Defenses: none/lockstep/vote/TMR/invariant/checksum/all (measured equally).
+- Defenses (user decisions, not yet in an ADR): 8 modes measured equally, one binary, mode chosen at run time: none; tmr-full, tmr-nav, tmr-guidance; lockstep-full, lockstep-nav, lockstep-guidance; invariant. TMR votes bit-exact on the stage output and resyncs every copy's phase memory to the majority after each vote. Lockstep flags a mismatch and keeps flying with copy A (detect, not correct). Invariant checks (altitude and vertical-speed change bounded by physics, all values finite) flag DETECTED and reuse the last good command. The FSW returns a status flag with its command; the sim reports it to the runtime, so the FSW stays plain. Checksums deferred until memory faults exist.
 - Viewer: Three.js HUD, vendored offline, reads trajectory.json + evidence.json.
 - ADR-0003 accepted (module-order op ids), ADR-0005 accepted (CORRECTED), ADR-0006 accepted (bit 0 = LSB).
 - ADR-0007-0010 accepted via ADR-0013. ADR-0004 closed by ADR-0014 (prefix-scan alignment).
@@ -282,7 +282,8 @@ Phase 6 build order (ADR-0016). The user wants to understand this phase deeply: 
 2. Piece G: simulation loop, start orbit, touchdown interpolation, landing judge and score, flight log.
 3. First clean landing; tune guidance values.
 4. Per-trial timeout and HANG class: done (ADR-0022).
-5. Defenses in FSW source at -O0 (ADR-0017): lockstep, TMR, invariant (checksum to be decided).
-6. Sweep with landing score, defense table.
+5. Fault model: persistent faults (ADR-0023) done; navigation filter (FSW state) next, designed with the user.
+6. Defenses in FSW source at -O0 (ADR-0017), the 8 modes above.
+7. Sweep each mode with persistent faults; defense table.
 Open: clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results). Math library calls (`sin`, `cos`, `atan2`) are not faulted; `sqrt` is instrumented (ADR-0019).
 Then Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).
