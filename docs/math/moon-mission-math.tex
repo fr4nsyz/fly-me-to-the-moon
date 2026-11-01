@@ -97,6 +97,30 @@ $3\times10^{-11}$ of $\lVert\mathbf{r}_M\rVert\lVert\mathbf{v}_M\rVert$; the res
 differs from an $h = 0.5$ s difference by at most $5.2\times10^{-4}$ m/s over 30 days,
 limited by rounding of the mean longitude angle (about $3900$ rad at the epoch).
 
+\section{Navigation (flight software)}
+The flight software receives the Earth-centered state $(\mathbf{r}, \mathbf{v})$ and
+computes its own Moon state $\mathbf{r}_M(t)$, $\mathbf{v}_M(t)$. The Moon is tidally
+locked, so it spins at its orbital rate about its orbit normal:
+\begin{equation}
+\boldsymbol{\omega}_M = \frac{\mathbf{r}_M \times \mathbf{v}_M}{\lVert\mathbf{r}_M\rVert^2}
+\end{equation}
+Its magnitude is $\dot L' + |\dot\Omega|(1 - \cos i_M)$: the regressing node adds a small
+rotation to the mean-longitude rate. Ground-relative state:
+\begin{align}
+\mathbf{p} &= \mathbf{r} - \mathbf{r}_M &&\text{Moon-centered position}\\
+\mathbf{u} &= (\mathbf{v} - \mathbf{v}_M) - \boldsymbol{\omega}_M \times \mathbf{p} &&\text{velocity relative to the ground}\\
+\hat{\mathbf{n}} &= \mathbf{p} / \lVert\mathbf{p}\rVert &&\text{local up}\\
+h &= \lVert\mathbf{p}\rVert - R_M &&\text{altitude}\\
+v_{\uparrow} &= \mathbf{u}\cdot\hat{\mathbf{n}} &&\text{vertical speed, positive up}\\
+v_{\leftrightarrow} &= \lVert\mathbf{u} - v_{\uparrow}\hat{\mathbf{n}}\rVert &&\text{horizontal speed}
+\end{align}
+This stage runs before guidance, so a fault here reaches every TMR replica.
+
+\paragraph{Limitations.} The real lunar spin axis is tilted about $1.5^\circ$ from the
+orbit normal (Cassini's laws); the model aligns them. Altitude is above a sphere of
+radius $R_M$; there is no terrain.
+Code: \texttt{fsw/navigation.cpp}. Tests: \texttt{test\_navigation.cpp}.
+
 \section{Gravity}
 With $\mathbf{r}$ the spacecraft position, $\mathbf{r}_M$ the Moon position, and
 $r=\lVert\mathbf{r}\rVert$, $r_M=\lVert\mathbf{r}_M\rVert$:

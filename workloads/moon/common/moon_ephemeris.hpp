@@ -32,4 +32,7 @@ inline Vec3 moon_velocity(double t) {
     return (moon_position(t + h) - moon_position(t - h)) / (2 * h);
 }
 
+// Tidally locked: the Moon spins once per orbit, about its orbit normal.
+inline Vec3 moon_spin(Vec3 moon_r, Vec3 moon_v) { return cross(moon_r, moon_v) / dot(moon_r, moon_r); }
+
 } // namespace moon
