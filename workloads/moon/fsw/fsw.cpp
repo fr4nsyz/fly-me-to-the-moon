@@ -31,6 +31,7 @@ extern "C" void fsw_tick(const moon::Sensors* sensors, moon::EngineCommand* comm
     *status = {};
     if (g_defense == moon::Defense::None) {
         kCoreFns[0](sensors, &g_states[0], command);
+        status->computers = 1;
         return;
     }
 
@@ -41,6 +42,7 @@ extern "C" void fsw_tick(const moon::Sensors* sensors, moon::EngineCommand* comm
     const moon::Selection sel = moon::select_command(cores, g_record);
     for (int i = 0; i < moon::kComputers; ++i) {
         g_record[i] = sel.trusted[i] ? g_record[i] + 1 : 0;
+        if (sel.trusted[i]) status->computers |= 1u << i;
     }
     const moon::GuidanceState chosen = g_states[2 * sel.computer];
     for (moon::GuidanceState& state : g_states) {

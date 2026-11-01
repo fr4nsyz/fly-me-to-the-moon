@@ -20,6 +20,7 @@ struct Sensors {
 struct FswStatus {
     bool detected = false;
     bool corrected = false;
+    unsigned char computers = 0; // bit i set: computer i trusted this tick
 };
 
 } // namespace moon

@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Descent Viewer</title>
+<style>
+:root {
+  --bg: #0d1014;
+  --panel: #151a21;
+  --line: #262d37;
+  --text: #d8dde4;
+  --muted: #8a94a3;
+  --clean: #f2f2f2;
+  --faulty: #ff4d4d;
+  --accent: #ffd34d;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: 1fr 210px 48px;
+  grid-template-areas: "scene panel" "charts panel" "timeline timeline";
+  overflow: hidden;
+}
+#scene { grid-area: scene; position: relative; min-height: 0; }
+#scene canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+#scene canvas:active { cursor: grabbing; }
+#overlay { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+#hint { position: absolute; bottom: 8px; left: 10px; color: var(--muted); font-size: 11px; }
+#charts { grid-area: charts; display: flex; gap: 1px; background: var(--line); border-top: 1px solid var(--line); min-height: 0; }
+#charts canvas { flex: 1; min-width: 0; height: 100%; background: var(--bg); }
+#panel { grid-area: panel; background: var(--panel); border-left: 1px solid var(--line); padding: 14px 16px; overflow-y: auto; }
+#timeline { grid-area: timeline; display: flex; align-items: center; gap: 12px; padding: 0 14px; background: var(--panel); border-top: 1px solid var(--line); }
+#scrub { flex: 1; accent-color: var(--accent); }
+#readout { font-variant-numeric: tabular-nums; min-width: 150px; text-align: right; }
+button, select {
+  background: #1f262f; color: var(--text); border: 1px solid #334050; border-radius: 4px;
+  padding: 4px 10px; font: inherit; cursor: pointer;
+}
+button.on { background: #34485e; border-color: #5b7894; }
+button:hover { border-color: #6d8aa6; }
+#play { width: 70px; }
+h1 { font-size: 15px; margin: 0 0 2px; }
+h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 16px 0 6px; }
+.sub { color: var(--muted); font-size: 12px; }
+.badge { display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 4px; font-weight: 700; letter-spacing: 0.05em; color: #0d1014; }
+.warn { margin-top: 8px; padding: 6px 8px; border: 1px solid #a07a1c; background: #2d2410; color: #ffd98a; border-radius: 4px; font-size: 12px; }
+ul.reasons { margin: 8px 0 0; padding-left: 16px; color: var(--muted); font-size: 12px; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+td, th { padding: 2px 0; vertical-align: top; text-align: left; }
+th { color: var(--muted); font-weight: 400; padding-right: 10px; white-space: nowrap; }
+table.cmp td, table.cmp th.col { text-align: right; }
+.mono { font-family: ui-monospace, Menlo, monospace; font-size: 12px; word-break: break-all; }
+.visible { font-size: 14px; }
+.visible b { color: var(--accent); }
+#lights { display: flex; gap: 14px; align-items: center; }
+.light { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; color: var(--muted); }
+.dot { width: 18px; height: 18px; border-radius: 50%; background: #3a414b; border: 1px solid #555f6b; }
+.dot.on { background: #3ddc6a; border-color: #8ef0a8; box-shadow: 0 0 8px #3ddc6a; }
+.legend { display: grid; grid-template-columns: 22px 1fr; gap: 3px 6px; align-items: center; font-size: 12px; }
+.swatch { height: 3px; border-radius: 2px; }
+</style>
+</head>
+<body>
+<div id="scene">
+  <div id="overlay">
+    <button data-exag="1" class="on">1x</button>
+    <button data-exag="20">20x altitude</button>
+    <span style="width:10px"></span>
+    <button data-view="overview">Overview</button>
+    <button data-view="touchdown">Touchdown</button>
+  </div>
+  <div id="hint">drag: orbit / shift-drag or right-drag: pan / wheel: zoom / space: play</div>
+</div>
+<div id="charts">
+  <canvas id="chartAlt"></canvas>
+  <canvas id="chartSpeed"></canvas>
+</div>
+<aside id="panel"></aside>
+<div id="timeline">
+  <button id="play">Play</button>
+  <input id="scrub" type="range" min="0" step="0.1" value="0">
+  <span id="readout"></span>
+  <select id="rate">
+    <option value="1">1x</option>
+    <option value="10">10x</option>
+    <option value="30" selected>30x</option>
+    <option value="100">100x</option>
+  </select>
+</div>
+<script>/*@THREE@*/</script>
+<script>const DATA = /*@DATA@*/;</script>
+<script>
+(function () {
+"use strict";
+const R = 1737400;
+const clean = DATA.clean, faulty = DATA.faulty, ev = DATA.evidence;
+
+function finite(p) { return p && p.every(function (v) { return v !== null && isFinite(v); }); }
+function norm(p) { return Math.hypot(p[0], p[1], p[2]); }
+function scale(p, s) { return [p[0] * s, p[1] * s, p[2] * s]; }
+function sub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+function add(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+function cross(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+function unit(p) { return scale(p, 1 / norm(p)); }
+// Moon-fixed has z along the spin axis; the scene is y-up.
+function toScene(p) { return [p[0], p[2], -p[1]]; }
+
+const cleanEnd = clean.samples[clean.samples.length - 1];
+const spot = clean.touchdown ? clean.touchdown.spot : cleanEnd.position;
+// Floating origin: all geometry is relative to the clean touchdown, subtracted in 64-bit before reaching the GPU.
+const O = toScene(spot);
+
+function display(p, k) {
+  const r = norm(p);
+  return sub(toScene(scale(p, (R + k * (r - R)) / r)), O);
+}
+
+function firstVisible() {
+  const n = Math.min(clean.samples.length, faulty.samples.length);
+  for (let i = 0; i < n; ++i) {
+    const a = clean.samples[i].position, b = faulty.samples[i].position;
+    if (!finite(b) || a[0] !== b[0] || a[1] !== b[1] || a[2] !== b[2]) return i;
+  }
+  return clean.samples.length !== faulty.samples.length ? n : -1;
+}
+const divergeIndex = firstVisible();
+
+function locate(samples, t) {
+  let lo = 0, hi = samples.length - 1;
+  if (t >= samples[hi].t) return { i: hi, f: 0 };
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (samples[mid].t <= t) lo = mid; else hi = mid;
+  }
+  return { i: lo, f: (t - samples[lo].t) / (samples[hi].t - samples[lo].t) };
+}
+
+const tMax = Math.max(cleanEnd.t, faulty.samples[faulty.samples.length - 1].t);
+let tNow = 0, playing = false, exag = 1;
+
+const sceneEl = document.getElementById("scene");
+const renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+sceneEl.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x05070a);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 3e7);
+scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+const sun = new THREE.DirectionalLight(0xffffff, 0.9);
+sun.position.set(0.4, 0.6, 0.7);
+scene.add(sun);
+
+const moonMat = new THREE.MeshLambertMaterial({ color: 0x8c8c88 });
+// Sunk below the true surface so its facets stay under the exact local patch.
+const moon = new THREE.Mesh(new THREE.SphereGeometry(R - 300, 256, 128), moonMat);
+moon.position.set(-O[0], -O[1], -O[2]);
+scene.add(moon);
+
+const U0 = unit(toScene(spot));
+function basis(up) {
+  const e = unit(cross([0, 1, 0], up));
+  return { U: up, E: e, N: cross(up, e) };
+}
+const B0 = basis(U0);
+
+function surfacePatch(halfWidth, n) {
+  const pos = [], idx = [];
+  for (let j = 0; j <= 2 * n; ++j) {
+    for (let i = 0; i <= 2 * n; ++i) {
+      const e = (i - n) / n * halfWidth, nn = (j - n) / n * halfWidth;
+      const dir = unit(add(add(B0.U, scale(B0.E, e / R)), scale(B0.N, nn / R)));
+      const p = sub(scale(dir, R), O);
+      pos.push(p[0], p[1], p[2]);
+    }
+  }
+  const w = 2 * n + 1;
+  for (let j = 0; j < 2 * n; ++j) {
+    for (let i = 0; i < 2 * n; ++i) {
+      const a = j * w + i;
+      idx.push(a, a + w, a + 1, a + 1, a + w, a + w + 1);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return new THREE.Mesh(g, moonMat);
+}
+scene.add(surfacePatch(150000, 150));
+
+function ring(radius, color) {
+  const pts = [];
+  for (let i = 0; i <= 128; ++i) {
+    const a = i / 128 * 2 * Math.PI;
+    const dir = unit(add(add(B0.U, scale(B0.E, radius * Math.cos(a) / R)), scale(B0.N, radius * Math.sin(a) / R)));
+    const p = sub(scale(dir, R + 0.5), O);
+    pts.push(new THREE.Vector3(p[0], p[1], p[2]));
+  }
+  return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: color }));
+}
+scene.add(ring(1000, 0xffd34d));
+
+function marker(color) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), new THREE.MeshBasicMaterial({ color: color }));
+  scene.add(m);
+  return m;
+}
+const cleanMarker = marker(0xffffff), faultyMarker = marker(0xff3b3b), divergeMarker = marker(0xffd34d);
+const markers = [cleanMarker, faultyMarker, divergeMarker];
+
+let cleanPts = [], faultyPts = [], cleanLine = null, faultyLine = null;
+function buildPath(samples, k, color, old) {
+  if (old) { scene.remove(old); old.geometry.dispose(); }
+  const pts = samples.map(function (s) { return finite(s.position) ? display(s.position, k) : null; });
+  const v = pts.filter(Boolean).map(function (p) { return new THREE.Vector3(p[0], p[1], p[2]); });
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(v), new THREE.LineBasicMaterial({ color: color }));
+  scene.add(line);
+  return { pts: pts, line: line };
+}
+function buildPaths() {
+  let r = buildPath(clean.samples, exag, 0xf2f2f2, cleanLine);
+  cleanPts = r.pts; cleanLine = r.line;
+  r = buildPath(faulty.samples, exag, 0xff4d4d, faultyLine);
+  faultyPts = r.pts; faultyLine = r.line;
+  const d = divergeIndex >= 0 && divergeIndex < faultyPts.length ? faultyPts[divergeIndex] : null;
+  divergeMarker.visible = !!d;
+  if (d) divergeMarker.position.set(d[0], d[1], d[2]);
+}
+
+function placeMarker(m, samples, pts, t) {
+  const at = locate(samples, t);
+  const a = pts[at.i], b = pts[Math.min(at.i + 1, pts.length - 1)];
+  m.visible = !!(a && b);
+  if (!m.visible) return;
+  m.position.set(a[0] + (b[0] - a[0]) * at.f, a[1] + (b[1] - a[1]) * at.f, a[2] + (b[2] - a[2]) * at.f);
+}
+
+const orbit = { target: [0, 0, 0], B: B0, r: 2000, theta: 0, phi: 0.5 };
+function applyOrbit() {
+  const B = orbit.B, c = Math.cos(orbit.phi);
+  const off = add(add(scale(B.E, c * Math.cos(orbit.theta) * orbit.r), scale(B.N, c * Math.sin(orbit.theta) * orbit.r)),
+                  scale(B.U, Math.sin(orbit.phi) * orbit.r));
+  const p = add(orbit.target, off);
+  camera.position.set(p[0], p[1], p[2]);
+  camera.up.set(B.U[0], B.U[1], B.U[2]);
+  camera.lookAt(orbit.target[0], orbit.target[1], orbit.target[2]);
+}
+
+function setView(name) {
+  const start = clean.samples[0].position;
+  if (name === "overview") {
+    const mid = unit(add(unit(toScene(start)), U0));
+    orbit.B = basis(mid);
+    orbit.target = sub(scale(mid, R + 4000 * exag), O);
+    orbit.r = 1.25 * norm(sub(toScene(start), toScene(spot))) + 30000 * exag;
+    orbit.theta = -Math.PI / 2;
+    orbit.phi = 0.3;
+  } else {
+    let miss = 0;
+    if (faulty.touchdown && finite(faulty.touchdown.spot)) miss = norm(sub(faulty.touchdown.spot, spot));
+    orbit.B = B0;
+    orbit.target = [0, 0, 0];
+    orbit.r = Math.min(Math.max(2500, 3 * miss), 400000);
+    orbit.theta = -Math.PI / 2 + 0.7;
+    orbit.phi = 0.45;
+  }
+  document.querySelectorAll("[data-view]").forEach(function (b) { b.classList.toggle("on", b.dataset.view === name); });
+  applyOrbit();
+}
+
+let drag = null;
+renderer.domElement.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+renderer.domElement.addEventListener("pointerdown", function (e) {
+  drag = { x: e.clientX, y: e.clientY, pan: e.shiftKey || e.button === 2 };
+  renderer.domElement.setPointerCapture(e.pointerId);
+});
+renderer.domElement.addEventListener("pointerup", function () { drag = null; });
+renderer.domElement.addEventListener("pointermove", function (e) {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  drag.x = e.clientX; drag.y = e.clientY;
+  if (drag.pan) {
+    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+    const up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+    const s = orbit.r * 0.0015;
+    orbit.target = add(orbit.target, [(-dx * right.x + dy * up.x) * s, (-dx * right.y + dy * up.y) * s, (-dx * right.z + dy * up.z) * s]);
+  } else {
+    orbit.theta -= dx * 0.005;
+    orbit.phi = Math.min(1.55, Math.max(-1.2, orbit.phi + dy * 0.005));
+  }
+  applyOrbit();
+});
+renderer.domElement.addEventListener("wheel", function (e) {
+  e.preventDefault();
+  orbit.r = Math.min(2e7, Math.max(5, orbit.r * Math.exp(e.deltaY * 0.0015)));
+  applyOrbit();
+}, { passive: false });
+
+document.querySelectorAll("[data-exag]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    exag = Number(b.dataset.exag);
+    document.querySelectorAll("[data-exag]").forEach(function (x) { x.classList.toggle("on", x === b); });
+    buildPaths();
+  });
+});
+document.querySelectorAll("[data-view]").forEach(function (b) {
+  b.addEventListener("click", function () { setView(b.dataset.view); });
+});
+
+function fmt(v, d) { return v === null || v === undefined || !isFinite(v) ? "inf" : v.toFixed(d); }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; }); }
+function bitRegion(b) { return b === 63 ? "sign" : b >= 52 ? "exponent" : b >= 26 ? "high mantissa" : "low mantissa"; }
+
+const BADGE = { MASKED: "#3ddc6a", CORRECTED: "#4da3ff", SDC: "#ff4d4d", DETECTED: "#ffb340", CRASH: "#c77dff", HANG: "#c77dff" };
+function buildPanel() {
+  const ct = clean.touchdown, ft = faulty.touchdown;
+  let miss = null;
+  if (ct && ft && finite(ft.spot)) miss = norm(sub(ft.spot, ct.spot));
+  function row(label, a, b) { return "<tr><th>" + label + "</th><td>" + a + "</td><td>" + b + "</td></tr>"; }
+  const visible = divergeIndex < 0 ? "never: the trajectories are identical"
+    : "<b>t = " + faulty.samples[Math.min(divergeIndex, faulty.samples.length - 1)].t.toFixed(1) + " s</b>";
+  const src = ev.file ? esc(ev.file) + ":" + ev.line + ":" + ev.column : "unknown";
+  const computerNote = ev.defense === "none" ? "Defense none: computer 0 flies alone." : "Faulty run, at the current time. Grey: silenced or outvoted.";
+  document.getElementById("panel").innerHTML =
+    "<h1>Trial " + ev.trial + "</h1><div class='sub'>" + esc(ev.sweep) + " / defense " + esc(ev.defense) + "</div>" +
+    "<div class='badge' style='background:" + (BADGE[ev.classification] || "#8a94a3") + "'>" + esc(ev.classification) + "</div>" +
+    (ev.warning ? "<div class='warn'>" + esc(ev.warning) + "</div>" : "") +
+    "<ul class='reasons'>" + ev.reasons.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>" +
+    "<h2>Fault</h2><table>" +
+    "<tr><th>Operation</th><td>" + esc(ev.kind || "?") + " (op " + ev.op_id + ", occurrence " + ev.occurrence + ")</td></tr>" +
+    "<tr><th>Function</th><td class='mono'>" + esc(ev.function || "unknown") + "</td></tr>" +
+    "<tr><th>Source</th><td class='mono'>" + src + "</td></tr>" +
+    "<tr><th>Bit</th><td>" + ev.bit + " (" + bitRegion(ev.bit) + ")</td></tr>" +
+    "<tr><th>Persistent</th><td>" + (ev.persistent ? "yes" : "no") + "</td></tr>" +
+    "<tr><th>Core</th><td>" + (ev.core === null ? "?" : ev.core + " (computer " + ev.computer + ")") + "</td></tr>" +
+    "</table>" +
+    "<h2>Fault first visible</h2><div class='visible'>" + visible + "</div>" +
+    "<h2>Flight computers</h2><div id='lights'>" +
+    [0, 1, 2].map(function (i) { return "<div class='light'><div class='dot' id='dot" + i + "'></div>C" + i + "</div>"; }).join("") +
+    "</div><div class='sub' style='margin-top:6px'>" + computerNote + "</div>" +
+    "<h2>Touchdown</h2><table class='cmp'><tr><th></th><th class='col'>clean</th><th class='col'>faulty</th></tr>" +
+    row("time (s)", fmt(ct && ct.t, 1), fmt(ft && ft.t, 1)) +
+    row("descent (m/s)", fmt(ct && ct.descent, 3), fmt(ft && ft.descent, 3)) +
+    row("horizontal (m/s)", fmt(ct && ct.horizontal, 3), fmt(ft && ft.horizontal, 3)) +
+    row("fuel (kg)", fmt(ct && ct.fuel, 1), fmt(ft && ft.fuel, 1)) +
+    row("miss (m)", "0.0", fmt(miss, 1)) +
+    row("score (pass &le; 1)", fmt(ct && ct.score, 4), fmt(ft && ft.score, 4)) +
+    "</table>" + (ft ? "" : "<div class='sub'>Faulty run: no touchdown.</div>") +
+    "<h2>Legend</h2><div class='legend'>" +
+    "<div class='swatch' style='background:var(--clean)'></div><div>clean run</div>" +
+    "<div class='swatch' style='background:var(--faulty)'></div><div>faulty run</div>" +
+    "<div class='swatch' style='background:var(--accent)'></div><div>first divergence; 1 km landing ring</div>" +
+    "</div>";
+}
+
+function updateLights() {
+  const s = faulty.samples[locate(faulty.samples, tNow).i];
+  for (let i = 0; i < 3; ++i) document.getElementById("dot" + i).classList.toggle("on", !!(s.computers & (1 << i)));
+}
+
+const p0 = clean.samples[0].position;
+function downrange(p) { return R * Math.atan2(norm(cross(p, p0)), dot(p, p0)) / 1000; }
+function series(samples, f) { return samples.map(function (s) { const v = f(s); return v === null || !isFinite(v) ? null : v; }); }
+function symlog(v) { return Math.sign(v) * Math.log10(1 + Math.abs(v)); }
+const runs = [
+  { s: clean.samples, color: "rgba(242,242,242,0.9)", width: 1.5 },
+  { s: faulty.samples, color: "rgba(255,77,77,0.95)", width: 1.5 },
+];
+runs.forEach(function (r) {
+  r.t = r.s.map(function (s) { return s.t; });
+  r.dr = series(r.s, function (s) { return finite(s.position) ? downrange(s.position) : null; });
+  r.alt = series(r.s, function (s) { return s.altitude === null ? null : s.altitude / 1000; });
+  r.vs = series(r.s, function (s) { return s.vertical_speed === null ? null : symlog(s.vertical_speed); });
+  r.hs = series(r.s, function (s) { return s.horizontal_speed === null ? null : symlog(s.horizontal_speed); });
+  r.th = series(r.s, function (s) { return s.throttle; });
+});
+function extent(arrays, lo, hi) {
+  arrays.forEach(function (a) { a.forEach(function (v) { if (v !== null) { lo = Math.min(lo, v); hi = Math.max(hi, v); } }); });
+  return [lo, hi];
+}
+
+function Chart(id, cfg) {
+  this.canvas = document.getElementById(id);
+  this.cfg = cfg;
+  this.cache = document.createElement("canvas");
+}
+Chart.prototype.resize = function () {
+  const dpr = window.devicePixelRatio || 1, c = this.canvas;
+  this.w = c.clientWidth; this.h = c.clientHeight;
+  c.width = this.cache.width = Math.round(this.w * dpr);
+  c.height = this.cache.height = Math.round(this.h * dpr);
+  this.dpr = dpr;
+  this.box = { l: 52, r: this.w - (this.cfg.right ? 40 : 14), t: 26, b: this.h - 28 };
+  const g = this.cache.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  this.drawStatic(g);
+};
+Chart.prototype.x = function (v) { const b = this.box, x = this.cfg.x; return b.l + (v - x[0]) / (x[1] - x[0]) * (b.r - b.l); };
+Chart.prototype.y = function (v, axis) { const b = this.box, y = axis || this.cfg.y; return b.b - (v - y[0]) / (y[1] - y[0]) * (b.b - b.t); };
+Chart.prototype.drawStatic = function (g) {
+  const b = this.box, cfg = this.cfg, self = this;
+  g.fillStyle = "#0d1014"; g.fillRect(0, 0, this.w, this.h);
+  g.font = "11px -apple-system, Helvetica, Arial, sans-serif";
+  g.strokeStyle = "#232a33"; g.fillStyle = "#8a94a3"; g.lineWidth = 1;
+  cfg.xTicks.forEach(function (v) {
+    const x = self.x(v);
+    g.beginPath(); g.moveTo(x, b.t); g.lineTo(x, b.b); g.stroke();
+    g.textAlign = "center"; g.fillText(cfg.xFmt(v), x, b.b + 14);
+  });
+  cfg.yTicks.forEach(function (v) {
+    const y = self.y(v);
+    g.beginPath(); g.moveTo(b.l, y); g.lineTo(b.r, y); g.stroke();
+    g.textAlign = "right"; g.fillText(cfg.yFmt(v), b.l - 6, y + 4);
+  });
+  if (cfg.right) {
+    cfg.right.ticks.forEach(function (v) { g.textAlign = "left"; g.fillText(v.toFixed(1), b.r + 6, self.y(v, cfg.right.range) + 4); });
+  }
+  g.textAlign = "left"; g.fillStyle = "#d8dde4"; g.fillText(cfg.title, b.l, 15);
+  g.textAlign = "right"; g.fillStyle = "#8a94a3"; g.fillText(cfg.xLabel, b.r, this.h - 3);
+  g.save();
+  g.beginPath(); g.rect(b.l, b.t, b.r - b.l, b.b - b.t); g.clip();
+  cfg.lines.forEach(function (ln) {
+    g.strokeStyle = ln.color; g.lineWidth = ln.width; g.setLineDash(ln.dash || []);
+    g.beginPath();
+    let pen = false;
+    for (let i = 0; i < ln.xs.length; ++i) {
+      const xv = ln.xs[i], yv = ln.ys[i];
+      if (xv === null || yv === null) { pen = false; continue; }
+      const x = self.x(xv), y = self.y(yv, ln.axis);
+      if (pen) g.lineTo(x, y); else g.moveTo(x, y);
+      pen = true;
+    }
+    g.stroke();
+  });
+  g.restore();
+  g.setLineDash([]);
+};
+Chart.prototype.draw = function (cursor) {
+  const g = this.canvas.getContext("2d"), b = this.box, self = this;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.drawImage(this.cache, 0, 0);
+  g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+  if (cursor.x !== null && isFinite(cursor.x)) {
+    const x = Math.min(b.r, Math.max(b.l, this.x(cursor.x)));
+    g.strokeStyle = "#ffd34d"; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(x, b.t); g.lineTo(x, b.b); g.stroke();
+  }
+  (cursor.dots || []).forEach(function (d) {
+    if (d.x === null || d.y === null) return;
+    g.fillStyle = d.color;
+    g.beginPath(); g.arc(self.x(d.x), self.y(d.y), 3.5, 0, 2 * Math.PI); g.fill();
+  });
+};
+
+function ticks(lo, hi, n) {
+  const step0 = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 5, 10].map(function (m) { return m * mag; }).find(function (s) { return s >= step0; });
+  const out = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(v);
+  return out;
+}
+
+const drX = extent(runs.map(function (r) { return r.dr; }), 0, 1);
+const altY = extent(runs.map(function (r) { return r.alt; }), 0, 1);
+altY[1] *= 1.05;
+const chartAlt = new Chart("chartAlt", {
+  title: "Altitude (km) vs downrange", xLabel: "downrange (km)",
+  x: drX, y: altY, xTicks: ticks(drX[0], drX[1], 6), yTicks: ticks(altY[0], altY[1], 4),
+  xFmt: function (v) { return v.toFixed(0); }, yFmt: function (v) { return v.toFixed(v < 10 ? 1 : 0); },
+  lines: runs.map(function (r) { return { xs: r.dr, ys: r.alt, color: r.color, width: r.width }; }),
+});
+const spY = extent(runs.map(function (r) { return r.vs.concat(r.hs); }), 0, 1);
+spY[0] = Math.min(spY[0], 0); spY[1] = Math.max(spY[1], 3.3);
+const symTicks = [-1000, -100, -10, 0, 10, 100, 1000, 10000].map(symlog).filter(function (v) { return v >= spY[0] && v <= spY[1]; });
+const thY = extent(runs.map(function (r) { return r.th; }), 0, 1);
+const tAxis = [0, tMax];
+const lines2 = [];
+runs.forEach(function (r) {
+  lines2.push({ xs: r.t, ys: r.vs, color: r.color, width: 1.5 });
+  lines2.push({ xs: r.t, ys: r.hs, color: r.color, width: 1.5, dash: [7, 4] });
+  lines2.push({ xs: r.t, ys: r.th, color: r.color, width: 1, dash: [2, 3], axis: thY });
+});
+const chartSpeed = new Chart("chartSpeed", {
+  title: "Speeds (m/s, symlog): vertical solid, horizontal dashed / throttle dotted (right)", xLabel: "time (s)",
+  x: tAxis, y: spY, xTicks: ticks(0, tMax, 6), yTicks: symTicks,
+  xFmt: function (v) { return v.toFixed(0); },
+  yFmt: function (v) { const a = Math.round(Math.pow(10, Math.abs(v)) - 1); return String(Math.sign(v) * a); },
+  right: { range: thY, ticks: ticks(thY[0], thY[1], 4) },
+  lines: lines2,
+});
+
+function interp(r, key, t) {
+  const at = locate(r.s, t), a = r[key][at.i], b = r[key][Math.min(at.i + 1, r.s.length - 1)];
+  return a === null || b === null ? null : a + (b - a) * at.f;
+}
+
+const scrub = document.getElementById("scrub"), readout = document.getElementById("readout"), playBtn = document.getElementById("play");
+scrub.max = tMax.toFixed(1);
+scrub.addEventListener("input", function () { tNow = Number(scrub.value); });
+function togglePlay() {
+  if (!playing && tNow >= tMax) tNow = 0;
+  playing = !playing;
+  playBtn.textContent = playing ? "Pause" : "Play";
+}
+playBtn.addEventListener("click", togglePlay);
+window.addEventListener("keydown", function (e) {
+  if (e.code === "Space" && e.target.tagName !== "SELECT") { e.preventDefault(); togglePlay(); }
+});
+
+function resize() {
+  const w = sceneEl.clientWidth, h = sceneEl.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  chartAlt.resize();
+  chartSpeed.resize();
+}
+window.addEventListener("resize", resize);
+
+let last = performance.now();
+function frame(now) {
+  const dt = (now - last) / 1000;
+  last = now;
+  if (playing) {
+    tNow = Math.min(tMax, tNow + dt * Number(document.getElementById("rate").value));
+    if (tNow >= tMax) togglePlay();
+    scrub.value = tNow;
+  }
+  readout.textContent = "t = " + tNow.toFixed(1) + " s / " + tMax.toFixed(1) + " s";
+  placeMarker(cleanMarker, clean.samples, cleanPts, tNow);
+  placeMarker(faultyMarker, faulty.samples, faultyPts, tNow);
+  markers.forEach(function (m) { m.scale.setScalar(Math.max(0.5, camera.position.distanceTo(m.position) * 0.008)); });
+  updateLights();
+  const c = runs[0], f = runs[1];
+  chartAlt.draw({ x: interp(c, "dr", tNow), dots: [
+    { x: interp(c, "dr", tNow), y: interp(c, "alt", tNow), color: "#ffffff" },
+    { x: interp(f, "dr", tNow), y: interp(f, "alt", tNow), color: "#ff4d4d" },
+  ] });
+  chartSpeed.draw({ x: tNow });
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+buildPanel();
+buildPaths();
+resize();
+setView("overview");
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
