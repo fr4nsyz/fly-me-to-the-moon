@@ -34,8 +34,19 @@ void put_vec(std::FILE* f, moon::Vec3 v) {
     std::fputc(']', f);
 }
 
+// Degrees from local vertical; negative when the engine leans against the direction of travel.
+double thrust_tilt(const moon::SurfaceState& s, moon::Vec3 direction) {
+    const double length = moon::norm(direction);
+    const moon::Vec3 up = s.position / moon::norm(s.position);
+    const double vertical = moon::dot(direction, up) / length;
+    const moon::Vec3 sideways = direction / length - vertical * up;
+    const moon::Vec3 travel = s.velocity - moon::dot(s.velocity, up) * up;
+    const double tilt = std::atan2(moon::norm(sideways), vertical) * 180.0 / M_PI;
+    return moon::dot(sideways, travel) < 0.0 ? -tilt : tilt;
+}
+
 void put_sample(std::FILE* f, bool first, double t, moon::Vec3 position, double altitude, double vertical_speed,
-                double horizontal_speed, double mass, double throttle, unsigned computers) {
+                double horizontal_speed, double mass, double throttle, double tilt, unsigned computers) {
     std::fputs(first ? "\n{\"t\":" : ",\n{\"t\":", f);
     put(f, "%.4f", t);
     std::fputs(",\"position\":", f);
@@ -50,6 +61,8 @@ void put_sample(std::FILE* f, bool first, double t, moon::Vec3 position, double 
     put(f, "%.3f", mass);
     std::fputs(",\"throttle\":", f);
     put(f, "%.5f", throttle);
+    std::fputs(",\"thrust_tilt\":", f);
+    put(f, "%.3f", tilt);
     std::fprintf(f, ",\"computers\":%u}", computers);
 }
 
@@ -108,7 +121,8 @@ int main(int argc, char** argv) {
         }
         if (trajectory && i % 10 == 0) {
             put_sample(trajectory, i == 0, t, moon::moon_fixed(before.position, t), before.altitude,
-                       before.vertical_speed, before.horizontal_speed, state.mass, command.throttle, status.computers);
+                       before.vertical_speed, before.horizontal_speed, state.mass, command.throttle,
+                       thrust_tilt(before, command.direction), status.computers);
         }
 
         state = moon::rk4_step(state, kDt, vehicle, command);
@@ -126,7 +140,7 @@ int main(int argc, char** argv) {
                         t_touch, descent, sideways, state.mass - moon::kLanderDryMass, spot.x, spot.y, spot.z, score);
             if (trajectory) {
                 put_sample(trajectory, false, t_touch, spot, 0.0, -descent, sideways, state.mass, command.throttle,
-                           status.computers);
+                           thrust_tilt(before, command.direction), status.computers);
                 std::fputs("],\n\"touchdown\":{\"t\":", trajectory);
                 put(trajectory, "%.4f", t_touch);
                 std::fputs(",\"descent\":", trajectory);

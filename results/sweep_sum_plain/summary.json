@@ -4,6 +4,7 @@
   "compiler_flags": "-O2 -gline-tables-only -ffp-contract=off -fno-vectorize -fno-slp-vectorize",
   "seed": 1337,
   "persistent": false,
+  "workload_args": [],
   "trials": 200,
   "bit_range": "0-63",
   "classifications": {
