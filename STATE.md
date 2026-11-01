@@ -281,5 +281,5 @@ Phase 6 build order (ADR-0016). The user wants to understand this phase deeply: 
 3. Defenses in FSW source at -O0 (ADR-0017): lockstep, TMR, invariant, checksum.
 4. Add LOI, coast, TLI, ascent, each as a new campaign phase. Mission plan from a tuning script.
 5. Per-phase sweep and the final table.
-Open: how the runtime learns phase boundaries, clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results). Math library calls (`sin`, `cos`, `atan2`) are not faulted; `sqrt` is being added (ADR-0019).
+Open: how the runtime learns phase boundaries, clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results). Math library calls (`sin`, `cos`, `atan2`) are not faulted; `sqrt` is instrumented (ADR-0019). No HANG outcome and no per-trial timeout: `tools/study/sweep.py` sets none, so a fault that makes the workload loop forever blocks the sweep. Add a timeout and a HANG class (own ADR) before the first moon sweep.
 Then Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).
