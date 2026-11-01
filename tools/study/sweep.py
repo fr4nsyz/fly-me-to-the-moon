@@ -17,6 +17,8 @@ Usage:
 import argparse
 import json
 import os
+import re
+import shlex
 import subprocess
 import sys
 import time
@@ -67,7 +69,7 @@ def build_plan(trace_path, out_path):
     return counts
 
 
-def classify(clean_trace, injected_trace, ops_path, evidence_path, timed_out=False):
+def classify(clean_trace, injected_trace, ops_path, evidence_path, extra_args, timed_out=False):
     command = [
         ANALYZER,
         "--clean", clean_trace,
@@ -75,6 +77,7 @@ def classify(clean_trace, injected_trace, ops_path, evidence_path, timed_out=Fal
         "--ops", ops_path,
         "--out", evidence_path,
     ]
+    command += shlex.split(extra_args)
     if timed_out:
         command.append("--timed-out")
     result = subprocess.run(command, capture_output=True, text=True)
@@ -110,6 +113,16 @@ def run_campaign(args):
     timeout = max(args.timeout_floor, args.timeout_factor * clean_seconds)
     print(f"[sweep] clean run took {clean_seconds:.2f} s; per-trial timeout {timeout:.1f} s")
 
+    trial_args = list(args.workload_args)
+    for spec in args.forward_from_clean:
+        key, flag = spec.split(":", 1)
+        match = re.search(rf"(?:^|\s){re.escape(key)}=(\S+)", clean_result.stdout)
+        if not match:
+            raise SystemExit(f"clean run did not print {key}=...")
+        trial_args += [flag, match.group(1)]
+    if trial_args:
+        print(f"[sweep] trial args: {' '.join(trial_args)}")
+
     counts = build_plan(clean_trace, plan_path)
     total_sites = sum(counts.values())
     print(
@@ -141,7 +154,7 @@ def run_campaign(args):
                 "SDC_BUILD_ID": args.build_id,
                 "SDC_COMPILER_FLAGS": args.compiler_flags,
             },
-            args.workload_args,
+            trial_args,
             timeout=timeout,
         )
         timed_out = result is None
@@ -161,7 +174,7 @@ def run_campaign(args):
             print(f"[sweep] trial {trial:4d}  CRASH (no trace)")
             continue
 
-        evidence = classify(clean_trace, trial_trace, args.ops, evidence_path, timed_out)
+        evidence = classify(clean_trace, trial_trace, args.ops, evidence_path, args.analyzer_args, timed_out)
         injected = sdctrace.read(trial_trace)
 
         site = injected.metadata.get("inject", {})
@@ -327,6 +340,18 @@ def main():
     parser.add_argument("--build-id", default="unknown")
     parser.add_argument("--compiler-flags", default="unknown")
     parser.add_argument("--bit-range", default="0-63")
+    parser.add_argument(
+        "--analyzer-args",
+        default="",
+        help="extra flags passed to sdc-analyze, as one string",
+    )
+    parser.add_argument(
+        "--forward-from-clean",
+        action="append",
+        default=[],
+        metavar="KEY:FLAG",
+        help="pass the clean run's printed KEY=value to each trial as FLAG value",
+    )
     parser.add_argument(
         "--timeout-factor",
         type=float,
