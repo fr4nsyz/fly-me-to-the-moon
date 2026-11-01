@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interface.hpp"
 #include "vec3.hpp"
 
 namespace moon {
@@ -14,11 +15,6 @@ struct Vehicle {
     double dry_mass = 0.0;   // kg
     double max_thrust = 0.0; // N
     double isp = 0.0;        // s
-};
-
-struct EngineCommand {
-    double throttle = 0.0;
-    Vec3 direction;
 };
 
 struct Rates {
