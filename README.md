@@ -19,21 +19,33 @@ The defense is a hybrid of TMR and lockstep that mimics real rocket flight compu
 
 ## Results
 
-![Defense outcomes](docs/img/defense_outcomes.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/defense_outcomes_dark.png">
+  <img alt="Defense outcomes" src="docs/img/defense_outcomes_light.png">
+</picture>
 
 With no defense, about one in six persistent single-bit faults silently crashes the lander. With the TMR and lockstep hybrid, all 200 land safely: in 199 the defense silenced or outvoted the broken core.
 
-![Descent profile](docs/img/descent_profile.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/same_fault_dark.png">
+  <img alt="The same fault without and with the defense" src="docs/img/same_fault_light.png">
+</picture>
 
-One persistent exponent flip in navigation (trial 1): the trajectories are identical until t = 379 s, then the faulty lander falls short and strikes the surface at 123.6 m/s.
+The same persistent exponent flip in navigation (trial 1), side by side. Without a defense (left) the trajectories match until t = 379 s, then the lander falls short and strikes the surface at 123.6 m/s. With the defense (right) the same fault lands on core 4 and the landing is identical to the clean one.
 
-![Speeds over time](docs/img/descent_speeds.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/computers_dark.png">
+  <img alt="Flight computer status in the defended run" src="docs/img/computers_light.png">
+</picture>
 
-The same pair over time. The fault takes over late in braking, where vertical speed should level off before the final descent.
+What the defense did: core 4's two-core computer (computer 2) disagrees with itself from t = 379 s, so it is silenced and computers 0 and 1 fly the rest of the descent.
 
-![Defense at work](docs/img/defense_at_work.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/descent_speeds_dark.png">
+  <img alt="Vertical and horizontal speed without a defense" src="docs/img/descent_speeds_light.png">
+</picture>
 
-The same fault under `tmr-lockstep`, landing on core 4. Computer 2's two cores disagree from t = 379 s, so it is silenced and the other two computers fly an identical landing.
+The undefended run's speeds: the fault takes over late in braking, where vertical speed should level off before the final descent.
 
 ## Build
 
