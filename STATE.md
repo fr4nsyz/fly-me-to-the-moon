@@ -273,6 +273,8 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 - Instrumentation overhead on `sum_plain`: 3.9x median wall time, 40.0 bytes per event.
 - Campaign bit-region split: low mantissa masked 30/128, exponent masked 1/35.
 - Trial traces are deleted after analysis unless `--keep-traces` is passed.
+- Lunar descent, no defenses, single-tick transient faults: 200/200 MASKED (seed 1337, `results/sweep_moon_none/`); 194 landed with the clean score, worst 0.356. The closed loop re-measures true state every tick, so one bad tick is corrected on the next. Defenses need persistent faults or FSW state to show anything.
+- Clean lunar landing: 49 FSW ops, 381,838 events, 15.3 MB trace, 1.2 s per instrumented run; a 200-trial sweep takes about 6 min.
 
 ## Next move
 Phase 6 build order (ADR-0016). The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
