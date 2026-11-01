@@ -236,7 +236,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 **Evidence.** Aviation Week, "Dragon's Radiation-Tolerant Design" (John Muratore: three computer units, each of which have two computers checking on each other). SpaceNews: a Dragon computer shut down on a 2017 mission and Dragon continued on the other two. The cross-unit voting details come from secondary sources.
 
-**Rejected.** TMR and lockstep as separate modes: standalone lockstep never saves a landing, and the comparison obscures how real systems use them. TMR limited to navigation or guidance, and invariant checks: not needed for the demo's question. Checksums: deferred until memory faults exist.
+**Rejected.** TMR and lockstep as separate modes: standalone lockstep never saves a landing, and the comparison obscures how real systems use them. Running the six cores on threads: it would not change any result, because what the defense measures is fault isolation and the comparison logic, both already modeled; OS threads are scheduled unpredictably and drift apart, unlike hardware lockstep cores, which execute the same instruction on the same clock cycle under a hardware comparator; and threads would break byte-identical clean runs unless every core's trace events were buffered and merged in core order each tick. The cores run one after another in a single thread; the campaign uses the machine's cores instead (ADR-0024). TMR limited to navigation or guidance, and invariant checks: not needed for the demo's question. Checksums: deferred until memory faults exist.
 
 **Limitations.** A fault that hits both cores of one computer identically cannot occur in this model, because each core has its own operations; real designs offset the two cores in time for that case. The voter is a single point of failure the campaign does not measure; faulting integer and compare instructions (future work) would make it measurable. The six copies make the flight software do about six times the work per tick, which also gives random faults six times as many targets.
 
@@ -584,3 +584,22 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/runtime/runtime.cpp`, `tools/study/sweep.py`, `docs/trace-format.md`, `docs/architecture.md` sections 7.2 and 12 and the runtime interface table.
 
 **Follow-up.** Navigation filter to give the flight software state (the other half of the chosen fault-model work). Stuck-at and memory faults in future work.
+
+### ADR-0024 — Sweep trials run concurrently; cores stay sequential
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** A `tmr-lockstep` landing executes six times the operations of a `none` landing, so a 200-trial campaign that ran trials one at a time would take most of an hour. The machine has 12 CPU cores.
+
+**Decision.** `tools/study/sweep.py --jobs N` runs N trials at the same time, each as its own single-threaded process. Results are returned in trial order, so the summary, report, and evidence do not depend on N. The default is 1. Each trial's injection site is taken from its evidence file instead of re-reading the trial trace. The flight software's cores are not threaded (ADR-0008).
+
+**Why.** Trials are independent program runs with their own seeds, so running them concurrently needs no synchronization and keeps every run deterministic. Parallelism belongs where it changes only wall time.
+
+**Evidence.** The 200-trial seed-1337 `sum_plain` sweep with `--jobs 1` and `--jobs 8` gives identical per-trial tables, and both match the stored results in totals, per bit region, and per operation. Wall time: 16.7 s with one job, 6.5 s with eight.
+
+**Rejected.** Threading the six cores inside one landing: see ADR-0008.
+
+**Impact.** `tools/study/sweep.py`.
+
+**Follow-up.** None.

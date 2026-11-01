@@ -23,6 +23,7 @@ import subprocess
 import sys
 import time
 from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -132,8 +133,7 @@ def run_campaign(args):
 
     baseline = sdctrace.read(clean_trace)
 
-    records = []
-    for trial in range(args.trials):
+    def run_trial(trial):
         # The seed is the campaign seed combined with the trial index, so each
         # trial gets its own deterministic site and the whole campaign is
         # reproducible from a single number.
@@ -161,24 +161,20 @@ def run_campaign(args):
         timed_out = result is None
 
         if timed_out and not os.path.exists(trial_trace):
-            records.append({"trial": trial, "seed": seed, "classification": "HANG"})
-            print(f"[sweep] trial {trial:4d}  HANG (no trace)")
-            continue
+            return {"trial": trial, "seed": seed, "classification": "HANG"}, f"[sweep] trial {trial:4d}  HANG (no trace)"
 
         if not os.path.exists(trial_trace):
-            records.append({
+            record = {
                 "trial": trial,
                 "seed": seed,
                 "classification": "CRASH",
                 "error": result.stderr.strip()[-400:],
-            })
-            print(f"[sweep] trial {trial:4d}  CRASH (no trace)")
-            continue
+            }
+            return record, f"[sweep] trial {trial:4d}  CRASH (no trace)"
 
         evidence = classify(clean_trace, trial_trace, args.ops, evidence_path, args.analyzer_args, timed_out)
-        injected = sdctrace.read(trial_trace)
 
-        site = injected.metadata.get("inject", {})
+        site = evidence.get("inject", {})
         record = {
             "trial": trial,
             "seed": seed,
@@ -190,17 +186,24 @@ def run_campaign(args):
             "diverged": evidence["alignment"]["diverged"],
             "final_result_outside_tolerance": evidence["final_result_outside_tolerance"],
         }
-        records.append(record)
-
-        detail = ""
-        if site.get("op_id") is not None:
-            detail = f"  op={site['op_id']} occ={site['occurrence']} bit={site['bit']}"
-        print(f"[sweep] trial {trial:4d}  {record['classification']:<12}{detail}")
 
         # The trace files are large. Keep the evidence, drop the trace unless
         # the caller asked for it.
         if not args.keep_traces:
             os.remove(trial_trace)
+
+        detail = ""
+        if site.get("op_id") is not None:
+            detail = f"  op={site['op_id']} occ={site['occurrence']} bit={site['bit']}"
+        return record, f"[sweep] trial {trial:4d}  {record['classification']:<12}{detail}"
+
+    # Trials are independent processes, so running them concurrently changes
+    # only wall time; map() returns them in trial order.
+    records = []
+    with ThreadPoolExecutor(max_workers=args.jobs) as pool:
+        for record, line in pool.map(run_trial, range(args.trials)):
+            records.append(record)
+            print(line, flush=True)
 
     write_summary(args, records, baseline, clean_trace)
     return records
@@ -341,6 +344,12 @@ def main():
     parser.add_argument("--build-id", default="unknown")
     parser.add_argument("--compiler-flags", default="unknown")
     parser.add_argument("--bit-range", default="0-63")
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=1,
+        help="trials to run at the same time; results do not depend on it",
+    )
     parser.add_argument(
         "--persistent",
         action="store_true",

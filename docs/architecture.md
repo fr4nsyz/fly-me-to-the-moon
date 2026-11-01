@@ -463,6 +463,7 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 - Selective recording (only record a window around the injection)
 - Multi-bit or multi-site injection campaigns
 - Stuck-at faults (a bit forced to 0 or 1) alongside flips
+- Running the defense's cores on threads, with per-core trace buffers merged in core order each tick to keep clean runs byte-identical (ADR-0008)
 - Memory faults (corrupting stored values, not computed results), with checksums as the matching defense
 - Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening
 - Visualization of value propagation (data-flow graph extracted from the two traces)
@@ -511,6 +512,7 @@ Settled in this revision:
 | ADR-0021 | Multi-file build profile is workload-generic |
 | ADR-0022 | Per-trial timeout and HANG outcome |
 | ADR-0023 | Persistent fault model |
+| ADR-0024 | Sweep trials run concurrently; cores stay sequential |
 
 ---
 
@@ -543,6 +545,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0021 | 2026-10-31 | Multi-file build profile is workload-generic | Accepted |
 | ADR-0022 | 2026-10-31 | Per-trial timeout and HANG outcome | Accepted |
 | ADR-0023 | 2026-10-31 | Persistent fault model | Accepted |
+| ADR-0024 | 2026-10-31 | Sweep trials run concurrently; cores stay sequential | Accepted |
 
 ---
 
@@ -572,6 +575,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 - **TMR across computers:** the remaining computers' commands are compared. Three: majority. Two that agree: use it. Two that disagree: the computer with the longer record of agreement. One: use it.
 - **Resync:** after each tick, every computer's phase memory is set to the chosen computer's.
 - **Separate cores:** the build makes each core a separate, internalized copy of the same flight software (`instrument.sh --replicate`), so each has its own operations and a persistent fault breaks one core. The source stays plain C++.
+- **Cores run in sequence:** the six cores run one after another in a single thread each tick. Threads would not change any result and are not how hardware lockstep works (ADR-0008); the campaign runs trials concurrently instead (ADR-0024).
 - **Voter assumed reliable:** it compares integer bit patterns, which the floating-point fault model does not cover, so the campaign never faults it. It is a single point of failure the campaign does not measure. The flight software is built at -O0 so the copies and comparisons survive (ADR-0017).
 - **Reporting:** the flight software returns a status flag; the simulation reports a silenced or outvoted computer as CORRECTED.
 
