@@ -247,13 +247,13 @@ Delivered:
 | `docs/trace-format.md` | Normative SDCTRACE binary specification. |
 | `docs/audit-log.md` | Append-only log. ADR-0001 through ADR-0006. |
 
-Convention for edits: change the living spec, then append an audit-log entry naming the sections touched, then record the decision ID in the spec's revision history and open decisions tables. History in the audit log is never rewritten, a wrong call gets a new entry that supersedes it.
+Convention for edits: change the living spec, then add or rewrite the audit-log entry naming the sections touched, then record the decision ID in the spec's revision history and open decisions tables. Entries are rewritten when a decision changes; git history keeps earlier versions.
 
 The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 
 ## Decisions (locked)
 - Plant: hand-rolled C++ 3D dynamics (MIT). FSW instrumented only.
-- Mission: full surface → lunar landing.
+- Mission: powered lunar descent in a Moon-centered frame (ADR-0007, ADR-0016).
 - Defenses: none/lockstep/vote/TMR/invariant/checksum/all (measured equally).
 - Viewer: Three.js HUD, vendored offline, reads trajectory.json + evidence.json.
 - ADR-0003 accepted (module-order op ids), ADR-0005 accepted (CORRECTED), ADR-0006 accepted (bit 0 = LSB).
@@ -266,7 +266,7 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 - Phase 3 LLVM pass (fadd/fsub/fmul/fdiv, real ops.json): done
 - Phase 4 analyzer (align, audit, classify, evidence): done
 - Phase 5 drivers + first sweep: done. 200-trial campaign, seed 1337, in `results/sweep_sum_plain/`. 83.0% SDC, 17.0% MASKED.
-- Phase 6 moon mission + defenses: step 1 (plant) done; step 2 (powered descent) decided in ADR-0018, ADR-0019, no code yet
+- Phase 6 lunar descent + defenses: plant, sqrt instrumentation, o0 build profile, navigation, and guidance done; Moon-centered rework next
 - Phase 7 viewer: after
 
 ## Measured results
@@ -276,10 +276,11 @@ The original at `../sdc-investigator/docs/architecture.md` stays untouched.
 
 ## Next move
 Phase 6 build order (ADR-0016). The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
-1. Plant: 3D point mass, Earth + Moon gravity, RK4. Test: unpowered orbit conserves energy.
-2. Powered descent alone, from a fixed lunar orbit, so a first defense table exists early.
-3. Defenses in FSW source at -O0 (ADR-0017): lockstep, TMR, invariant, checksum.
-4. Add LOI, coast, TLI, ascent, each as a new campaign phase. Mission plan from a tuning script.
-5. Per-phase sweep and the final table.
-Open: how the runtime learns phase boundaries, clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results). Math library calls (`sin`, `cos`, `atan2`) are not faulted; `sqrt` is instrumented (ADR-0019). No HANG outcome and no per-trial timeout: `tools/study/sweep.py` sets none, so a fault that makes the workload loop forever blocks the sweep. Add a timeout and a HANG class (own ADR) before the first moon sweep.
+1. Moon-centered rework: delete the ephemeris, Earth gravity, and unused constants; Moon-only gravity; navigation with constant spin.
+2. Piece G: simulation loop, start orbit, touchdown interpolation, landing judge and score, flight log.
+3. First clean landing; tune guidance values.
+4. Per-trial timeout and HANG class (own ADR).
+5. Defenses in FSW source at -O0 (ADR-0017): lockstep, TMR, invariant (checksum to be decided).
+6. Sweep with landing score, defense table.
+Open: clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results). Math library calls (`sin`, `cos`, `atan2`) are not faulted; `sqrt` is instrumented (ADR-0019). No HANG outcome and no per-trial timeout: `tools/study/sweep.py` sets none, so a fault that makes the workload loop forever blocks the sweep. Add a timeout and a HANG class (own ADR) before the first moon sweep.
 Then Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).
