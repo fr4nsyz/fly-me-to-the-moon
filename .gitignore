@@ -31,3 +31,6 @@ venv/
 docs/math/*.aux
 docs/math/*.log
 docs/math/*.out
+
+# Per-trial evidence from sweeps; report.md and summary.json are kept
+results/*/trial_*.json
