@@ -88,6 +88,28 @@ def load_trial(args):
     }
 
 
+def refly(args):
+    """Re-fly the clean landing and the trial's faulty landing; returns (evidence, clean, faulty)."""
+    evidence = load_trial(args)
+    inject = evidence.get("inject", {})
+    if not inject.get("enabled", True) or inject.get("op_id") is None:
+        raise SystemExit("view: the evidence has no injection site")
+    with tempfile.TemporaryDirectory() as tmp:
+        stdout, clean = fly(args.binary, {}, ["--defense", args.defense], os.path.join(tmp, "clean.json"))
+        match = re.search(r"spot=(\S+)", stdout)
+        if not match:
+            raise SystemExit(f"view: the clean landing printed no spot: {stdout.strip()}")
+        fault_env = {"SDC_INJECT": f"op={inject['op_id']},occ={inject['occurrence']},bit={inject['bit']}"}
+        if inject.get("persistent"):
+            fault_env["SDC_INJECT_PERSIST"] = "1"
+        _, faulty = fly(
+            args.binary, fault_env,
+            ["--defense", args.defense, "--reference", match.group(1)],
+            os.path.join(tmp, "faulty.json"),
+        )
+    return evidence, clean, faulty
+
+
 def summarize(evidence, args):
     inject = evidence.get("inject", {})
     source = (evidence.get("injected_event") or {}).get("source", {})
@@ -133,25 +155,7 @@ def main():
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
-    evidence = load_trial(args)
-    inject = evidence.get("inject", {})
-    if not inject.get("enabled", True) or inject.get("op_id") is None:
-        raise SystemExit("view: the evidence has no injection site")
-
-    with tempfile.TemporaryDirectory() as tmp:
-        stdout, clean = fly(args.binary, {}, ["--defense", args.defense], os.path.join(tmp, "clean.json"))
-        match = re.search(r"spot=(\S+)", stdout)
-        if not match:
-            raise SystemExit(f"view: the clean landing printed no spot: {stdout.strip()}")
-        fault_env = {"SDC_INJECT": f"op={inject['op_id']},occ={inject['occurrence']},bit={inject['bit']}"}
-        if inject.get("persistent"):
-            fault_env["SDC_INJECT_PERSIST"] = "1"
-        _, faulty = fly(
-            args.binary, fault_env,
-            ["--defense", args.defense, "--reference", match.group(1)],
-            os.path.join(tmp, "faulty.json"),
-        )
-
+    evidence, clean, faulty = refly(args)
     summary = summarize(evidence, args)
     warning = check_consistency(summary["classification"], faulty["touchdown"])
     if warning:
