@@ -196,6 +196,7 @@ def main():
     runs = {}
     for mode, sweep in SWEEPS.items():
         trial = argparse.Namespace(binary=args.binary, sweep=sweep, trial=args.trial, defense=mode)
+        view.sweep_defense(trial)
         evidence, clean, faulty = view.refly(trial)
         runs[mode] = (view.summarize(evidence, trial), clean, faulty)
     for theme in THEMES:

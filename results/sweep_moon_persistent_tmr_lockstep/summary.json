@@ -4,6 +4,10 @@
   "compiler_flags": "-O0 -gline-tables-only -ffp-contract=off",
   "seed": 1337,
   "persistent": true,
+  "workload_args": [
+    "--defense",
+    "tmr-lockstep"
+  ],
   "trials": 200,
   "bit_range": "0-63",
   "classifications": {

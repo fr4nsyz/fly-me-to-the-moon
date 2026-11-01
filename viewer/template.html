@@ -6,65 +6,73 @@
 <title>Descent Viewer</title>
 <style>
 :root {
-  --bg: #0d1014;
-  --panel: #151a21;
-  --line: #262d37;
-  --text: #d8dde4;
-  --muted: #8a94a3;
-  --clean: #f2f2f2;
-  --faulty: #ff4d4d;
-  --accent: #ffd34d;
+  --bg: #111316;
+  --panel: #15181c;
+  --line: #2a2f36;
+  --text: #e3e4e7;
+  --muted: #8f959e;
+  --clean: #3987e5;
+  --faulty: #d95926;
+  --good: #199e70;
+  --cursor: #c9ccd1;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  grid-template-rows: 1fr 210px 48px;
-  grid-template-areas: "scene panel" "charts panel" "timeline timeline";
-  overflow: hidden;
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 12px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  display: grid; grid-template-columns: 1fr 380px; grid-template-rows: 1fr 200px 44px;
+  grid-template-areas: "scene panel" "charts panel" "timeline timeline"; overflow: hidden;
 }
 #scene { grid-area: scene; position: relative; min-height: 0; }
 #scene canvas { display: block; width: 100%; height: 100%; cursor: grab; }
 #scene canvas:active { cursor: grabbing; }
-#overlay { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+#overlay { position: absolute; top: 10px; left: 10px; display: flex; gap: 4px; }
 #hint { position: absolute; bottom: 8px; left: 10px; color: var(--muted); font-size: 11px; }
 #charts { grid-area: charts; display: flex; gap: 1px; background: var(--line); border-top: 1px solid var(--line); min-height: 0; }
 #charts canvas { flex: 1; min-width: 0; height: 100%; background: var(--bg); }
-#panel { grid-area: panel; background: var(--panel); border-left: 1px solid var(--line); padding: 14px 16px; overflow-y: auto; }
-#timeline { grid-area: timeline; display: flex; align-items: center; gap: 12px; padding: 0 14px; background: var(--panel); border-top: 1px solid var(--line); }
-#scrub { flex: 1; accent-color: var(--accent); }
-#readout { font-variant-numeric: tabular-nums; min-width: 150px; text-align: right; }
-button, select {
-  background: #1f262f; color: var(--text); border: 1px solid #334050; border-radius: 4px;
-  padding: 4px 10px; font: inherit; cursor: pointer;
-}
-button.on { background: #34485e; border-color: #5b7894; }
-button:hover { border-color: #6d8aa6; }
-#play { width: 70px; }
-h1 { font-size: 15px; margin: 0 0 2px; }
-h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 16px 0 6px; }
-.sub { color: var(--muted); font-size: 12px; }
-.badge { display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 4px; font-weight: 700; letter-spacing: 0.05em; color: #0d1014; }
-.warn { margin-top: 8px; padding: 6px 8px; border: 1px solid #a07a1c; background: #2d2410; color: #ffd98a; border-radius: 4px; font-size: 12px; }
-ul.reasons { margin: 8px 0 0; padding-left: 16px; color: var(--muted); font-size: 12px; }
-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-td, th { padding: 2px 0; vertical-align: top; text-align: left; }
-th { color: var(--muted); font-weight: 400; padding-right: 10px; white-space: nowrap; }
-table.cmp td, table.cmp th.col { text-align: right; }
-.mono { font-family: ui-monospace, Menlo, monospace; font-size: 12px; word-break: break-all; }
-.visible { font-size: 14px; }
-.visible b { color: var(--accent); }
-#lights { display: flex; gap: 14px; align-items: center; }
-.light { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; color: var(--muted); }
-.dot { width: 18px; height: 18px; border-radius: 50%; background: #3a414b; border: 1px solid #555f6b; }
-.dot.on { background: #3ddc6a; border-color: #8ef0a8; box-shadow: 0 0 8px #3ddc6a; }
-.legend { display: grid; grid-template-columns: 22px 1fr; gap: 3px 6px; align-items: center; font-size: 12px; }
-.swatch { height: 3px; border-radius: 2px; }
+#trial { width: 100%; margin-bottom: 6px; }
+#panel { grid-area: panel; background: var(--panel); border-left: 1px solid var(--line); overflow-y: auto; }
+#timeline { grid-area: timeline; display: flex; align-items: center; gap: 12px; padding: 0 12px; background: var(--panel); border-top: 1px solid var(--line); }
+#scrub { flex: 1; accent-color: var(--cursor); }
+#readout { font-family: var(--mono); min-width: 160px; text-align: right; color: var(--muted); }
+button, select { background: transparent; color: var(--text); border: 1px solid var(--line); border-radius: 2px; padding: 3px 9px; font: inherit; cursor: pointer; }
+button.on { border-color: var(--cursor); }
+button:hover { border-color: var(--muted); }
+#play { width: 64px; }
+section { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.label { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.title { font-size: 13px; font-weight: 600; }
+.sub { color: var(--muted); }
+.outcome { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-weight: 600; letter-spacing: 0.04em; }
+.sq { width: 10px; height: 10px; flex: none; }
+.result { margin-top: 4px; color: var(--muted); }
+.warn { margin-top: 8px; padding: 6px 8px; border-left: 2px solid var(--faulty); color: var(--text); }
+.key { display: flex; gap: 14px; margin-top: 8px; color: var(--muted); }
+.key span { display: inline-flex; align-items: center; gap: 5px; }
+.key i { display: inline-block; width: 14px; height: 2px; }
+table { width: 100%; border-collapse: collapse; }
+td, th { padding: 2px 0; text-align: left; font-weight: 400; }
+#telemetry th { color: var(--muted); padding-right: 6px; }
+#telemetry td { font-family: var(--mono); text-align: right; }
+#telemetry thead th { text-align: right; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+#telemetry thead th:first-child { text-align: left; }
+#telemetry tr.diverged th { box-shadow: inset 2px 0 0 var(--faulty); padding-left: 6px; color: var(--text); }
+#gauge { display: block; width: 100%; height: 150px; }
+.computers { display: flex; gap: 16px; }
+.computer { display: flex; align-items: center; gap: 6px; }
+.computer .sq { background: var(--good); }
+.computer.off .sq { background: transparent; box-shadow: inset 0 0 0 1px var(--muted); }
+.computer.off .state { color: var(--muted); }
+.state { font-family: var(--mono); }
+#events button { display: flex; width: 100%; justify-content: space-between; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 4px 0; text-align: left; }
+#events button:hover { color: #fff; }
+#events .t { font-family: var(--mono); color: var(--muted); }
+#events button.past .what { color: var(--text); }
+#events button.future .what { color: var(--muted); }
+.fault td { font-family: var(--mono); word-break: break-all; }
+.fault th { color: var(--muted); padding-right: 10px; white-space: nowrap; vertical-align: top; }
 </style>
 </head>
 <body>
@@ -100,7 +108,9 @@ table.cmp td, table.cmp th.col { text-align: right; }
 (function () {
 "use strict";
 const R = 1737400;
-const clean = DATA.clean, faulty = DATA.faulty, ev = DATA.evidence;
+const hash = location.hash.slice(1).split("@");
+const pick = Math.min(Math.max(0, Number(hash[0]) || 0), DATA.trials.length - 1);
+const ev = DATA.trials[pick].evidence, faulty = DATA.trials[pick].faulty, clean = DATA.clean[ev.defense];
 
 function finite(p) { return p && p.every(function (v) { return v !== null && isFinite(v); }); }
 function norm(p) { return Math.hypot(p[0], p[1], p[2]); }
@@ -151,7 +161,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuff
 renderer.setPixelRatio(window.devicePixelRatio);
 sceneEl.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x05070a);
+scene.background = new THREE.Color(0x111316);
 const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 3e7);
 scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 const sun = new THREE.DirectionalLight(0xffffff, 0.9);
@@ -206,14 +216,14 @@ function ring(radius, color) {
   }
   return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: color }));
 }
-scene.add(ring(1000, 0xffd34d));
+scene.add(ring(1000, 0x8f959e));
 
 function marker(color) {
   const m = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), new THREE.MeshBasicMaterial({ color: color }));
   scene.add(m);
   return m;
 }
-const cleanMarker = marker(0xffffff), faultyMarker = marker(0xff3b3b), divergeMarker = marker(0xffd34d);
+const cleanMarker = marker(0x3987e5), faultyMarker = marker(0xd95926), divergeMarker = marker(0xc9ccd1);
 const markers = [cleanMarker, faultyMarker, divergeMarker];
 
 let cleanPts = [], faultyPts = [], cleanLine = null, faultyLine = null;
@@ -226,9 +236,9 @@ function buildPath(samples, k, color, old) {
   return { pts: pts, line: line };
 }
 function buildPaths() {
-  let r = buildPath(clean.samples, exag, 0xf2f2f2, cleanLine);
+  let r = buildPath(clean.samples, exag, 0x3987e5, cleanLine);
   cleanPts = r.pts; cleanLine = r.line;
-  r = buildPath(faulty.samples, exag, 0xff4d4d, faultyLine);
+  r = buildPath(faulty.samples, exag, 0xd95926, faultyLine);
   faultyPts = r.pts; faultyLine = r.line;
   const d = divergeIndex >= 0 && divergeIndex < faultyPts.length ? faultyPts[divergeIndex] : null;
   divergeMarker.visible = !!d;
@@ -319,51 +329,155 @@ function fmt(v, d) { return v === null || v === undefined || !isFinite(v) ? "inf
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; }); }
 function bitRegion(b) { return b === 63 ? "sign" : b >= 52 ? "exponent" : b >= 26 ? "high mantissa" : "low mantissa"; }
 
-const BADGE = { MASKED: "#3ddc6a", CORRECTED: "#4da3ff", SDC: "#ff4d4d", DETECTED: "#ffb340", CRASH: "#c77dff", HANG: "#c77dff" };
+const OUTCOME = { MASKED: "#3987e5", CORRECTED: "#199e70", SDC: "#d95926", DETECTED: "#c98500", CRASH: "#9085e9", HANG: "#9085e9" };
+const DRY_MASS = 7000;
+const computerCount = ev.defense === "none" ? 1 : 3;
+const allTrusted = (1 << computerCount) - 1;
+
+function sampleAt(samples, t) {
+  const at = locate(samples, t), a = samples[at.i], b = samples[Math.min(at.i + 1, samples.length - 1)];
+  function mix(k) { return a[k] === null || b[k] === null ? null : a[k] + (b[k] - a[k]) * at.f; }
+  const vs = mix("vertical_speed"), hs = mix("horizontal_speed");
+  return {
+    altitude: mix("altitude"), vs: vs, hs: hs,
+    speed: vs === null || hs === null ? null : Math.hypot(vs, hs),
+    angle: vs === null || hs === null ? null : Math.atan2(-vs, hs) * 180 / Math.PI,
+    tilt: mix("thrust_tilt"), throttle: mix("throttle"),
+    fuel: a.mass === null ? null : mix("mass") - DRY_MASS, computers: a.computers, ended: t > samples[samples.length - 1].t,
+  };
+}
+
+const ROWS = [
+  ["altitude", "Altitude (m)", 1, 0.5],
+  ["vs", "Vertical speed (m/s)", 2, 0.01],
+  ["hs", "Horizontal speed (m/s)", 2, 0.01],
+  ["speed", "Speed (m/s)", 2, 0.01],
+  ["angle", "Descent angle (deg)", 1, 0.05],
+  ["tilt", "Thrust tilt (deg)", 1, 0.05],
+  ["throttle", "Throttle (%)", 1, 0.05, 100],
+  ["fuel", "Fuel (kg)", 1, 0.5],
+];
+
+function events() {
+  const out = [];
+  const brake = clean.samples.find(function (s) { return s.throttle !== null && s.throttle < 0.999; });
+  if (brake) out.push({ t: brake.t, what: "Braking ends, final descent begins" });
+  if (divergeIndex >= 0 && divergeIndex < faulty.samples.length) out.push({ t: faulty.samples[divergeIndex].t, what: "Fault changes the trajectory" });
+  if (computerCount > 1) {
+    const silenced = faulty.samples.find(function (s) { return s.computers !== allTrusted; });
+    if (silenced) {
+      const lost = [0, 1, 2].filter(function (c) { return !(silenced.computers & (1 << c)); });
+      out.push({ t: silenced.t, what: "Computer " + lost.join(", ") + " silenced" });
+    }
+  }
+  const ft = faulty.touchdown, fEnd = faulty.samples[faulty.samples.length - 1];
+  if (!ft) out.push({ t: fEnd.t, what: "Faulty run: no touchdown before the time limit" });
+  else if (ft.score === null || ft.score > 1) out.push({ t: ft.t, what: "Faulty run: impact at " + fmt(ft.descent, 1) + " m/s down" });
+  else out.push({ t: ft.t, what: "Faulty run: touchdown at " + fmt(ft.descent, 1) + " m/s" });
+  if (clean.touchdown) out.push({ t: clean.touchdown.t, what: "Clean run: touchdown" });
+  return out.sort(function (a, b) { return a.t - b.t; });
+}
+const EVENTS = events();
+
+function trialPicker() {
+  const groups = {};
+  DATA.trials.forEach(function (t, i) { (groups[t.evidence.sweep] = groups[t.evidence.sweep] || []).push(i); });
+  return "<select id='trial'>" + Object.keys(groups).map(function (sweep) {
+    return "<optgroup label='" + esc(sweep) + "'>" + groups[sweep].map(function (i) {
+      const e = DATA.trials[i].evidence;
+      return "<option value='" + i + "'" + (i === pick ? " selected" : "") + ">Trial " + e.trial + ", " + e.classification + "</option>";
+    }).join("") + "</optgroup>";
+  }).join("") + "</select>";
+}
+
 function buildPanel() {
   const ct = clean.touchdown, ft = faulty.touchdown;
   let miss = null;
   if (ct && ft && finite(ft.spot)) miss = norm(sub(ft.spot, ct.spot));
-  function row(label, a, b) { return "<tr><th>" + label + "</th><td>" + a + "</td><td>" + b + "</td></tr>"; }
-  const visible = divergeIndex < 0 ? "never: the trajectories are identical"
-    : "<b>t = " + faulty.samples[Math.min(divergeIndex, faulty.samples.length - 1)].t.toFixed(1) + " s</b>";
-  const src = ev.file ? esc(ev.file) + ":" + ev.line + ":" + ev.column : "unknown";
-  const computerNote = ev.defense === "none" ? "Defense none: computer 0 flies alone." : "Faulty run, at the current time. Grey: silenced or outvoted.";
+  const result = !ft ? "No touchdown before the time limit."
+    : (ft.score === null || ft.score > 1 ? "Impact: " : "Landed: ") + fmt(ft.descent, 1) + " m/s down, " + fmt(ft.horizontal, 1) +
+      " m/s sideways, " + fmt(miss, 0) + " m from the clean spot, score " + fmt(ft.score, 2) + " (pass at 1 or less).";
+  const src = ev.file ? esc(ev.file) + ":" + ev.line : "unknown";
   document.getElementById("panel").innerHTML =
-    "<h1>Trial " + ev.trial + "</h1><div class='sub'>" + esc(ev.sweep) + " / defense " + esc(ev.defense) + "</div>" +
-    "<div class='badge' style='background:" + (BADGE[ev.classification] || "#8a94a3") + "'>" + esc(ev.classification) + "</div>" +
+    "<section>" + trialPicker() + "<div class='sub'>" + esc(ev.sweep) + ", defense " + esc(ev.defense) + "</div>" +
+    "<div class='outcome'><span class='sq' style='background:" + (OUTCOME[ev.classification] || "#8f959e") + "'></span>" + esc(ev.classification) + "</div>" +
+    "<div class='result'>" + result + "</div>" +
     (ev.warning ? "<div class='warn'>" + esc(ev.warning) + "</div>" : "") +
-    "<ul class='reasons'>" + ev.reasons.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>" +
-    "<h2>Fault</h2><table>" +
-    "<tr><th>Operation</th><td>" + esc(ev.kind || "?") + " (op " + ev.op_id + ", occurrence " + ev.occurrence + ")</td></tr>" +
-    "<tr><th>Function</th><td class='mono'>" + esc(ev.function || "unknown") + "</td></tr>" +
-    "<tr><th>Source</th><td class='mono'>" + src + "</td></tr>" +
-    "<tr><th>Bit</th><td>" + ev.bit + " (" + bitRegion(ev.bit) + ")</td></tr>" +
-    "<tr><th>Persistent</th><td>" + (ev.persistent ? "yes" : "no") + "</td></tr>" +
-    "<tr><th>Core</th><td>" + (ev.core === null ? "?" : ev.core + " (computer " + ev.computer + ")") + "</td></tr>" +
-    "</table>" +
-    "<h2>Fault first visible</h2><div class='visible'>" + visible + "</div>" +
-    "<h2>Flight computers</h2><div id='lights'>" +
-    [0, 1, 2].map(function (i) { return "<div class='light'><div class='dot' id='dot" + i + "'></div>C" + i + "</div>"; }).join("") +
-    "</div><div class='sub' style='margin-top:6px'>" + computerNote + "</div>" +
-    "<h2>Touchdown</h2><table class='cmp'><tr><th></th><th class='col'>clean</th><th class='col'>faulty</th></tr>" +
-    row("time (s)", fmt(ct && ct.t, 1), fmt(ft && ft.t, 1)) +
-    row("descent (m/s)", fmt(ct && ct.descent, 3), fmt(ft && ft.descent, 3)) +
-    row("horizontal (m/s)", fmt(ct && ct.horizontal, 3), fmt(ft && ft.horizontal, 3)) +
-    row("fuel (kg)", fmt(ct && ct.fuel, 1), fmt(ft && ft.fuel, 1)) +
-    row("miss (m)", "0.0", fmt(miss, 1)) +
-    row("score (pass &le; 1)", fmt(ct && ct.score, 4), fmt(ft && ft.score, 4)) +
-    "</table>" + (ft ? "" : "<div class='sub'>Faulty run: no touchdown.</div>") +
-    "<h2>Legend</h2><div class='legend'>" +
-    "<div class='swatch' style='background:var(--clean)'></div><div>clean run</div>" +
-    "<div class='swatch' style='background:var(--faulty)'></div><div>faulty run</div>" +
-    "<div class='swatch' style='background:var(--accent)'></div><div>first divergence; 1 km landing ring</div>" +
-    "</div>";
+    "<div class='key'><span><i style='background:var(--clean)'></i>clean</span><span><i style='background:var(--faulty)'></i>faulty</span></div></section>" +
+    "<section><div class='label'>Telemetry at the current time</div><table id='telemetry'><thead><tr><th></th><th>clean</th><th>faulty</th><th>difference</th></tr></thead><tbody>" +
+    ROWS.map(function (r) { return "<tr id='row-" + r[0] + "'><th>" + r[1] + "</th><td></td><td></td><td></td></tr>"; }).join("") +
+    "</tbody></table></section>" +
+    "<section><div class='label'>Attitude: travel solid, thrust dashed</div><canvas id='gauge'></canvas></section>" +
+    "<section><div class='label'>" + (computerCount > 1 ? "Flight computers" : "Flight computer") + "</div><div class='computers'>" +
+    Array.from({ length: computerCount }, function (_, i) {
+      return "<div class='computer' id='computer" + i + "'><span class='sq'></span>C" + i + " <span class='state'></span></div>";
+    }).join("") + "</div></section>" +
+    "<section><div class='label'>Events</div><div id='events'>" +
+    EVENTS.map(function (e, i) { return "<button data-event='" + i + "'><span class='what'>" + esc(e.what) + "</span><span class='t'>" + e.t.toFixed(1) + " s</span></button>"; }).join("") +
+    "</div></section>" +
+    "<section><div class='label'>Fault</div><table class='fault'>" +
+    "<tr><th>Where</th><td>" + esc(ev.function || "unknown") + "</td></tr>" +
+    "<tr><th>Source</th><td>" + src + "</td></tr>" +
+    "<tr><th>Operation</th><td>" + esc(ev.kind || "?") + ", op " + ev.op_id + ", from occurrence " + ev.occurrence + "</td></tr>" +
+    "<tr><th>Bit</th><td>" + ev.bit + " (" + bitRegion(ev.bit) + "), " + (ev.persistent ? "persistent" : "transient") + "</td></tr>" +
+    "<tr><th>Core</th><td>" + (ev.core === null ? "?" : ev.core + ", computer " + ev.computer) + "</td></tr>" +
+    "</table></section>";
+  document.getElementById("trial").addEventListener("change", function () { location.hash = this.value; location.reload(); });
+  document.querySelectorAll("[data-event]").forEach(function (b) {
+    b.addEventListener("click", function () { tNow = EVENTS[Number(b.dataset.event)].t; scrub.value = tNow; if (playing) togglePlay(); });
+  });
 }
 
-function updateLights() {
-  const s = faulty.samples[locate(faulty.samples, tNow).i];
-  for (let i = 0; i < 3; ++i) document.getElementById("dot" + i).classList.toggle("on", !!(s.computers & (1 << i)));
+function drawGauge(c, f) {
+  const cv = document.getElementById("gauge"), dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const g = cv.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  const cx = w / 2, cy = h * 0.55, r = Math.min(w / 2 - 20, h * 0.5);
+  g.strokeStyle = "#2a2f36"; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(cx - r - 10, cy); g.lineTo(cx + r + 10, cy); g.stroke();
+  g.beginPath(); g.moveTo(cx, cy - r - 4); g.lineTo(cx, cy + r * 0.6); g.stroke();
+  g.fillStyle = "#8f959e"; g.font = "10px -apple-system, Helvetica, Arial, sans-serif";
+  g.textAlign = "right"; g.fillText("travel", cx + r + 10, cy - 4);
+  g.textAlign = "center"; g.fillText("up", cx, cy - r - 8);
+  function arrow(deg, color, dashed) {
+    if (deg === null) return;
+    const a = deg * Math.PI / 180, x = cx + r * Math.sin(a), y = cy - r * Math.cos(a);
+    g.strokeStyle = color; g.lineWidth = 2; g.setLineDash(dashed ? [5, 4] : []);
+    g.beginPath(); g.moveTo(cx, cy); g.lineTo(x, y); g.stroke();
+    g.setLineDash([]); g.fillStyle = color;
+    g.beginPath(); g.arc(x, y, 3.5, 0, 2 * Math.PI); g.fill();
+  }
+  [[c, "#3987e5"], [f, "#d95926"]].forEach(function (pair) {
+    const s = pair[0];
+    if (s.angle !== null) arrow(90 + s.angle, pair[1], false);
+    if (s.tilt !== null && s.throttle !== null && s.throttle > 0) arrow(s.tilt, pair[1], true);
+  });
+}
+
+function updatePanel() {
+  const c = sampleAt(clean.samples, tNow), f = sampleAt(faulty.samples, tNow);
+  ROWS.forEach(function (r) {
+    const key = r[0], k = r[4] || 1, row = document.getElementById("row-" + key);
+    const a = c[key] === null ? null : c[key] * k, b = f[key] === null ? null : f[key] * k;
+    const d = a === null || b === null || c.ended || f.ended ? null : b - a;
+    row.cells[1].textContent = c.ended ? "landed" : a === null ? "n/a" : a.toFixed(r[2]);
+    row.cells[2].textContent = f.ended ? "ended" : b === null ? "n/a" : b.toFixed(r[2]);
+    row.cells[3].textContent = d === null ? "" : (d > 0 ? "+" : "") + d.toFixed(r[2]);
+    row.classList.toggle("diverged", d !== null && Math.abs(d) > r[3] * k);
+  });
+  for (let i = 0; i < computerCount; ++i) {
+    const on = !!(f.computers & (1 << i)), el = document.getElementById("computer" + i);
+    el.classList.toggle("off", !on);
+    el.querySelector(".state").textContent = computerCount > 1 ? (on ? "trusted" : "silenced") : "flying";
+  }
+  document.querySelectorAll("[data-event]").forEach(function (b) {
+    const past = EVENTS[Number(b.dataset.event)].t <= tNow + 1e-9;
+    b.classList.toggle("past", past); b.classList.toggle("future", !past);
+  });
+  drawGauge(c, f);
 }
 
 const p0 = clean.samples[0].position;
@@ -371,8 +485,8 @@ function downrange(p) { return R * Math.atan2(norm(cross(p, p0)), dot(p, p0)) / 
 function series(samples, f) { return samples.map(function (s) { const v = f(s); return v === null || !isFinite(v) ? null : v; }); }
 function symlog(v) { return Math.sign(v) * Math.log10(1 + Math.abs(v)); }
 const runs = [
-  { s: clean.samples, color: "rgba(242,242,242,0.9)", width: 1.5 },
-  { s: faulty.samples, color: "rgba(255,77,77,0.95)", width: 1.5 },
+  { s: clean.samples, color: "#3987e5", width: 1.5 },
+  { s: faulty.samples, color: "#d95926", width: 1.5 },
 ];
 runs.forEach(function (r) {
   r.t = r.s.map(function (s) { return s.t; });
@@ -380,7 +494,6 @@ runs.forEach(function (r) {
   r.alt = series(r.s, function (s) { return s.altitude === null ? null : s.altitude / 1000; });
   r.vs = series(r.s, function (s) { return s.vertical_speed === null ? null : symlog(s.vertical_speed); });
   r.hs = series(r.s, function (s) { return s.horizontal_speed === null ? null : symlog(s.horizontal_speed); });
-  r.th = series(r.s, function (s) { return s.throttle; });
 });
 function extent(arrays, lo, hi) {
   arrays.forEach(function (a) { a.forEach(function (v) { if (v !== null) { lo = Math.min(lo, v); hi = Math.max(hi, v); } }); });
@@ -407,9 +520,9 @@ Chart.prototype.x = function (v) { const b = this.box, x = this.cfg.x; return b.
 Chart.prototype.y = function (v, axis) { const b = this.box, y = axis || this.cfg.y; return b.b - (v - y[0]) / (y[1] - y[0]) * (b.b - b.t); };
 Chart.prototype.drawStatic = function (g) {
   const b = this.box, cfg = this.cfg, self = this;
-  g.fillStyle = "#0d1014"; g.fillRect(0, 0, this.w, this.h);
+  g.fillStyle = "#111316"; g.fillRect(0, 0, this.w, this.h);
   g.font = "11px -apple-system, Helvetica, Arial, sans-serif";
-  g.strokeStyle = "#232a33"; g.fillStyle = "#8a94a3"; g.lineWidth = 1;
+  g.strokeStyle = "#22262c"; g.fillStyle = "#8f959e"; g.lineWidth = 1;
   cfg.xTicks.forEach(function (v) {
     const x = self.x(v);
     g.beginPath(); g.moveTo(x, b.t); g.lineTo(x, b.b); g.stroke();
@@ -423,8 +536,8 @@ Chart.prototype.drawStatic = function (g) {
   if (cfg.right) {
     cfg.right.ticks.forEach(function (v) { g.textAlign = "left"; g.fillText(v.toFixed(1), b.r + 6, self.y(v, cfg.right.range) + 4); });
   }
-  g.textAlign = "left"; g.fillStyle = "#d8dde4"; g.fillText(cfg.title, b.l, 15);
-  g.textAlign = "right"; g.fillStyle = "#8a94a3"; g.fillText(cfg.xLabel, b.r, this.h - 3);
+  g.textAlign = "left"; g.fillStyle = "#e3e4e7"; g.fillText(cfg.title, b.l, 15);
+  g.textAlign = "right"; g.fillStyle = "#8f959e"; g.fillText(cfg.xLabel, b.r, this.h - 3);
   g.save();
   g.beginPath(); g.rect(b.l, b.t, b.r - b.l, b.b - b.t); g.clip();
   cfg.lines.forEach(function (ln) {
@@ -450,7 +563,7 @@ Chart.prototype.draw = function (cursor) {
   g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
   if (cursor.x !== null && isFinite(cursor.x)) {
     const x = Math.min(b.r, Math.max(b.l, this.x(cursor.x)));
-    g.strokeStyle = "#ffd34d"; g.lineWidth = 1;
+    g.strokeStyle = "#c9ccd1"; g.lineWidth = 1;
     g.beginPath(); g.moveTo(x, b.t); g.lineTo(x, b.b); g.stroke();
   }
   (cursor.dots || []).forEach(function (d) {
@@ -480,20 +593,17 @@ const chartAlt = new Chart("chartAlt", {
 const spY = extent(runs.map(function (r) { return r.vs.concat(r.hs); }), 0, 1);
 spY[0] = Math.min(spY[0], 0); spY[1] = Math.max(spY[1], 3.3);
 const symTicks = [-1000, -100, -10, 0, 10, 100, 1000, 10000].map(symlog).filter(function (v) { return v >= spY[0] && v <= spY[1]; });
-const thY = extent(runs.map(function (r) { return r.th; }), 0, 1);
 const tAxis = [0, tMax];
 const lines2 = [];
 runs.forEach(function (r) {
   lines2.push({ xs: r.t, ys: r.vs, color: r.color, width: 1.5 });
   lines2.push({ xs: r.t, ys: r.hs, color: r.color, width: 1.5, dash: [7, 4] });
-  lines2.push({ xs: r.t, ys: r.th, color: r.color, width: 1, dash: [2, 3], axis: thY });
 });
 const chartSpeed = new Chart("chartSpeed", {
-  title: "Speeds (m/s, symlog): vertical solid, horizontal dashed / throttle dotted (right)", xLabel: "time (s)",
+  title: "Speed (m/s, symlog scale): vertical solid, horizontal dashed", xLabel: "time (s)",
   x: tAxis, y: spY, xTicks: ticks(0, tMax, 6), yTicks: symTicks,
   xFmt: function (v) { return v.toFixed(0); },
   yFmt: function (v) { const a = Math.round(Math.pow(10, Math.abs(v)) - 1); return String(Math.sign(v) * a); },
-  right: { range: thY, ticks: ticks(thY[0], thY[1], 4) },
   lines: lines2,
 });
 
@@ -538,11 +648,11 @@ function frame(now) {
   placeMarker(cleanMarker, clean.samples, cleanPts, tNow);
   placeMarker(faultyMarker, faulty.samples, faultyPts, tNow);
   markers.forEach(function (m) { m.scale.setScalar(Math.max(0.5, camera.position.distanceTo(m.position) * 0.008)); });
-  updateLights();
+  updatePanel();
   const c = runs[0], f = runs[1];
   chartAlt.draw({ x: interp(c, "dr", tNow), dots: [
-    { x: interp(c, "dr", tNow), y: interp(c, "alt", tNow), color: "#ffffff" },
-    { x: interp(f, "dr", tNow), y: interp(f, "alt", tNow), color: "#ff4d4d" },
+    { x: interp(c, "dr", tNow), y: interp(c, "alt", tNow), color: "#3987e5" },
+    { x: interp(f, "dr", tNow), y: interp(f, "alt", tNow), color: "#d95926" },
   ] });
   chartSpeed.draw({ x: tNow });
   renderer.render(scene, camera);
@@ -553,6 +663,8 @@ buildPanel();
 buildPaths();
 resize();
 setView("overview");
+if (hash[1] !== undefined) { tNow = Math.min(tMax, Number(hash[1]) || 0); scrub.value = tNow; }
+if (hash[2]) setView(hash[2]);
 requestAnimationFrame(frame);
 })();
 </script>

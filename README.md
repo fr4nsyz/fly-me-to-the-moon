@@ -47,6 +47,22 @@ What the defense did: core 4's two-core computer (computer 2) disagrees with its
 
 The undefended run's speeds: the fault takes over late in braking, where vertical speed should level off before the final descent.
 
+### Viewer
+
+The interactive viewer (see [View a run](#view-a-run)) replaying three outcomes from t = 300 s: clean in blue, faulty in orange, rows flagged where the two runs differ.
+
+SDC, no defense (trial 1): the fault becomes visible at 379 s and the lander strikes the surface at 123.6 m/s.
+
+![SDC replay](docs/img/viewer_sdc.gif)
+
+MASKED, no defense (trial 0): the fault never changes the trajectory and the lander touches down like the clean run.
+
+![MASKED replay](docs/img/viewer_masked.gif)
+
+CORRECTED, TMR and lockstep (trial 1): computer 2 is silenced at 379 s and the landing matches the clean run.
+
+![CORRECTED replay](docs/img/viewer_corrected.gif)
+
 ## Build
 
 Requires Homebrew LLVM 23 (`/opt/homebrew/opt/llvm`), CMake, Ninja, GoogleTest 1.18, and Python 3.14.
@@ -83,10 +99,11 @@ Use `-- --defense tmr-lockstep` for the defended run.
 
 ```bash
 /opt/homebrew/bin/python3.14 tools/view.py --binary build/moon/moon_instr \
-  --sweep results/sweep_moon_persistent_none --trial 1 --defense none --out view_trial1.html
+  --sweep results/sweep_moon_persistent_none --sweep results/sweep_moon_persistent_tmr_lockstep --out view.html
+open view.html
 ```
 
-The generator re-flies the clean landing and the chosen trial (runs are deterministic) and writes one offline HTML file: the 3D descent with clean and faulty paths, the fault and outcome, the three flight computers' status over time, and altitude and speed charts on a shared timeline.
+The generator reads the defense mode from the sweep, re-flies the clean landing and every SDC trial plus two of each other outcome (runs are deterministic), and writes one offline HTML file with a trial picker: the 3D descent with clean and faulty paths, live clean versus faulty telemetry (speeds, descent angle, thrust tilt, throttle, fuel) with diverged rows flagged, an attitude gauge, the flight computers that exist in that mode, clickable events, and altitude and speed charts on a shared timeline.
 
 ## Plot the figures
 
