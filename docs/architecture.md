@@ -133,7 +133,7 @@ sdc-investigator/
 ├── workloads/
 │   ├── reductions/
 │   ├── solvers/
-│   └── moon/                     # Plant + instrumented FSW, lockstep / vote / etc.
+│   └── moon/                     # Plant + instrumented FSW with the TMR and lockstep hybrid
 │       ├── plant/                # Hand-rolled dynamics, not instrumented
 │       └── fsw/                  # Instrumented flight software
 ├── docs/
@@ -326,7 +326,7 @@ Keep them plain C++. Suggested starter set:
 
 1. Simple reduction (sum / product of an array) — easy to reason about masking.
 2. Iterative linear solver (Jacobi or CG) — interesting propagation.
-3. Hardened moon flight software (ADR-0016, ADR-0017): lockstep, TMR, invariants, checksums. This is where the defense-mode table is generated.
+3. Hardened moon flight software (ADR-0008, ADR-0017): a TMR and lockstep hybrid modeled on real flight computers. This is where the defense table is generated.
 4. Lunar descent (ADR-0007, ADR-0016) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the Three.js HUD.
 
 ---
@@ -400,14 +400,8 @@ The same seed always produces the same campaign. See ADR-0012 for how the inject
 ### Phase 6 — Hardened Workload & Defense Study (1–2 weeks)
 
 - Implement the moon plant and flight software per ADR-0016, built with the -O0 profile (ADR-0017). Plant is separate and not instrumented.
-- Add the different defense modes (lockstep, vote, invariant, checksum, all).
-- Reproduce (or improve upon) the classic table using the settled taxonomy (CORRECTED for vote/TMR when corrected):
-  ```
-  none      → many SDCs
-  lockstep  → all detected
-  vote      → all corrected
-  …
-  ```
+- Add the TMR and lockstep hybrid (ADR-0008): three computers, each a lockstep pair of cores, with commands compared across computers.
+- Compare `none` against `tmr-lockstep` under the same persistent faults, using the settled taxonomy (CORRECTED when a computer is silenced or outvoted).
 
 ### Phase 7 — Viewer & Polish
 
@@ -514,7 +508,7 @@ Settled in this revision:
 | ADR-0005 | Taxonomy adds `CORRECTED` class with precedence rules |
 | ADR-0006 | Bit 0 = LSB of uint64 IEEE-754 pattern (bit 63 sign, 62..52 exponent) |
 | ADR-0007 | Moon workload: powered lunar descent, hand-rolled plant |
-| ADR-0008 | Defense semantics: replicate before, vote after, protect the voter |
+| ADR-0008 | Defense: TMR and lockstep hybrid modeled on real flight computers |
 | ADR-0009 | Only FSW translation units are instrumented |
 | ADR-0010 | Separate `trajectory.json`, offline Three.js HUD |
 | ADR-0011 | Exit record `operand1` is a flag set: bit 0 DETECTED, bit 1 CORRECTED |
@@ -523,7 +517,7 @@ Settled in this revision:
 | ADR-0014 | Alignment is a prefix scan on key and payload; no resynchronization |
 | ADR-0015 | Unit tests use GoogleTest 1.18 from Homebrew |
 | ADR-0016 | Descent model: Moon-centered frame, point-mass physics, uniform fault campaigns |
-| ADR-0017 | Moon FSW builds at -O0; TMR and lockstep written in FSW source |
+| ADR-0017 | Moon FSW builds at -O0; the TMR and lockstep hybrid is written in FSW source |
 | ADR-0018 | Powered descent: 15 km start, two-phase guidance, LM-class vehicle, plant-computed landing score |
 | ADR-0019 | The pass instruments `llvm.sqrt` |
 | ADR-0020 | Verified lander numbers; trapezoid Lunar Module touchdown envelope |
@@ -546,7 +540,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0005 | 2026-10-29 | Outcome taxonomy adds CORRECTED class | Accepted |
 | ADR-0006 | 2026-10-29 | Bit position convention (LSB 0) | Accepted |
 | ADR-0007 | 2026-10-31 | Moon workload: powered lunar descent, hand-rolled plant, FSW-only instrumentation | Accepted |
-| ADR-0008 | 2026-10-31 | Defense semantics: replicate before critical section, vote after, protect voter; injection before replication = common-mode | Accepted |
+| ADR-0008 | 2026-10-31 | Defense: TMR and lockstep hybrid modeled on real flight computers | Accepted |
 | ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Accepted |
 | ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Accepted |
 | ADR-0011 | 2026-10-31 | Exit record detection word becomes a flag set (DETECTED, CORRECTED) | Accepted |
@@ -555,7 +549,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0014 | 2026-10-31 | Alignment is a prefix scan on key and payload | Accepted |
 | ADR-0015 | 2026-10-31 | Unit tests use GoogleTest | Accepted |
 | ADR-0016 | 2026-10-31 | Descent model: Moon-centered frame, point-mass physics, uniform fault campaigns | Accepted |
-| ADR-0017 | 2026-10-31 | Moon FSW builds at -O0; task-level TMR and lockstep in FSW source | Accepted |
+| ADR-0017 | 2026-10-31 | Moon FSW builds at -O0; the TMR and lockstep hybrid is written in FSW source | Accepted |
 | ADR-0018 | 2026-10-31 | Powered descent design and moon build plumbing | Accepted |
 | ADR-0019 | 2026-10-31 | The pass instruments llvm.sqrt | Accepted |
 | ADR-0020 | 2026-10-31 | Verified lander numbers and the Lunar Module touchdown envelope | Accepted |
@@ -583,13 +577,16 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 
 **Trajectory log:** `trajectory.json` written by the plant/driver, consumed only by the Three.js HUD. Separate from `SDCTRACE`.
 
-## 16. Defense Semantics (ADR-0008)
+## 16. Defense (ADR-0008)
 
-- **Replication:** Replicate the critical computation before the critical section (three replicas for TMR). Replication is task-level in FSW source, built at -O0 so the replicas and voter survive (ADR-0017).
-- **Voting:** Vote after the computation, before using the result.
-- **Voter protection:** The voter must be hardened or protected; do not rely on an unprotected voter.
-- **Injection timing:** Injecting before replication corrupts all replicas identically (common-mode). The campaign must respect this.
-- **Modes:** `none`, `lockstep`, `vote/TMR`, `invariant`, `checksum`, `all` — all measured equally.
+- **Modes:** `none` and `tmr-lockstep`, chosen at run time, one binary, measured under the same faults.
+- **The hybrid:** a TMR and lockstep hybrid that mimics real rocket flight computers. TMR is defined over three separate computers; each computer is a lockstep pair of cores running the full flight software.
+- **Lockstep inside a computer:** the two cores are compared bit for bit; a computer whose cores disagree goes silent for that tick.
+- **TMR across computers:** the remaining computers' commands are compared. Three: majority. Two that agree: use it. Two that disagree: the computer with the longer record of agreement. One: use it.
+- **Resync:** after each tick, every computer's phase memory is set to the chosen computer's.
+- **Separate cores:** each core is its own template instantiation with its own operations, so a persistent fault breaks one core.
+- **Protected voter:** the comparisons are not instrumented, so they are never faulted. The flight software is built at -O0 so the copies and comparisons survive (ADR-0017).
+- **Reporting:** the flight software returns a status flag; the simulation reports a silenced or outvoted computer as CORRECTED.
 
 ## 17. Instrumentation Scope (ADR-0009)
 
