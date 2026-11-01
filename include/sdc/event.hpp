@@ -10,6 +10,7 @@ enum class OpKind : std::uint8_t {
     FSub = 1,
     FMul = 2,
     FDiv = 3,
+    FSqrt = 4,
     Unknown = 255,
 };
 

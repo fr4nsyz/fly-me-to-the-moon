@@ -12,6 +12,7 @@ double runtime_f64_add(OpId op_id, double lhs, double rhs);
 double runtime_f64_sub(OpId op_id, double lhs, double rhs);
 double runtime_f64_mul(OpId op_id, double lhs, double rhs);
 double runtime_f64_div(OpId op_id, double lhs, double rhs);
+double runtime_f64_sqrt(OpId op_id, double x);
 
 } // namespace sdc
 
@@ -19,6 +20,7 @@ extern "C" double sdc_runtime_f64_add_hook(std::uint32_t op_id, double lhs, doub
 extern "C" double sdc_runtime_f64_sub_hook(std::uint32_t op_id, double lhs, double rhs);
 extern "C" double sdc_runtime_f64_mul_hook(std::uint32_t op_id, double lhs, double rhs);
 extern "C" double sdc_runtime_f64_div_hook(std::uint32_t op_id, double lhs, double rhs);
+extern "C" double sdc_runtime_f64_sqrt_hook(std::uint32_t op_id, double x);
 
 // Reporting API. A workload calls these to tell the runtime what its own
 // verdict was, so the analyzer can classify the outcome.
