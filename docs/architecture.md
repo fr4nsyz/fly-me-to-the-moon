@@ -231,13 +231,13 @@ Record the flag string in the trace header, so the analyzer can reject a clean a
 **Responsibility**
 
 - Maintain a global counter per `OpId`.
-- On the configured `(op_id, occurrence)` pair, flip the requested bit in the result before returning it.
+- On the configured `(op_id, occurrence)` pair, flip the requested bit in the result before returning it. With the persistent fault model (ADR-0023), keep flipping it on every later occurrence of that op.
 - Record every arithmetic event (or a configurable subset) into the binary trace.
 - At program exit (or via `atexit` / signal handlers) write an `ExitRecord`.
 
 **Critical requirements**
 
-- The injection must be **exactly once** and deterministic.
+- The injection must be deterministic: exactly once under the transient model, on every occurrence from the chosen one under the persistent model.
 - Recording must be crash-safe. The writer appends whole records to an `O_APPEND` file descriptor with one `write` per record. A torn final record shows up as a short read, and the reader treats it as the process having died during recording.
 - Overhead should be measurable (the experiment driver will quantify it).
 
@@ -464,6 +464,7 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 | `SDC_SEED` | Seed for random injection. The same seed always resolves the same site. |
 | `SDC_INJECT_PLAN` | Path to the injection plan for random mode. One `op_id max_occurrence` pair per line. |
 | `SDC_INJECT_BIT_RANGE` | Inclusive bit range for random mode, `lo-hi`. Defaults to `0-63`. |
+| `SDC_INJECT_PERSIST` | `1` selects the persistent fault model: the bit is flipped on every occurrence of the op from the chosen one on (ADR-0023). Absent means transient. |
 | `SDC_WORKLOAD` | Workload name, recorded in the trace metadata. |
 | `SDC_BUILD_ID` | Build identifier, recorded in the trace metadata. The analyzer rejects a clean/injected pair whose build ids differ. |
 | `SDC_COMPILER_FLAGS` | The exact flag string the workload was compiled with, recorded in the trace metadata. |
@@ -480,6 +481,8 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 
 - Selective recording (only record a window around the injection)
 - Multi-bit or multi-site injection campaigns
+- Stuck-at faults (a bit forced to 0 or 1) alongside flips
+- Memory faults (corrupting stored values, not computed results), with checksums as the matching defense
 - Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening
 - Visualization of value propagation (data-flow graph extracted from the two traces)
 - Support for integer arithmetic or mixed-precision codes
@@ -526,6 +529,7 @@ Settled in this revision:
 | ADR-0020 | Verified lander numbers; trapezoid Lunar Module touchdown envelope |
 | ADR-0021 | Multi-file build profile is workload-generic |
 | ADR-0022 | Per-trial timeout and HANG outcome |
+| ADR-0023 | Persistent fault model |
 
 ---
 
@@ -557,6 +561,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0020 | 2026-10-31 | Verified lander numbers and the Lunar Module touchdown envelope | Accepted |
 | ADR-0021 | 2026-10-31 | Multi-file build profile is workload-generic | Accepted |
 | ADR-0022 | 2026-10-31 | Per-trial timeout and HANG outcome | Accepted |
+| ADR-0023 | 2026-10-31 | Persistent fault model | Accepted |
 
 ---
 

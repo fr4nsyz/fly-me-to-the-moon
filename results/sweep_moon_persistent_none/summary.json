@@ -1,0 +1,2976 @@
+{
+  "workload": "moon",
+  "build_id": "a24dbf0a5b1fd532",
+  "compiler_flags": "-O0 -gline-tables-only -ffp-contract=off",
+  "seed": 1337,
+  "trials": 200,
+  "bit_range": "0-63",
+  "classifications": {
+    "CRASH": 0,
+    "HANG": 0,
+    "CORRECTED": 0,
+    "DETECTED": 0,
+    "SDC": 34,
+    "MASKED": 166,
+    "INCONCLUSIVE": 0
+  },
+  "by_bit_region": {
+    "exponent": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 22,
+      "MASKED": 13,
+      "INCONCLUSIVE": 0
+    },
+    "mantissa-high": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 9,
+      "MASKED": 25,
+      "INCONCLUSIVE": 0
+    },
+    "mantissa-low": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 128,
+      "INCONCLUSIVE": 0
+    },
+    "sign": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 3,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    }
+  },
+  "by_op_id": {
+    "1": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 4,
+      "MASKED": 12,
+      "INCONCLUSIVE": 0
+    },
+    "6": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 16,
+      "INCONCLUSIVE": 0
+    },
+    "7": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 4,
+      "MASKED": 13,
+      "INCONCLUSIVE": 0
+    },
+    "12": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 3,
+      "MASKED": 13,
+      "INCONCLUSIVE": 0
+    },
+    "13": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 16,
+      "INCONCLUSIVE": 0
+    },
+    "18": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 7,
+      "MASKED": 9,
+      "INCONCLUSIVE": 0
+    },
+    "19": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 6,
+      "MASKED": 10,
+      "INCONCLUSIVE": 0
+    },
+    "24": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 1,
+      "MASKED": 5,
+      "INCONCLUSIVE": 0
+    },
+    "25": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 16,
+      "INCONCLUSIVE": 0
+    },
+    "31": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 3,
+      "MASKED": 13,
+      "INCONCLUSIVE": 0
+    },
+    "37": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 1,
+      "MASKED": 15,
+      "INCONCLUSIVE": 0
+    },
+    "43": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 2,
+      "MASKED": 14,
+      "INCONCLUSIVE": 0
+    },
+    "49": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 3,
+      "MASKED": 14,
+      "INCONCLUSIVE": 0
+    }
+  },
+  "records": [
+    {
+      "trial": 0,
+      "seed": 1337,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 3053,
+      "bit": 3,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 1,
+      "seed": 9256,
+      "classification": "SDC",
+      "op_id": 1,
+      "occurrence": 3782,
+      "bit": 57,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 2,
+      "seed": 17175,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 4511,
+      "bit": 48,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 3,
+      "seed": 25094,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 2637,
+      "bit": 39,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 4,
+      "seed": 33013,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 3366,
+      "bit": 29,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 5,
+      "seed": 40932,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 4095,
+      "bit": 20,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 6,
+      "seed": 48851,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 2221,
+      "bit": 11,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 7,
+      "seed": 56770,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 2950,
+      "bit": 1,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 8,
+      "seed": 64689,
+      "classification": "SDC",
+      "op_id": 1,
+      "occurrence": 3679,
+      "bit": 56,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 9,
+      "seed": 72608,
+      "classification": "SDC",
+      "op_id": 1,
+      "occurrence": 1805,
+      "bit": 46,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 10,
+      "seed": 80527,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 2534,
+      "bit": 37,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 11,
+      "seed": 88446,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 660,
+      "bit": 28,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 12,
+      "seed": 96365,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 1389,
+      "bit": 18,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 13,
+      "seed": 104284,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 2118,
+      "bit": 9,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 14,
+      "seed": 112203,
+      "classification": "MASKED",
+      "op_id": 1,
+      "occurrence": 244,
+      "bit": 0,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 15,
+      "seed": 120122,
+      "classification": "SDC",
+      "op_id": 1,
+      "occurrence": 973,
+      "bit": 54,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 16,
+      "seed": 128041,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 1702,
+      "bit": 45,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 17,
+      "seed": 135960,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 5106,
+      "bit": 36,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 18,
+      "seed": 143879,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 557,
+      "bit": 26,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 19,
+      "seed": 151798,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 1286,
+      "bit": 17,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 20,
+      "seed": 159717,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 4690,
+      "bit": 8,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 21,
+      "seed": 167636,
+      "classification": "SDC",
+      "op_id": 7,
+      "occurrence": 141,
+      "bit": 62,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 22,
+      "seed": 175555,
+      "classification": "SDC",
+      "op_id": 7,
+      "occurrence": 870,
+      "bit": 53,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 23,
+      "seed": 183474,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 4274,
+      "bit": 43,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 24,
+      "seed": 191393,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 5003,
+      "bit": 34,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 25,
+      "seed": 199312,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 454,
+      "bit": 25,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 26,
+      "seed": 207231,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 3858,
+      "bit": 15,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 27,
+      "seed": 215150,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 4587,
+      "bit": 6,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 28,
+      "seed": 223069,
+      "classification": "SDC",
+      "op_id": 7,
+      "occurrence": 38,
+      "bit": 61,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 29,
+      "seed": 230988,
+      "classification": "SDC",
+      "op_id": 7,
+      "occurrence": 3442,
+      "bit": 51,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 30,
+      "seed": 238907,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 4171,
+      "bit": 42,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 31,
+      "seed": 246826,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 2297,
+      "bit": 33,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 32,
+      "seed": 254745,
+      "classification": "MASKED",
+      "op_id": 7,
+      "occurrence": 3026,
+      "bit": 23,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 33,
+      "seed": 262664,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 14311,
+      "bit": 14,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 34,
+      "seed": 270583,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 7159,
+      "bit": 4,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 35,
+      "seed": 278502,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 7888,
+      "bit": 59,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 36,
+      "seed": 286421,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 8617,
+      "bit": 50,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 37,
+      "seed": 294340,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 1465,
+      "bit": 40,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 38,
+      "seed": 302259,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 2194,
+      "bit": 31,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 39,
+      "seed": 310178,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 2923,
+      "bit": 22,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 40,
+      "seed": 318097,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 16883,
+      "bit": 12,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 41,
+      "seed": 326016,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 17612,
+      "bit": 3,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 42,
+      "seed": 333935,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 18341,
+      "bit": 58,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 43,
+      "seed": 341854,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 11189,
+      "bit": 48,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 44,
+      "seed": 349773,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 11918,
+      "bit": 39,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 45,
+      "seed": 357692,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 12647,
+      "bit": 29,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 46,
+      "seed": 365611,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 5495,
+      "bit": 20,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 47,
+      "seed": 373530,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 6224,
+      "bit": 11,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 48,
+      "seed": 381449,
+      "classification": "MASKED",
+      "op_id": 13,
+      "occurrence": 20184,
+      "bit": 1,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 49,
+      "seed": 389368,
+      "classification": "SDC",
+      "op_id": 19,
+      "occurrence": 11761,
+      "bit": 56,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 50,
+      "seed": 397287,
+      "classification": "SDC",
+      "op_id": 19,
+      "occurrence": 2082,
+      "bit": 47,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 51,
+      "seed": 405206,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 12082,
+      "bit": 37,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 52,
+      "seed": 413125,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 2403,
+      "bit": 28,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 53,
+      "seed": 421044,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 10380,
+      "bit": 19,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 54,
+      "seed": 428963,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 2724,
+      "bit": 9,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 55,
+      "seed": 436882,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 10701,
+      "bit": 0,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 56,
+      "seed": 444801,
+      "classification": "SDC",
+      "op_id": 19,
+      "occurrence": 1022,
+      "bit": 55,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 57,
+      "seed": 452720,
+      "classification": "SDC",
+      "op_id": 19,
+      "occurrence": 11022,
+      "bit": 45,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 58,
+      "seed": 460639,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 1343,
+      "bit": 36,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 59,
+      "seed": 468558,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 9320,
+      "bit": 26,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 60,
+      "seed": 476477,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 1664,
+      "bit": 17,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 61,
+      "seed": 484396,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 9641,
+      "bit": 8,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 62,
+      "seed": 492315,
+      "classification": "MASKED",
+      "op_id": 19,
+      "occurrence": 17618,
+      "bit": 62,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 63,
+      "seed": 500234,
+      "classification": "SDC",
+      "op_id": 19,
+      "occurrence": 9962,
+      "bit": 53,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 64,
+      "seed": 508153,
+      "classification": "SDC",
+      "op_id": 19,
+      "occurrence": 283,
+      "bit": 44,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 65,
+      "seed": 516072,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 6403,
+      "bit": 34,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 66,
+      "seed": 523991,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 7132,
+      "bit": 25,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 67,
+      "seed": 531910,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 7861,
+      "bit": 16,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 68,
+      "seed": 539829,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 709,
+      "bit": 6,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 69,
+      "seed": 547748,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 1438,
+      "bit": 61,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 70,
+      "seed": 555667,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 2167,
+      "bit": 51,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 71,
+      "seed": 563586,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 16127,
+      "bit": 42,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 72,
+      "seed": 571505,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 16856,
+      "bit": 33,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 73,
+      "seed": 579424,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 17585,
+      "bit": 23,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 74,
+      "seed": 587343,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 10433,
+      "bit": 14,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 75,
+      "seed": 595262,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 11162,
+      "bit": 5,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 76,
+      "seed": 603181,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 11891,
+      "bit": 59,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 77,
+      "seed": 611100,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 4739,
+      "bit": 50,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 78,
+      "seed": 619019,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 5468,
+      "bit": 41,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 79,
+      "seed": 626938,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 6197,
+      "bit": 31,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 80,
+      "seed": 634857,
+      "classification": "MASKED",
+      "op_id": 25,
+      "occurrence": 20157,
+      "bit": 22,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 81,
+      "seed": 642776,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 3520,
+      "bit": 12,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 82,
+      "seed": 650695,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 3314,
+      "bit": 3,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 83,
+      "seed": 658614,
+      "classification": "SDC",
+      "op_id": 31,
+      "occurrence": 445,
+      "bit": 58,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 84,
+      "seed": 666533,
+      "classification": "SDC",
+      "op_id": 31,
+      "occurrence": 1943,
+      "bit": 48,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 85,
+      "seed": 674452,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 1737,
+      "bit": 39,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 86,
+      "seed": 682371,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 3235,
+      "bit": 30,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 87,
+      "seed": 690290,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 366,
+      "bit": 20,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 88,
+      "seed": 698209,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 160,
+      "bit": 11,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 89,
+      "seed": 706128,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 1658,
+      "bit": 2,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 90,
+      "seed": 714047,
+      "classification": "SDC",
+      "op_id": 31,
+      "occurrence": 3156,
+      "bit": 56,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 91,
+      "seed": 721966,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 2950,
+      "bit": 47,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 92,
+      "seed": 729885,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 81,
+      "bit": 37,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 93,
+      "seed": 737804,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 1579,
+      "bit": 28,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 94,
+      "seed": 745723,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 1373,
+      "bit": 19,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 95,
+      "seed": 753642,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 2871,
+      "bit": 9,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 96,
+      "seed": 761561,
+      "classification": "MASKED",
+      "op_id": 31,
+      "occurrence": 2,
+      "bit": 0,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 97,
+      "seed": 769480,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 4163,
+      "bit": 55,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 98,
+      "seed": 777399,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 1294,
+      "bit": 45,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 99,
+      "seed": 785318,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 1088,
+      "bit": 36,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 100,
+      "seed": 793237,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 2586,
+      "bit": 27,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 101,
+      "seed": 801156,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 4084,
+      "bit": 17,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 102,
+      "seed": 809075,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 3878,
+      "bit": 8,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 103,
+      "seed": 816994,
+      "classification": "SDC",
+      "op_id": 37,
+      "occurrence": 1009,
+      "bit": 63,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 104,
+      "seed": 824913,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 2507,
+      "bit": 53,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 105,
+      "seed": 832832,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 2301,
+      "bit": 44,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 106,
+      "seed": 840751,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 3799,
+      "bit": 34,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 107,
+      "seed": 848670,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 930,
+      "bit": 25,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 108,
+      "seed": 856589,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 724,
+      "bit": 16,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 109,
+      "seed": 864508,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 2222,
+      "bit": 6,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 110,
+      "seed": 872427,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 3720,
+      "bit": 61,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 111,
+      "seed": 880346,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 3514,
+      "bit": 52,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 112,
+      "seed": 888265,
+      "classification": "MASKED",
+      "op_id": 37,
+      "occurrence": 645,
+      "bit": 42,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 113,
+      "seed": 896184,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 2143,
+      "bit": 33,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 114,
+      "seed": 904103,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 1937,
+      "bit": 24,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 115,
+      "seed": 912022,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 3435,
+      "bit": 14,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 116,
+      "seed": 919941,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 566,
+      "bit": 5,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 117,
+      "seed": 927860,
+      "classification": "SDC",
+      "op_id": 43,
+      "occurrence": 360,
+      "bit": 59,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 118,
+      "seed": 935779,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 1858,
+      "bit": 50,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 119,
+      "seed": 943698,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 1652,
+      "bit": 41,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 120,
+      "seed": 951617,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 3150,
+      "bit": 31,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 121,
+      "seed": 959536,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 281,
+      "bit": 22,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 122,
+      "seed": 967455,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 75,
+      "bit": 13,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 123,
+      "seed": 975374,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 1573,
+      "bit": 3,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 124,
+      "seed": 983293,
+      "classification": "SDC",
+      "op_id": 43,
+      "occurrence": 3071,
+      "bit": 58,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 125,
+      "seed": 991212,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 2865,
+      "bit": 49,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 126,
+      "seed": 999131,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 4363,
+      "bit": 39,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 127,
+      "seed": 1007050,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 1494,
+      "bit": 30,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 128,
+      "seed": 1014969,
+      "classification": "MASKED",
+      "op_id": 43,
+      "occurrence": 1288,
+      "bit": 20,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 129,
+      "seed": 1022888,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 683,
+      "bit": 11,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 130,
+      "seed": 1030807,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 766,
+      "bit": 2,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 131,
+      "seed": 1038726,
+      "classification": "SDC",
+      "op_id": 49,
+      "occurrence": 594,
+      "bit": 56,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 132,
+      "seed": 1046645,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 677,
+      "bit": 47,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 133,
+      "seed": 1054564,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 760,
+      "bit": 38,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 134,
+      "seed": 1062483,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 588,
+      "bit": 28,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 135,
+      "seed": 1070402,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 671,
+      "bit": 19,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 136,
+      "seed": 1078321,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 499,
+      "bit": 10,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 137,
+      "seed": 1086240,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 582,
+      "bit": 0,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 138,
+      "seed": 1094159,
+      "classification": "SDC",
+      "op_id": 49,
+      "occurrence": 665,
+      "bit": 55,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 139,
+      "seed": 1102078,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 493,
+      "bit": 46,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 140,
+      "seed": 1109997,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 576,
+      "bit": 36,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 141,
+      "seed": 1117916,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 659,
+      "bit": 27,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 142,
+      "seed": 1125835,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 487,
+      "bit": 17,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 143,
+      "seed": 1133754,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 570,
+      "bit": 8,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 144,
+      "seed": 1141673,
+      "classification": "SDC",
+      "op_id": 49,
+      "occurrence": 653,
+      "bit": 63,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 145,
+      "seed": 1149592,
+      "classification": "MASKED",
+      "op_id": 49,
+      "occurrence": 481,
+      "bit": 53,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 146,
+      "seed": 1157511,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 3124,
+      "bit": 44,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 147,
+      "seed": 1165430,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 3853,
+      "bit": 35,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 148,
+      "seed": 1173349,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 1979,
+      "bit": 25,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 149,
+      "seed": 1181268,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 2708,
+      "bit": 16,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 150,
+      "seed": 1189187,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 3437,
+      "bit": 7,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 151,
+      "seed": 1197106,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 1563,
+      "bit": 61,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 152,
+      "seed": 1205025,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 2292,
+      "bit": 52,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 153,
+      "seed": 1212944,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 418,
+      "bit": 42,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 154,
+      "seed": 1220863,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 1147,
+      "bit": 33,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 155,
+      "seed": 1228782,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 1876,
+      "bit": 24,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 156,
+      "seed": 1236701,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 2,
+      "bit": 14,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 157,
+      "seed": 1244620,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 731,
+      "bit": 5,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 158,
+      "seed": 1252539,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 1460,
+      "bit": 60,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 159,
+      "seed": 1260458,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 4864,
+      "bit": 50,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 160,
+      "seed": 1268377,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 315,
+      "bit": 41,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 161,
+      "seed": 1276296,
+      "classification": "MASKED",
+      "op_id": 6,
+      "occurrence": 1044,
+      "bit": 32,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 162,
+      "seed": 1284215,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 20282,
+      "bit": 22,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 163,
+      "seed": 1292134,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 21011,
+      "bit": 13,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 164,
+      "seed": 1300053,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 628,
+      "bit": 3,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 165,
+      "seed": 1307972,
+      "classification": "SDC",
+      "op_id": 12,
+      "occurrence": 14588,
+      "bit": 58,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 166,
+      "seed": 1315891,
+      "classification": "SDC",
+      "op_id": 12,
+      "occurrence": 15317,
+      "bit": 49,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 167,
+      "seed": 1323810,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 16046,
+      "bit": 39,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 168,
+      "seed": 1331729,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 8894,
+      "bit": 30,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 169,
+      "seed": 1339648,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 9623,
+      "bit": 21,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 170,
+      "seed": 1347567,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 2471,
+      "bit": 11,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 171,
+      "seed": 1355486,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 3200,
+      "bit": 2,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 172,
+      "seed": 1363405,
+      "classification": "SDC",
+      "op_id": 12,
+      "occurrence": 3929,
+      "bit": 57,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 173,
+      "seed": 1371324,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 17889,
+      "bit": 47,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 174,
+      "seed": 1379243,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 18618,
+      "bit": 38,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 175,
+      "seed": 1387162,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 19347,
+      "bit": 28,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 176,
+      "seed": 1395081,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 12195,
+      "bit": 19,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 177,
+      "seed": 1403000,
+      "classification": "MASKED",
+      "op_id": 12,
+      "occurrence": 12924,
+      "bit": 10,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 178,
+      "seed": 1410919,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 1845,
+      "bit": 0,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 179,
+      "seed": 1418838,
+      "classification": "SDC",
+      "op_id": 18,
+      "occurrence": 11845,
+      "bit": 55,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 180,
+      "seed": 1426757,
+      "classification": "SDC",
+      "op_id": 18,
+      "occurrence": 2166,
+      "bit": 46,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 181,
+      "seed": 1434676,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 10143,
+      "bit": 36,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 182,
+      "seed": 1442595,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 2487,
+      "bit": 27,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 183,
+      "seed": 1450514,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 10464,
+      "bit": 18,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 184,
+      "seed": 1458433,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 785,
+      "bit": 8,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 185,
+      "seed": 1466352,
+      "classification": "SDC",
+      "op_id": 18,
+      "occurrence": 10785,
+      "bit": 63,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 186,
+      "seed": 1474271,
+      "classification": "SDC",
+      "op_id": 18,
+      "occurrence": 1106,
+      "bit": 54,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 187,
+      "seed": 1482190,
+      "classification": "SDC",
+      "op_id": 18,
+      "occurrence": 11106,
+      "bit": 44,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 188,
+      "seed": 1490109,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 1427,
+      "bit": 35,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 189,
+      "seed": 1498028,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 9404,
+      "bit": 25,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 190,
+      "seed": 1505947,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 1748,
+      "bit": 16,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 191,
+      "seed": 1513866,
+      "classification": "MASKED",
+      "op_id": 18,
+      "occurrence": 9725,
+      "bit": 7,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 192,
+      "seed": 1521785,
+      "classification": "SDC",
+      "op_id": 18,
+      "occurrence": 46,
+      "bit": 61,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 193,
+      "seed": 1529704,
+      "classification": "SDC",
+      "op_id": 18,
+      "occurrence": 10046,
+      "bit": 52,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 194,
+      "seed": 1537623,
+      "classification": "MASKED",
+      "op_id": 24,
+      "occurrence": 20255,
+      "bit": 43,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 195,
+      "seed": 1545542,
+      "classification": "MASKED",
+      "op_id": 24,
+      "occurrence": 20984,
+      "bit": 33,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 196,
+      "seed": 1553461,
+      "classification": "MASKED",
+      "op_id": 24,
+      "occurrence": 13832,
+      "bit": 24,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 197,
+      "seed": 1561380,
+      "classification": "MASKED",
+      "op_id": 24,
+      "occurrence": 14561,
+      "bit": 15,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 198,
+      "seed": 1569299,
+      "classification": "MASKED",
+      "op_id": 24,
+      "occurrence": 15290,
+      "bit": 5,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 199,
+      "seed": 1577218,
+      "classification": "SDC",
+      "op_id": 24,
+      "occurrence": 8138,
+      "bit": 60,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    }
+  ]
+}
