@@ -1,0 +1,318 @@
+{
+  "schema": 1,
+  "classification": "MASKED",
+  "reasons": [
+    "the final result stayed inside the acceptance criterion",
+    "a divergence occurred but was absorbed before the final result"
+  ],
+  "final_result_outside_tolerance": false,
+  "corrected_by_mechanism": false,
+  "alignment": {
+    "diverged": true,
+    "matched_events": 227210,
+    "clean_event_count": 381838,
+    "injected_event_count": 381838
+  },
+  "injected_event": {
+    "op_id": 31,
+    "occurrence": 3156,
+    "operand0": "0x40ba4a1e17dfe100",
+    "operand1": "0x4097700000000000",
+    "result": "0x41b46e1e17dfe100",
+    "source": {
+      "file": "workloads/moon/fsw/guidance.cpp",
+      "line": 35,
+      "column": 46,
+      "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+      "kind": "fsub"
+    },
+    "audit": {
+      "recomputed": "0x40b46e1e17dfe100",
+      "consistent": false
+    },
+    "event_index": 227210
+  },
+  "clean_event": {
+    "op_id": 31,
+    "occurrence": 3156,
+    "operand0": "0x40ba4a1e17dfe100",
+    "operand1": "0x4097700000000000",
+    "result": "0x40b46e1e17dfe100",
+    "source": {
+      "file": "workloads/moon/fsw/guidance.cpp",
+      "line": 35,
+      "column": 46,
+      "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+      "kind": "fsub"
+    },
+    "audit": {
+      "recomputed": "0x40b46e1e17dfe100",
+      "consistent": true
+    },
+    "event_index": 227210
+  },
+  "window": [
+    {
+      "source": "injected",
+      "event_index": 227205,
+      "event": {
+        "op_id": 26,
+        "occurrence": 3156,
+        "operand0": "0x40ba4a1e17dfe100",
+        "operand1": "0x413a82b800000000",
+        "result": "0x413a9d021e17dfe1",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 29,
+          "column": 35,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fadd"
+        },
+        "audit": {
+          "recomputed": "0x413a9d021e17dfe1",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227206,
+      "event": {
+        "op_id": 27,
+        "occurrence": 3156,
+        "operand0": "0x413a9d021e17dfe1",
+        "operand1": "0x413a9d021e17dfe1",
+        "result": "0x42862225cdae39f2",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 30,
+          "column": 41,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x42862225cdae39f2",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227207,
+      "event": {
+        "op_id": 28,
+        "occurrence": 3156,
+        "operand0": "0x4291d616a0174000",
+        "operand1": "0x42862225cdae39f2",
+        "result": "0x3ff9c98e8e4b112c",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 30,
+          "column": 36,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fdiv"
+        },
+        "audit": {
+          "recomputed": "0x3ff9c98e8e4b112c",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227208,
+      "event": {
+        "op_id": 29,
+        "occurrence": 3156,
+        "operand0": "0x40e5fe0000000000",
+        "operand1": "0x40c4965f158aa66e",
+        "result": "0x4011177e88fad9f5",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 33,
+          "column": 51,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fdiv"
+        },
+        "audit": {
+          "recomputed": "0x4011177e88fad9f5",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227209,
+      "event": {
+        "op_id": 30,
+        "occurrence": 3156,
+        "operand0": "0x40824baa9c3cea80",
+        "operand1": "0x4011177e88fad9f5",
+        "result": "0x4061207cabd2551c",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 34,
+          "column": 58,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fdiv"
+        },
+        "audit": {
+          "recomputed": "0x4061207cabd2551c",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227210,
+      "event": {
+        "op_id": 31,
+        "occurrence": 3156,
+        "operand0": "0x40ba4a1e17dfe100",
+        "operand1": "0x4097700000000000",
+        "result": "0x41b46e1e17dfe100",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 35,
+          "column": 46,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fsub"
+        },
+        "audit": {
+          "recomputed": "0x40b46e1e17dfe100",
+          "consistent": false
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227211,
+      "event": {
+        "op_id": 32,
+        "occurrence": 3156,
+        "operand0": "0xc1b46e1e17dfe100",
+        "operand1": "0x4061207cabd2551c",
+        "result": "0xc14315fd8c9a1d51",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 35,
+          "column": 69,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fdiv"
+        },
+        "audit": {
+          "recomputed": "0xc14315fd8c9a1d51",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227212,
+      "event": {
+        "op_id": 33,
+        "occurrence": 3156,
+        "operand0": "0x40824baa9c3cea80",
+        "operand1": "0x40824baa9c3cea80",
+        "result": "0x4114eba5b61d08bb",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 36,
+          "column": 75,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fmul"
+        },
+        "audit": {
+          "recomputed": "0x4114eba5b61d08bb",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227213,
+      "event": {
+        "op_id": 34,
+        "occurrence": 3156,
+        "operand0": "0x4114eba5b61d08bb",
+        "operand1": "0x413a9d021e17dfe1",
+        "result": "0x3fc927a92eae22e5",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 36,
+          "column": 98,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fdiv"
+        },
+        "audit": {
+          "recomputed": "0x3fc927a92eae22e5",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227214,
+      "event": {
+        "op_id": 35,
+        "occurrence": 3156,
+        "operand0": "0x3ff9c98e8e4b112c",
+        "operand1": "0x3fc927a92eae22e5",
+        "result": "0x3ff6a49968754ccf",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 36,
+          "column": 52,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fsub"
+        },
+        "audit": {
+          "recomputed": "0x3ff6a49968754ccf",
+          "consistent": true
+        }
+      }
+    },
+    {
+      "source": "injected",
+      "event_index": 227215,
+      "event": {
+        "op_id": 36,
+        "occurrence": 3156,
+        "operand0": "0xc14315fd8c9a1d51",
+        "operand1": "0xc04310b771425c72",
+        "result": "0xc14315ea7be2ac0f",
+        "source": {
+          "file": "workloads/moon/fsw/guidance.cpp",
+          "line": 37,
+          "column": 72,
+          "function": "_ZN4moon5guideERKNS_8NavStateEdRNS_13GuidanceStateE",
+          "kind": "fsub"
+        },
+        "audit": {
+          "recomputed": "0xc14315ea7be2ac0f",
+          "consistent": true
+        }
+      }
+    }
+  ],
+  "clean_exit": {
+    "exit_code": 0,
+    "detected_by_workload": false,
+    "corrected_by_mechanism": false,
+    "final_result": "0x3fd4fb8a146d604c"
+  },
+  "injected_exit": {
+    "exit_code": 0,
+    "detected_by_workload": false,
+    "corrected_by_mechanism": false,
+    "final_result": "0x3fd4fb8a13ed6a55"
+  },
+  "inject": {
+    "enabled": true,
+    "op_id": 31,
+    "occurrence": 3156,
+    "bit": 56,
+    "mode": "random",
+    "seed": 714047
+  }
+}
