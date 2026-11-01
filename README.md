@@ -17,6 +17,24 @@ A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its 
 
 The defense is a hybrid of TMR and lockstep that mimics real rocket flight computers: three computers, each a lockstep pair of cores, with commands compared across computers.
 
+## Results
+
+![Defense outcomes](docs/img/defense_outcomes.png)
+
+With no defense, about one in six persistent single-bit faults silently crashes the lander. With the TMR and lockstep hybrid, all 200 land safely: in 199 the defense silenced or outvoted the broken core.
+
+![Descent profile](docs/img/descent_profile.png)
+
+One persistent exponent flip in navigation (trial 1): the trajectories are identical until t = 379 s, then the faulty lander falls short and strikes the surface at 123.6 m/s.
+
+![Speeds over time](docs/img/descent_speeds.png)
+
+The same pair over time. The fault takes over late in braking, where vertical speed should level off before the final descent.
+
+![Defense at work](docs/img/defense_at_work.png)
+
+The same fault under `tmr-lockstep`, landing on core 4. Computer 2's two cores disagree from t = 379 s, so it is silenced and the other two computers fly an identical landing.
+
 ## Build
 
 Requires Homebrew LLVM 23 (`/opt/homebrew/opt/llvm`), CMake, Ninja, GoogleTest 1.18, and Python 3.14.
@@ -57,6 +75,13 @@ Use `-- --defense tmr-lockstep` for the defended run.
 ```
 
 The generator re-flies the clean landing and the chosen trial (runs are deterministic) and writes one offline HTML file: the 3D descent with clean and faulty paths, the fault and outcome, the three flight computers' status over time, and altitude and speed charts on a shared timeline.
+
+## Plot the figures
+
+```bash
+/opt/homebrew/bin/python3.14 -m venv .venv && .venv/bin/pip install matplotlib==3.11.2
+.venv/bin/python tools/plot.py --binary build/moon/moon_instr --trial 1 --out docs/img
+```
 
 ## Documents
 
