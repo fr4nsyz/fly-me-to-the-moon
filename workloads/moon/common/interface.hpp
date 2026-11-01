@@ -10,7 +10,6 @@ struct EngineCommand {
 };
 
 struct Sensors {
-    double t = 0.0;
     Vec3 position;
     Vec3 velocity;
     double mass = 0.0;

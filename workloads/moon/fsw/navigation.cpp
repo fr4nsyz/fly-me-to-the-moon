@@ -1,16 +1,12 @@
 #include "navigation.hpp"
 #include "constants.hpp"
-#include "moon_ephemeris.hpp"
 
 namespace moon {
 
 NavState navigate(const Sensors& sensors) {
-    const Vec3 moon_r = moon_position(sensors.t);
-    const Vec3 moon_v = moon_velocity(sensors.t);
-
     NavState nav;
-    nav.position = sensors.position - moon_r;
-    nav.velocity = (sensors.velocity - moon_v) - cross(moon_spin(moon_r, moon_v), nav.position);
+    nav.position = sensors.position;
+    nav.velocity = sensors.velocity - cross(kMoonSpin, sensors.position);
 
     const double r = norm(nav.position);
     nav.up = nav.position / r;

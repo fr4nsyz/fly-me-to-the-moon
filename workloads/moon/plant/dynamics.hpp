@@ -23,7 +23,7 @@ struct Rates {
     double mass_rate = 0.0;
 };
 
-Vec3 gravity(Vec3 position, double t);
-Rates derivative(const State& state, double t, const Vehicle& vehicle, const EngineCommand& command);
+Vec3 gravity(Vec3 position);
+Rates derivative(const State& state, const Vehicle& vehicle, const EngineCommand& command);
 
 } // namespace moon
