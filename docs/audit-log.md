@@ -228,19 +228,19 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 **Decision.** The flight software runs in two modes, chosen at run time with `--defense none|tmr-lockstep`.
 - `none`: one core runs navigation and guidance.
 - `tmr-lockstep`: a hybrid of TMR and lockstep that mimics real rocket flight computers. TMR is defined over three separate computers, and each computer is a lockstep pair of cores running the full flight software. Each computer compares its two cores bit for bit; a computer whose cores disagree goes silent for that tick. The commands of the computers still talking are then compared: with three, the majority wins; with two that agree, that command is used; with two that disagree, the computer with the longer record of agreement is used; with one, it is used. Every computer's phase memory is resynchronized to the chosen computer after each tick.
-- Each core is a distinct template instantiation of the flight software, so each has its own operations and a persistent fault breaks one core, not every copy.
-- The comparisons use instructions the pass does not instrument, so the voter is never faulted.
+- Each core is a separate copy of the same flight software, made by the build: `tools/instrument.sh --replicate` compiles the per-core sources once per core and internalizes each copy, so every copy keeps its own functions, helpers, and globals, and gets its own operations. A persistent fault breaks one core, not every copy. The source stays plain C++.
+- The voter is assumed reliable. It compares integer bit patterns, and the fault model covers only floating-point arithmetic, so the campaign never faults it. Real systems keep voters small, hardened, or replicated.
 - The flight software returns a status flag with its command. The simulation reports it to the runtime: any silenced computer or outvoted command reports CORRECTED.
 
 **Why.** Real launch vehicles combine the two: SpaceX describes Falcon 9 and Dragon as three computer units, each with two computers checking each other, with commands compared across units, so a unit that disagrees with itself drops out and the vehicle flies on the rest. Lockstep lets each computer tell that it is broken; TMR across computers supplies the backup. On its own, lockstep in a single computer can only detect, with nothing to hand control to, and TMR across copies on one core cannot survive a persistent fault, because every copy runs on the same core.
 
 **Evidence.** Aviation Week, "Dragon's Radiation-Tolerant Design" (John Muratore: three computer units, each of which have two computers checking on each other). SpaceNews: a Dragon computer shut down on a 2017 mission and Dragon continued on the other two. The cross-unit voting details come from secondary sources.
 
-**Rejected.** TMR and lockstep as separate modes: standalone lockstep never saves a landing, and the comparison obscures how real systems use them. TMR limited to navigation or guidance, and invariant checks: not needed for the demo's question. Checksums: deferred until memory faults exist.
+**Rejected.** TMR and lockstep as separate modes: standalone lockstep never saves a landing, and the comparison obscures how real systems use them. Running the six cores on threads: it would not change any result, because what the defense measures is fault isolation and the comparison logic, both already modeled; OS threads are scheduled unpredictably and drift apart, unlike hardware lockstep cores, which execute the same instruction on the same clock cycle under a hardware comparator; and threads would break byte-identical clean runs unless every core's trace events were buffered and merged in core order each tick. The cores run one after another in a single thread; the campaign uses the machine's cores instead (ADR-0024). TMR limited to navigation or guidance, and invariant checks: not needed for the demo's question. Checksums: deferred until memory faults exist.
 
-**Limitations.** A fault that hits both cores of one computer identically cannot occur in this model, because each core has its own operations; real designs offset the two cores in time for that case. The six copies make the flight software do about six times the work per tick, which also gives random faults six times as many targets.
+**Limitations.** A fault that hits both cores of one computer identically cannot occur in this model, because each core has its own operations; real designs offset the two cores in time for that case. The voter is a single point of failure the campaign does not measure; faulting integer and compare instructions (future work) would make it measurable. The six copies make the flight software do about six times the work per tick, which also gives random faults six times as many targets.
 
-**Impact.** `workloads/moon/common/interface.hpp`, `workloads/moon/fsw/`, `workloads/moon/sim/main.cpp`, the `tools/instrument.sh` invocation (`--keep fsw_configure`), `docs/architecture.md` section 16.
+**Impact.** `workloads/moon/common/interface.hpp`, `workloads/moon/fsw/`, `workloads/moon/sim/main.cpp`, `tools/instrument.sh` (`--replicate`, `--keep fsw_configure`), `docs/architecture.md` section 16.
 
 **Follow-up.** Multi-fault campaigns would show the hybrid surviving two broken computers.
 
@@ -434,7 +434,7 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Decision.** The moon flight software uses its own pinned flag set, `-O0 -gline-tables-only -ffp-contract=off`, selected with `tools/instrument.sh --profile o0`. The TMR and lockstep hybrid (ADR-0008) is written as plain code in the flight software. All other workloads keep the ADR-0002 flags.
 
-**Why.** At -O0 each copy stays a separate call, so a fault inside one copy spreads through its operations before the comparison. The comparisons use instructions the pass does not instrument, so they are never faulted; that matches ADR-0008's protected voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
+**Why.** At -O0 each copy stays a separate call, so a fault inside one copy spreads through its operations before the comparison. The comparisons are integer comparisons, which the fault model does not cover, so the campaign never faults them; ADR-0008 assumes a reliable voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
 
 **Evidence.** Three `guidance()` replicas plus `vote()`, built with Homebrew clang 23.1.4. At -O2: one copy of the arithmetic (`fmul`, `fmul`, `fmul`, `fsub`, `ret`) and no voter. At -O0: three `call @guidance` and one `call @vote`.
 
@@ -549,13 +549,14 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Proposed.** The sweep ran each injected trial with no time limit, so a fault that made a workload loop forever would block the campaign. A process killed for running too long leaves no exit record, which the analyzer read as CRASH.
 
-**Decision.** The taxonomy gains HANG, checked after INCONCLUSIVE and before CRASH. The sweep driver times the clean run and gives each trial `max(--timeout-floor, --timeout-factor x clean wall time)`, defaulting to 10 s and 10x. A trial that exceeds it is killed; the driver runs the analyzer with `--timed-out` on whatever trace was written, or records HANG directly when no trace exists.
+**Decision.** The taxonomy gains HANG, checked after INCONCLUSIVE and before CRASH. The sweep driver times the clean run and gives each trial `max(--timeout-floor, --timeout-factor x clean wall time)`, defaulting to 10 s and 100x. A trial that exceeds it is killed; the driver runs the analyzer with `--timed-out` on whatever trace was written, or records HANG directly when no trace exists.
 
-**Why.** Classification stays in one place, the analyzer, and hang trials still get evidence from their partial trace. Scaling the limit to the clean run fits both a millisecond reduction and a second-long landing. The current workloads have no loops whose exit depends on a computed value (inferred from the code), so this guards future workloads and defenses.
+**Why.** Classification stays in one place, the analyzer, and hang trials still get evidence from their partial trace. Scaling the limit to the clean run fits both a millisecond reduction and a second-long landing. The factor is generous because a true hang never finishes, so a large limit costs nothing on real hangs, while a tight one turns slow runs into false HANGs. The current workloads have no loops whose exit depends on a computed value (inferred from the code), so this guards future workloads and defenses.
 
 **Evidence.**
 - A 3-trial sweep on a program that loops forever under injection finished in 6.8 s with 3 HANG verdicts, each with evidence giving the reason "injected run exceeded the time limit and was killed".
 - The 200-trial seed-1337 `sum_plain` sweep matches the stored results in totals, per bit region, per operation, and per trial, with HANG at 0.
+- With a 10x factor and eight trials running at once (`--jobs 8`), the lunar sweeps reported 9 and 10 false HANGs: rerun alone, every one finished in 1.6 to 6.6 s against a 12 s limit. Concurrent trials writing 15 to 92 MB traces stretched their wall time past the limit. The default factor became 100x.
 
 **Rejected.** Labeling HANG in the driver without the analyzer: classification logic in two places and no evidence for hang trials. A fixed timeout: too long for fast workloads or too short for slow ones.
 
@@ -584,3 +585,22 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/runtime/runtime.cpp`, `tools/study/sweep.py`, `docs/trace-format.md`, `docs/architecture.md` sections 7.2 and 12 and the runtime interface table.
 
 **Follow-up.** Navigation filter to give the flight software state (the other half of the chosen fault-model work). Stuck-at and memory faults in future work.
+
+### ADR-0024 — Sweep trials run concurrently; cores stay sequential
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** A `tmr-lockstep` landing executes six times the operations of a `none` landing, so a 200-trial campaign that ran trials one at a time would take most of an hour. The machine has 12 CPU cores.
+
+**Decision.** `tools/study/sweep.py --jobs N` runs N trials at the same time, each as its own single-threaded process. Results are returned in trial order, so the summary, report, and evidence do not depend on N. The default is 1. Each trial's injection site is taken from its evidence file instead of re-reading the trial trace. The flight software's cores are not threaded (ADR-0008).
+
+**Why.** Trials are independent program runs with their own seeds, so running them concurrently needs no synchronization and keeps every run deterministic. Parallelism belongs where it changes only wall time.
+
+**Evidence.** The 200-trial seed-1337 `sum_plain` sweep with `--jobs 1` and `--jobs 8` gives identical per-trial tables, and both match the stored results in totals, per bit region, and per operation. Wall time: 16.7 s with one job, 6.5 s with eight.
+
+**Rejected.** Threading the six cores inside one landing: see ADR-0008.
+
+**Impact.** `tools/study/sweep.py`.
+
+**Follow-up.** None.

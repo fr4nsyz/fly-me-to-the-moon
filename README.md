@@ -12,8 +12,8 @@ A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its 
 |---|---|
 | Clean landing | Touchdown at 527.8 s, 1.0 m/s down, 0.0 m/s sideways, 1,158 kg propellant left |
 | 200 transient faults, no defense | 200 MASKED: the control loop corrects one bad tick on the next |
-| 200 persistent faults, no defense | 34 SDC, 166 MASKED |
-| Persistent faults with the TMR and lockstep hybrid | In progress |
+| 200 persistent faults, no defense | 31 SDC (15.5%), 169 MASKED: 169 safe landings |
+| 200 persistent faults, TMR and lockstep hybrid | 0 SDC, 199 CORRECTED, 1 MASKED: 200 safe landings |
 
 The defense is a hybrid of TMR and lockstep that mimics real rocket flight computers: three computers, each a lockstep pair of cores, with commands compared across computers.
 
@@ -35,16 +35,28 @@ ctest --test-dir build
 
 ```bash
 ./tools/instrument.sh --profile o0 --name moon -I workloads/moon/common -I workloads/moon/plant \
-  --instrument workloads/moon/fsw/fsw.cpp --instrument workloads/moon/fsw/navigation.cpp \
-  --instrument workloads/moon/fsw/guidance.cpp \
+  --replicate 6 --replicate-entry run_core --replicated workloads/moon/fsw/core.cpp \
+  --replicated workloads/moon/fsw/navigation.cpp --replicated workloads/moon/fsw/guidance.cpp \
+  --instrument workloads/moon/fsw/fsw.cpp --instrument workloads/moon/fsw/redundancy.cpp \
   --plain workloads/moon/sim/main.cpp --plain build/workloads/moon/plant/libmoon_plant.a \
-  --keep fsw_tick -o build/moon/moon_instr
+  --keep fsw_tick --keep fsw_configure -o build/moon/moon_instr
 
 /opt/homebrew/bin/python3.14 tools/study/sweep.py --binary build/moon/moon_instr --ops build/moon/ops.json \
   --trials 200 --seed 1337 --workload moon --persistent \
   --analyzer-args "--reference-bits 0x0 --abs-tol 1" --forward-from-clean spot:--reference \
-  --out results/sweep_moon_persistent_none
+  --jobs 8 --out results/sweep_moon_persistent_none -- --defense none
 ```
+
+Use `-- --defense tmr-lockstep` for the defended run.
+
+## View a run
+
+```bash
+/opt/homebrew/bin/python3.14 tools/view.py --binary build/moon/moon_instr \
+  --sweep results/sweep_moon_persistent_none --trial 1 --defense none --out view_trial1.html
+```
+
+The generator re-flies the clean landing and the chosen trial (runs are deterministic) and writes one offline HTML file: the 3D descent with clean and faulty paths, the fault and outcome, the three flight computers' status over time, and altitude and speed charts on a shared timeline.
 
 ## Documents
 

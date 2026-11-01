@@ -10,7 +10,11 @@
 # Files given with --instrument (or as a bare argument) are compiled to bitcode
 # with the profile's flag set, merged, and rewritten by the LLVM pass so every
 # double-precision FP op becomes a runtime hook. Files given with --plain are
-# compiled and linked normally. Everything is linked against the SDC runtime.
+# compiled and linked normally. Files given with --replicated are compiled once
+# per copy (--replicate N): copy i renames the --replicate-entry function to
+# NAME_i and internalizes everything else, so each copy keeps its own functions,
+# helpers, and globals, and the pass gives each copy its own operations.
+# Everything is linked against the SDC runtime.
 set -euo pipefail
 
 LLVM_ROOT="${LLVM_ROOT:-/opt/homebrew/opt/llvm}"
@@ -35,6 +39,7 @@ O0_FLAGS=(
 )
 
 USAGE="usage: $0 [--profile canonical|o0] [--instrument <file>]... [--plain <file>]...
+          [--replicate <n> --replicate-entry <name> --replicated <file>...]
           [--keep <symbol>]... [-I <dir>]... [--name <workload-name>] -o <output> [<file>]"
 
 PROFILE="canonical"
@@ -43,6 +48,9 @@ WORKLOAD_NAME=""
 INSTRUMENT=()
 PLAIN=()
 KEEP=()
+REPLICATED=()
+REPLICATE=0
+REPLICATE_ENTRY=""
 INCLUDES=(-I"$HERE/include" -I"$HERE/src/runtime")
 
 while [[ $# -gt 0 ]]; do
@@ -53,6 +61,9 @@ while [[ $# -gt 0 ]]; do
     --instrument) INSTRUMENT+=("$2"); shift 2 ;;
     --plain) PLAIN+=("$2"); shift 2 ;;
     --keep) KEEP+=("$2"); shift 2 ;;
+    --replicate) REPLICATE="$2"; shift 2 ;;
+    --replicate-entry) REPLICATE_ENTRY="$2"; shift 2 ;;
+    --replicated) REPLICATED+=("$2"); shift 2 ;;
     -I) INCLUDES+=(-I"$2"); shift 2 ;;
     -h|--help) echo "$USAGE"; exit 0 ;;
     *) INSTRUMENT+=("$1"); shift ;;
@@ -61,6 +72,10 @@ done
 
 if [[ ${#INSTRUMENT[@]} -eq 0 || -z "$OUT" ]]; then
   echo "$USAGE" >&2
+  exit 2
+fi
+if [[ ${#REPLICATED[@]} -gt 0 && ( "$REPLICATE" -lt 1 || -z "$REPLICATE_ENTRY" ) ]]; then
+  echo "instrument.sh: --replicated needs --replicate <n> and --replicate-entry <name>" >&2
   exit 2
 fi
 
@@ -90,6 +105,20 @@ for i in "${!INSTRUMENT[@]}"; do
   bc="$BUILD_DIR/part$i.bc"
   "$CLANG" -std=c++20 "${FLAGS[@]}" "${INCLUDES[@]}" -emit-llvm -c "${INSTRUMENT[$i]}" -o "$bc"
   BCS+=("$bc")
+done
+
+for ((r = 0; r < REPLICATE; ++r)); do
+  parts=()
+  for j in "${!REPLICATED[@]}"; do
+    bc="$BUILD_DIR/replica${r}_part$j.bc"
+    "$CLANG" -std=c++20 "${FLAGS[@]}" "${INCLUDES[@]}" -D"$REPLICATE_ENTRY=${REPLICATE_ENTRY}_$r" \
+      -emit-llvm -c "${REPLICATED[$j]}" -o "$bc"
+    parts+=("$bc")
+  done
+  "$LLVM_LINK" "${parts[@]}" -o "$BUILD_DIR/replica$r.bc"
+  "$OPT" -passes=internalize -internalize-public-api-list="${REPLICATE_ENTRY}_$r" \
+         "$BUILD_DIR/replica$r.bc" -o "$BUILD_DIR/replica$r.bc"
+  BCS+=("$BUILD_DIR/replica$r.bc")
 done
 
 if [[ ${#BCS[@]} -eq 1 ]]; then

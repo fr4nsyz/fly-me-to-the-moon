@@ -26,6 +26,9 @@ target_link_libraries(test_navigation PRIVATE moon_fsw GTest::gtest_main)
 add_executable(test_guidance test_guidance.cpp)
 target_link_libraries(test_guidance PRIVATE moon_fsw GTest::gtest_main)
 
+add_executable(test_redundancy test_redundancy.cpp)
+target_link_libraries(test_redundancy PRIVATE moon_fsw GTest::gtest_main)
+
 add_executable(test_judge test_judge.cpp)
 target_link_libraries(test_judge PRIVATE moon_plant GTest::gtest_main)
 
@@ -37,3 +40,4 @@ gtest_discover_tests(test_integrator)
 gtest_discover_tests(test_navigation)
 gtest_discover_tests(test_guidance)
 gtest_discover_tests(test_judge)
+gtest_discover_tests(test_redundancy)

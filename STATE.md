@@ -30,30 +30,27 @@ Notes that will save time later:
 - Platform: LLVM IR pass hooks double `fadd`, `fsub`, `fmul`, `fdiv`, and `llvm.sqrt` (ADR-0019); binary `SDCTRACE` traces (ADR-0001); analyzer with prefix-scan alignment (ADR-0014) and seven outcome classes including CORRECTED (ADR-0005) and HANG (ADR-0022).
 - Fault models: transient (one flip) and persistent (the same bit on every execution of the op from a chosen occurrence on, ADR-0023).
 - Workload: powered lunar descent in a Moon-centered frame (ADR-0007, ADR-0016), Lunar Module class vehicle and touchdown envelope (ADR-0020), flight software instrumented at -O0 (ADR-0017), plant not instrumented (ADR-0009).
-- Defenses: `none` and `tmr-lockstep`, a TMR and lockstep hybrid that mimics real rocket flight computers (ADR-0008): three computers, each a lockstep pair of cores, commands compared across computers. Each core is a distinct template instantiation with its own operations.
+- Defenses: `none` and `tmr-lockstep`, a TMR and lockstep hybrid that mimics real rocket flight computers (ADR-0008): three computers, each a lockstep pair of cores, commands compared across computers. Each core is a separate copy of the same flight software made by the build (`instrument.sh --replicate`, per-copy internalize), so each has its own operations. The voter is assumed reliable (integer comparisons are outside the fault model).
 - Viewer: Three.js HUD, vendored offline, reads `trajectory.json` and `evidence.json` (ADR-0010).
 - Audit-log entries are rewritten when a decision changes; a new entry is added only for a new decision.
 
 ## Phase status
 - Phases 0 to 5 (skeleton, trace I/O, runtime, LLVM pass, analyzer, drivers): done. `results/sweep_sum_plain/`: 83.0% SDC, 17.0% MASKED.
-- Phase 6 lunar descent and defenses: plant, navigation, guidance, landing judge, soft clean landing, hang timeout, persistent faults, and both no-defense sweeps done. Defenses not built.
-- Phase 7 viewer: after Phase 6.
+- Phase 6 lunar descent and defenses: done. Plant, navigation, guidance, landing judge, hang timeout, persistent faults, the TMR and lockstep hybrid, and the defense comparison.
+- Phase 7 viewer: built (`viewer/`, `tools/view.py`); docs walkthrough with the user pending.
 
 ## Measured results
 - Instrumentation overhead on `sum_plain`: 3.9x median wall time, 40.0 bytes per event.
 - `sum_plain` bit regions: low mantissa masked 30/128, exponent masked 1/35.
 - Clean lunar landing: touchdown at 527.8 s, 1.000 m/s descent, 0.000 m/s horizontal, 1,157.6 kg propellant left, score 0.328. 49 flight software ops, 381,838 events, 15.3 MB trace, 1.2 s per instrumented run. Two clean runs give byte-identical traces.
 - Lunar descent, no defenses, transient faults: 200/200 MASKED (`results/sweep_moon_none/`). The closed loop re-measures the true state every tick, so one bad tick is corrected on the next.
-- Lunar descent, no defenses, persistent faults: 34 SDC, 166 MASKED (`results/sweep_moon_persistent_none/`). SDC from 22/35 exponent, 3/3 sign, 9/34 high-mantissa, 0/128 low-mantissa flips.
+- Lunar descent, persistent faults, replicated build, seed 1337: `none` 31 SDC, 169 MASKED, 169/200 safe landings (`results/sweep_moon_persistent_none/`); `tmr-lockstep` 0 SDC, 199 CORRECTED, 1 MASKED, 200/200 safe (`results/sweep_moon_persistent_tmr_lockstep/`). With `--jobs 8`: 4.5 min and 27 min.
 - A 200-trial lunar sweep takes about 6 to 7 minutes. Trial traces are deleted after analysis unless `--keep-traces` is passed.
 
 ## Next move
 The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
-1. D1 plumbing: `--defense none|tmr-lockstep` in the simulation, `fsw_configure`, a status flag from the flight software, the simulation reports it to the runtime.
-2. D2 the hybrid: six core copies as template instantiations, pair comparison, cross-computer vote, phase-memory resync.
-3. D3 sweeps for both modes under persistent faults, and the comparison table with a safe-landings column.
-4. Navigation filter, to give the flight software state so a single transient flip can linger.
-5. Phase 7 viewer.
+1. Walk the user through the viewer code (`viewer/template.html`, `tools/view.py`).
+2. Navigation filter, to give the flight software state so a single transient flip can linger.
 
 Open: math library calls (`sin`, `cos`, `atan2`) are not faulted.
 

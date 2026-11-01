@@ -188,4 +188,33 @@ in m/s and m (ADR-0020). $S \le 1$ passes. No touchdown within the time limit gi
 $S = \infty$. The plant reports $S$ as the run's final result.
 Code: \texttt{plant/judge.cpp}, \texttt{sim/main.cpp}. Tests: \texttt{test\_judge.cpp}.
 
+\section{Defense: TMR and lockstep hybrid}
+Modeled on real rocket flight computers: three computers, each a lockstep pair of cores
+running the full flight software (navigation and guidance). Computer $i$ runs cores $2i$
+and $2i+1$, $i \in \{0,1,2\}$, producing commands $c_{2i}$ and $c_{2i+1}$.
+
+\paragraph{Lockstep inside a computer.} Computer $i$ is healthy when its two commands are
+bit-identical: $h_i = [\,c_{2i} \equiv c_{2i+1}\,]$, comparing the 64-bit patterns of the
+throttle and the three direction components.
+
+\paragraph{TMR across computers.} Let $H = \{i : h_i\}$. Computer $i \in H$ wins if more
+than half of $H$ produced the same command:
+\begin{equation}
+2\,\bigl|\{\,j \in H : c_{2j} \equiv c_{2i}\,\}\bigr| > |H|
+\end{equation}
+If no computer wins (two healthy computers that disagree), the one with the longer record
+of consecutive trusted ticks is used. If $H$ is empty, the longest record is used and the
+tick is flagged DETECTED. A computer is trusted when it is healthy and agrees with the
+chosen command; any untrusted computer flags the tick CORRECTED.
+
+\paragraph{Resynchronization.} After each tick every core's phase memory (braking or final)
+is set to the chosen computer's.
+
+\paragraph{Separate cores.} The build compiles the per-core sources once per core and
+internalizes each copy, so every core has its own operations: 6 copies of 49 operations.
+The comparisons use integer bit patterns, outside the floating-point fault model, so the
+voter is assumed reliable.
+Code: \texttt{fsw/redundancy.cpp}, \texttt{fsw/fsw.cpp}, \texttt{fsw/core.cpp}.
+Tests: \texttt{test\_redundancy.cpp}.
+
 \end{document}
