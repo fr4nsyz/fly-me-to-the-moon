@@ -79,7 +79,7 @@ Every integer is little-endian. The field order is chosen so that no field strad
 
 | Value | Name | Interpretation |
 | --- | --- | --- |
-| 0 | `EVENT` | `op_id` is the operation, `occurrence` is its visit count, `operand0` and `operand1` are operand bit patterns, `result` is the delivered result bits |
+| 0 | `EVENT` | `op_id` is the operation, `occurrence` is its visit count, `operand0` and `operand1` are operand bit patterns, `result` is the delivered result bits. For a one-operand operation such as `sqrt` (ADR-0019), `operand1` is zero |
 | 1 | `EXIT` | The final record. `operand0` holds the exit code, `operand1` holds the outcome flags, `result` holds the final result bits, and `op_id` and `occurrence` are zero |
 
 The `operand1` word in an `EXIT` record is a flag set, not a boolean:

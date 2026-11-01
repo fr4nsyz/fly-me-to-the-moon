@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,booktabs,geometry}
 \geometry{margin=1in}
-\title{Moon Mission Plant and Flight Software: Mathematics}
+\title{Lunar Descent Plant and Flight Software: Mathematics}
 \author{}
 \date{}
 \begin{document}
@@ -9,8 +9,8 @@
 
 \section{Conventions}
 SI units throughout: meters, seconds, kilograms, radians.
-Frame: origin at Earth's center, $z$ along Earth's rotation axis, $x$ toward the
-vernal equinox, axes fixed relative to the stars (Earth-centered equatorial).
+Frame: origin at the Moon's center, $z$ along the Moon's spin axis, axes fixed relative
+to the stars (Moon-centered inertial). The Moon does not move.
 Source: \texttt{workloads/moon/common/}.
 
 \section{Vectors}
@@ -26,74 +26,24 @@ Code: \texttt{vec3.hpp}. Tests: \texttt{test\_vec3.cpp}.
 \section{Constants}
 \begin{tabular}{llll}\toprule
 Symbol & Value & Unit & Source\\\midrule
-$\mu_E$ & $3.986004418\times10^{14}$ & m$^3$/s$^2$ & IERS Conventions 2010\\
 $\mu_M$ & $4.902800066\times10^{12}$ & m$^3$/s$^2$ & JPL DE430\\
-$R_E$ & $6\,378\,137$ & m & equatorial radius\\
 $R_M$ & $1\,737\,400$ & m & mean radius\\
-$\omega_E$ & $7.292115\times10^{-5}$ & rad/s & sidereal rotation\\
-$a_M$ & $3.844\times10^{8}$ & m & mean Earth--Moon distance\\
-$\varepsilon$ & $23.439^\circ$ & & obliquity of the ecliptic\\
-$i_M$ & $5.145^\circ$ & & lunar orbit inclination to the ecliptic\\
-$\phi_L$ & $28.573^\circ$ & & launch latitude, Kennedy LC-39A\\
+$\omega_M$ & $2.6616995\times10^{-6}$ & rad/s & sidereal spin, one turn per 27.321661 days\\
 $g_0$ & $9.80665$ & m/s$^2$ & standard gravity\\\bottomrule
 \end{tabular}
 
-\noindent Code: \texttt{constants.hpp}.
-
-\section{Time}
-Mission time $t$ is seconds since the epoch
-$\mathrm{JD}_0 = 2\,434\,743.5$ (1954-01-01 00:00 UTC; Bart Howard's original
-``Fly Me to the Moon'' sheet music was published in 1954). Julian centuries from J2000:
-\begin{equation}
-T = \frac{\mathrm{JD}_0 + t/86400 - 2\,451\,545.0}{36\,525}
-\end{equation}
-
-\section{Moon ephemeris}
-Circular orbit of radius $a_M$. Mean elements, Meeus,
-\emph{Astronomical Algorithms}, ch.~47, linear terms (higher-order terms change the
-result by about $0.0003^\circ$ at the epoch):
-\begin{align}
-L' &= 218.3164477^\circ + 481\,267.88123421^\circ\,T &&\text{mean longitude}\\
-\Omega &= 125.0445479^\circ - 1934.1362891^\circ\,T &&\text{ascending node}\\
-u &= L' - \Omega &&\text{argument of latitude}
-\end{align}
-Position in the ecliptic frame:
-\begin{equation}
-\mathbf{r}_{\mathrm{ecl}} = a_M\begin{pmatrix}
-\cos\Omega\cos u - \sin\Omega\sin u\cos i_M\\
-\sin\Omega\cos u + \cos\Omega\sin u\cos i_M\\
-\sin u\,\sin i_M\end{pmatrix}
-\end{equation}
-Rotation into the Earth-equatorial frame about $x$ by $\varepsilon$:
-\begin{equation}
-\mathbf{r}_M = \begin{pmatrix}1&0&0\\0&\cos\varepsilon&-\sin\varepsilon\\
-0&\sin\varepsilon&\cos\varepsilon\end{pmatrix}\mathbf{r}_{\mathrm{ecl}}
-\end{equation}
-The orbit's tilt $I$ to Earth's equator follows from
-\begin{equation}
-\cos I = \cos\varepsilon\cos i_M - \sin\varepsilon\sin i_M\cos\Omega
-\end{equation}
-At the epoch, $I = 25.988^\circ$, within the real range
-$18.3^\circ$--$28.6^\circ$ over the 18.6-year nodal cycle.
-
-\paragraph{Limitations.} The real orbit is eccentric ($e\approx0.055$), so the modeled
-position differs from the true one by up to about $6^\circ$ in longitude and
-$20\,000$ km in distance. $u = L'-\Omega$ is the standard approximation.
-Code: \texttt{moon\_ephemeris.hpp}. Tests: \texttt{test\_moon\_ephemeris.cpp}.
+\noindent The spin vector is $\boldsymbol{\omega}_M = (0, 0, \omega_M)$. The ground under a
+point $\mathbf{r}$ moves at $\boldsymbol{\omega}_M\times\mathbf{r}$, which is
+$\omega_M R_M = 4.624$ m/s at the equator.
+Code: \texttt{constants.hpp}.
 
 \section{Gravity}
-With $\mathbf{r}$ the spacecraft position, $\mathbf{r}_M$ the Moon position, and
-$r=\lVert\mathbf{r}\rVert$, $r_M=\lVert\mathbf{r}_M\rVert$:
+With $r = \lVert\mathbf{r}\rVert$:
 \begin{equation}
-\mathbf{g} = -\mu_E\frac{\mathbf{r}}{r^3}
- + \mu_M\left(\frac{\mathbf{r}_M-\mathbf{r}}{\lVert\mathbf{r}_M-\mathbf{r}\rVert^3}
- - \frac{\mathbf{r}_M}{r_M^3}\right)
+\mathbf{g} = -\mu_M\frac{\mathbf{r}}{r^3}
 \end{equation}
-The first term is Earth's pull. The Moon contribution is the third-body perturbation:
-the Moon's pull on the spacecraft minus the Moon's pull on Earth. The subtracted part,
-the indirect term, is required because the frame is centered on Earth, which itself
-accelerates toward the Moon. Near Earth the two Moon terms nearly cancel; near the Moon
-the first dominates.
+At the surface, $\mu_M / R_M^2 = 1.6242$ m/s$^2$. Earth's tidal acceleration near the
+Moon is on the order of $10^{-5}$ m/s$^2$ (estimated) and is not modeled.
 Code: \texttt{dynamics.cpp}. Tests: \texttt{test\_dynamics.cpp}.
 
 \section{Engine and actuator limits}
@@ -116,20 +66,21 @@ flight software defense.
 \section{Equations of motion}
 \begin{align}
 \dot{\mathbf{r}} &= \mathbf{v} \\
-\dot{\mathbf{v}} &= \mathbf{g}(\mathbf{r}, t) + \mathbf{a}_T \\
+\dot{\mathbf{v}} &= \mathbf{g}(\mathbf{r}) + \mathbf{a}_T \\
 \dot m &= -\frac{F}{I_{sp}\,g_0}
 \end{align}
+The system does not depend on time explicitly.
 Code: \texttt{dynamics.cpp}, function \texttt{derivative}.
 
 \section{Numerical integration (RK4)}
 Write the state as $\mathbf{y} = (\mathbf{r}, \mathbf{v}, m)$ and the equations of
-motion as $\dot{\mathbf{y}} = f(\mathbf{y}, t)$. The classical fourth-order Runge--Kutta
+motion as $\dot{\mathbf{y}} = f(\mathbf{y})$. The classical fourth-order Runge--Kutta
 step of size $h$:
 \begin{align}
-\mathbf{k}_1 &= f(\mathbf{y}_n,\, t_n) \\
-\mathbf{k}_2 &= f(\mathbf{y}_n + \tfrac{h}{2}\mathbf{k}_1,\, t_n + \tfrac{h}{2}) \\
-\mathbf{k}_3 &= f(\mathbf{y}_n + \tfrac{h}{2}\mathbf{k}_2,\, t_n + \tfrac{h}{2}) \\
-\mathbf{k}_4 &= f(\mathbf{y}_n + h\,\mathbf{k}_3,\, t_n + h) \\
+\mathbf{k}_1 &= f(\mathbf{y}_n) \\
+\mathbf{k}_2 &= f(\mathbf{y}_n + \tfrac{h}{2}\mathbf{k}_1) \\
+\mathbf{k}_3 &= f(\mathbf{y}_n + \tfrac{h}{2}\mathbf{k}_2) \\
+\mathbf{k}_4 &= f(\mathbf{y}_n + h\,\mathbf{k}_3) \\
 \mathbf{y}_{n+1} &= \mathbf{y}_n + \tfrac{h}{6}\left(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4\right)
 \end{align}
 The engine command is held constant for the whole step, as flight software sets one
@@ -137,12 +88,104 @@ command per tick. If $m_{n+1} < m_{\mathrm{dry}}$, it is set to $m_{\mathrm{dry}
 step still applied thrust for its full length, so the error is at most one step of thrust.
 
 \paragraph{Validation.} With no thrust, specific orbital energy
-$\mathcal{E} = \tfrac12\lVert\mathbf{v}\rVert^2 - \mu_E/r$ and angular momentum
-$\mathbf{h} = \mathbf{r}\times\mathbf{v}$ are conserved. Over one 400 km circular orbit
-in 5000 steps, measured drift is $2.5\times10^{-9}$ in $\mathcal{E}$ and
-$1.3\times10^{-9}$ in $\lVert\mathbf{h}\rVert$, with the Moon's tidal pull present; the
-spacecraft returns within 3 m of its start. Forward Euler on the same orbit drifts
-$1.5\times10^{-2}$ in $\mathcal{E}$ and returns 510 km off.
+$\mathcal{E} = \tfrac12\lVert\mathbf{v}\rVert^2 - \mu_M/r$ and angular momentum
+$\mathbf{h} = \mathbf{r}\times\mathbf{v}$ are conserved. Over one 100 km circular lunar
+orbit (period 7067.5 s) in 5000 steps, measured drift is $2.1\times10^{-15}$ in
+$\mathcal{E}$ and $8.9\times10^{-16}$ in $\lVert\mathbf{h}\rVert$, at the level of double
+rounding, and the spacecraft returns to within a millimeter of its start. Forward Euler
+on the same orbit drifts $1.5\times10^{-2}$ in $\mathcal{E}$ and returns 138 km off.
 Code: \texttt{integrator.cpp}. Tests: \texttt{test\_integrator.cpp}.
+
+\section{Navigation (flight software)}
+The flight software receives the Moon-centered state $(\mathbf{r}, \mathbf{v})$ and
+derives the ground-relative state:
+\begin{align}
+\mathbf{u} &= \mathbf{v} - \boldsymbol{\omega}_M \times \mathbf{r} &&\text{velocity relative to the ground}\\
+\hat{\mathbf{n}} &= \mathbf{r} / \lVert\mathbf{r}\rVert &&\text{local up}\\
+h &= \lVert\mathbf{r}\rVert - R_M &&\text{altitude}\\
+v_{\uparrow} &= \mathbf{u}\cdot\hat{\mathbf{n}} &&\text{vertical speed, positive up}\\
+v_{\leftrightarrow} &= \lVert\mathbf{u} - v_{\uparrow}\hat{\mathbf{n}}\rVert &&\text{horizontal speed}
+\end{align}
+This stage runs before guidance, so a fault here reaches every TMR replica.
+
+\paragraph{Limitations.} The real lunar spin axis is tilted about $1.5^\circ$ from the
+orbit normal (Cassini's laws); the model fixes it along $z$. Altitude is above a sphere
+of radius $R_M$; there is no terrain.
+Code: \texttt{fsw/navigation.cpp}. Tests: \texttt{test\_navigation.cpp}.
+
+\section{Guidance (flight software)}
+Inputs: the navigation state and the mass $m$. Output: throttle $\tau$ and direction
+$\mathbf{d}$; the plant applies the actuator limits.
+
+\paragraph{Braking.} Full throttle, $\tau = 1$, split between altitude control and
+horizontal deceleration. With $a_{\max} = F_{\max}/m$, $w = v_{\leftrightarrow}$,
+$r = R_M + h$, and $h_b = 1500$ m:
+\begin{align}
+t_{\mathrm{stop}} &= w / a_{\max}\\
+v^{*}_b &= -\frac{h - h_b}{\max(t_{\mathrm{stop}},\ 1\ \mathrm{s})}\\
+a_{\uparrow} &= \mathrm{clamp}\!\left(\frac{\mu_M}{r^2} - \frac{w^2}{r} + k_v\,(v^{*}_b - v_{\uparrow}),\ 0,\ a_{\max}\right)\\
+a_{\leftrightarrow} &= \sqrt{(a_{\max} - a_{\uparrow})(a_{\max} + a_{\uparrow})}\\
+\mathbf{d} &= a_{\uparrow}\hat{\mathbf{n}} - \frac{a_{\leftrightarrow}}{w}\,(\mathbf{u} - v_{\uparrow}\hat{\mathbf{n}})
+\end{align}
+The sink-rate target brings the lander to $h_b$ as its horizontal speed reaches zero.
+$w^2/r$ is the support still provided by orbital motion. The factored form of
+$a_{\leftrightarrow}$ cannot go negative by rounding, because the clamp guarantees
+$a_{\uparrow} \le a_{\max}$. Pure retrograde braking from 15 km (no altitude control)
+was measured to strike the surface at 132 m/s with 726 m/s of horizontal speed remaining.
+
+\paragraph{Switch.} Braking ends, permanently, when $v_{\leftrightarrow} < 50$ m/s or
+$h < 500$ m, whichever comes first.
+
+\paragraph{Final descent.} Target vertical speed and wanted acceleration:
+\begin{align}
+v^{*} &= -\,\mathrm{clamp}\!\left(\frac{h}{10\ \mathrm{s}},\ 1,\ 30\right)\ \text{m/s}\\
+g &= \frac{\mu_M}{(R_M + h)^2}\\
+\mathbf{a}^{*} &= \left(g + k_v\,(v^{*} - v_{\uparrow})\right)\hat{\mathbf{n}}
+ - k_h\,(\mathbf{u} - v_{\uparrow}\hat{\mathbf{n}})
+\end{align}
+with $k_v = 1.0\ \mathrm{s}^{-1}$ and $k_h = 0.5\ \mathrm{s}^{-1}$. If
+$\mathbf{a}^{*}\cdot\hat{\mathbf{n}} \le 0$ the engine is off (a lander cannot thrust toward
+the ground). Otherwise
+\begin{equation}
+\tau = \frac{\lVert\mathbf{a}^{*}\rVert\, m}{F_{\max}}, \qquad \mathbf{d} = \mathbf{a}^{*}
+\end{equation}
+and the plant saturates $\tau$ at 1. On the target descent rate with no drift,
+$\tau = g\,m/F_{\max}$, the hover throttle.
+
+\paragraph{Clean landing.} Measured: touchdown at 527.8 s at 1.000 m/s descent and
+0.000 m/s horizontal speed, with 1157.6 kg of propellant left; score 0.328. Two clean runs
+produce byte-identical traces.
+Code: \texttt{fsw/guidance.cpp}. Tests: \texttt{test\_guidance.cpp}.
+
+\section{Simulation and landing judge}
+\paragraph{Start.} Circular equatorial prograde orbit at $h_0 = 15$ km:
+$\mathbf{r}_0 = (R_M + h_0, 0, 0)$, $\mathbf{v}_0 = (0, \sqrt{\mu_M / (R_M + h_0)}, 0)$,
+$m_0 = 15\,200$ kg. The flight software and the plant step together at $\Delta t = 0.1$ s,
+for at most 3600 s.
+
+\paragraph{Independence.} The judge computes altitude and ground-relative velocity with
+the same formulas as navigation, in uninstrumented plant code. If it reused the flight
+software's navigation, a fault there would corrupt the judge as well.
+
+\paragraph{Touchdown.} When altitude changes sign within a step, from $h_a > 0$ to
+$h_b \le 0$, the crossing fraction is $f = h_a / (h_a - h_b)$, and touchdown speeds,
+time, and position are interpolated linearly at $f$.
+
+\paragraph{Ground-fixed spot.} With $\alpha = -\omega_M t$, the touchdown point is rotated
+back to the ground's orientation at $t = 0$:
+\begin{equation}
+\mathbf{s} = \begin{pmatrix}\cos\alpha & -\sin\alpha & 0\\ \sin\alpha & \cos\alpha & 0\\ 0&0&1\end{pmatrix}\mathbf{r}
+\end{equation}
+so two runs landing on the same ground spot at different times give the same $\mathbf{s}$.
+
+\paragraph{Score.} With descent speed $v$, horizontal speed $w$, and distance $d$ from the
+clean run's spot (zero for the clean run itself):
+\begin{equation}
+v_{\lim}(w) = 3.05 - (3.05 - 2.13)\frac{w}{1.22}, \qquad
+S = \max\left(\frac{v}{v_{\lim}(w)},\ \frac{w}{1.22},\ \frac{d}{1000}\right)
+\end{equation}
+in m/s and m (ADR-0020). $S \le 1$ passes. No touchdown within the time limit gives
+$S = \infty$. The plant reports $S$ as the run's final result.
+Code: \texttt{plant/judge.cpp}, \texttt{sim/main.cpp}. Tests: \texttt{test\_judge.cpp}.
 
 \end{document}

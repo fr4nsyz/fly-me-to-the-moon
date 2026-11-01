@@ -6,7 +6,7 @@ Append-only record of every architectural decision in this project.
 
 One entry per decision. Each entry has the same six parts: what was proposed, what was decided, why, what evidence backs it, what was rejected instead, and what it touches.
 
-**Never rewrite history.** A decision that turns out to be wrong gets a new entry that supersedes it. The old entry stays, with its status changed to "Superseded by ADR-XXXX", and the new entry explains what was learned. A reviewer reading this log top to bottom should be able to reconstruct what was known at each point, including the parts that turned out to be wrong.
+**Entries may be revised while the project is in architectural development.** When a decision changes, its entry is rewritten to state the current decision, and the git history is the record of earlier versions. A new entry is added only for a new decision.
 
 **Evidence is a pointer, not prose.** A command, a file path, a measurement, or a commit. If a claim in this log cannot be checked against something, it belongs in a discussion, not here.
 
@@ -199,24 +199,24 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 **Follow-up.** None.
 
-### ADR-0007 — Moon workload: full surface→lunar landing, hand-rolled plant, FSW-only instrumentation
+### ADR-0007 — Moon workload: powered lunar descent, hand-rolled plant, FSW-only instrumentation
 
 **Date:** 2026-10-31
-**Status:** Accepted (ADR-0013)
+**Status:** Accepted
 
-**Proposed.** Use JEOD/Trick or hand-rolled plant for a full mission. User chose hand-rolled C++ plant for a clean MIT-licensed portfolio repo.
+**Proposed.** Use JEOD/Trick or a hand-rolled plant for a lunar workload.
 
-**Decision.** Mission is full surface → lunar landing. Plant is hand-rolled C++ 3D dynamics (not instrumented). FSW is our C++ GNC+defenses (instrumented). Phases: Ascent → TLI → Coast → LOI → Powered Descent → Landing. Success = landing within position/velocity tolerance. Trajectory logged separately for viewer.
+**Decision.** The workload is a powered descent from lunar orbit to touchdown. The plant is hand-rolled C++ (not instrumented). The flight software is our C++ guidance, navigation, and defenses (instrumented). Success is a touchdown inside the Lunar Module envelope. The trajectory is logged separately for the viewer.
 
-**Why.** Portfolio clarity (single MIT license), removes LLVM-23/JEOD compatibility risk, keeps instrumentation scope tight.
+**Why.** A landing gives a visible consequence for a corrupted value, room to compare defenses, and a clean success criterion, with a single MIT license and no LLVM-23/JEOD compatibility risk.
 
-**Evidence.** License review: NOSA-1.3 is reciprocal; mixed license is possible but noisier for a public portfolio. Basilisk ISC is clean but heavier build. Hand-rolled is fastest path to clean repo.
+**Evidence.** License review: NOSA-1.3 is reciprocal; Basilisk (ISC) is clean but a heavier build. Hand-rolled is the fastest path to a clean repository.
 
-**Rejected.** JEOD/Trick (NOSA mixed license/obligations), Basilisk (heavier spike) — both viable but less clean for this goal.
+**Rejected.** JEOD/Trick (NOSA obligations), Basilisk (heavier build). A full Earth-to-Moon mission: mostly orbital mechanics, little added SDC insight.
 
-**Impact.** `docs/architecture.md` sections 3,5,6,7.4,9.6,15. `workloads/moon/{plant,fsw}/`. Trajectory log format.
+**Impact.** `docs/architecture.md` sections 3, 5, 6, 7.4, 9, 15. `workloads/moon/{plant,fsw,sim}/`. Trajectory log format.
 
-**Follow-up.** Define trajectory log schema in next iteration; keep `SDCTRACE` unchanged.
+**Follow-up.** Trajectory log schema; `SDCTRACE` unchanged.
 
 ### ADR-0008 — Defense semantics
 
@@ -392,34 +392,31 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Follow-up.** None.
 
-### ADR-0016 — Moon mission model: full mission in 3D, simplified physics, precomputed plan, per-phase campaigns
+### ADR-0016 — Descent model: Moon-centered frame, point-mass physics, uniform fault campaigns
 
 **Date:** 2026-10-31
-**Status:** Accepted. Refines ADR-0007.
+**Status:** Accepted
 
-**Proposed.** ADR-0007 fixes a full surface-to-landing mission but not the model fidelity, the guidance approach, or how faults are distributed across a multi-day mission.
+**Proposed.** ADR-0007 fixes a powered descent but not the model fidelity or the frame.
 
 **Decision.**
-- Full mission: ascent, parking orbit, TLI, coast, LOI, powered descent, landing.
-- 3D from the start. Rotating Earth with a real launch latitude. The Moon on a fixed circular orbit inclined to Earth's equator.
-- Point-mass dynamics: position, velocity, propellant mass. Thrust direction is commanded directly, with no attitude dynamics. Earth and Moon gravity only. No atmosphere drag, no Sun.
-- The plant integrates with fixed-step RK4 and is not instrumented (ADR-0009).
-- Flight software ticks at 10 Hz during ascent, burns, and descent, and at 1 Hz during coast.
-- Burn times, directions, and targets come from a tuning script run once against the clean simulation and are stored as mission-plan constants. The flight software executes the plan with simple closed-loop rules per phase.
-- Every trial flies the whole mission. Faults are drawn per phase with equal trials per phase, not uniformly over operations.
-- The outcome is judged on the plant's true state at touchdown.
+- Frame: Moon-centered and inertial, z along the Moon's spin axis. The Moon does not move. Gravity is the Moon's only.
+- The Moon spins at a constant sidereal rate (one turn per 27.321661 days) about z. Navigation and the judge subtract the ground's motion; the judge rotates touchdown points back by the angle turned so runs can be compared.
+- Point-mass dynamics: position, velocity, propellant mass. Thrust direction is commanded directly, with no attitude dynamics. Fixed-step RK4. The plant is not instrumented (ADR-0009).
+- Flight software ticks at 10 Hz.
+- Faults are drawn uniformly over executed operations. The outcome is judged on the plant's true state at touchdown.
 
-**Why.** The aim is a recognizable full Earth-to-Moon trip that demonstrates SDC, not a flight-dynamics research code. Point mass with two-body gravity is the textbook level used for early mission planning. The 1 Hz coast rate keeps a trace at about 20M events instead of about 1.3B (estimated, unmeasured). Drawing faults per phase stops the coast phase, which executes about 99% of operations at a uniform rate, from dominating the results.
+**Why.** The flight software should spend its operations on navigation and guidance, so faults land where the SDC story is. A Moon-centered frame keeps every operation the flight software executes about the landing. The constant spin keeps touchdown speeds honest: the ground moves up to about 4.6 m/s at the equator, more than the 1.22 m/s horizontal tolerance.
 
-**Evidence.** Estimates only: about 500 flight software ops per busy tick, which gives about 800 MB per trace. The first measurement of a real trace replaces these numbers.
+**Evidence.** Earth's tidal acceleration near the Moon is on the order of 1e-5 m/s^2 (estimated), about 6 m of drift over a 12-minute descent.
 
-**Rejected.** Planar mission: rejected in favor of real 3D. Powered descent only: smaller, but not a full trip. One uniform campaign over the full mission: results dominated by coast. Onboard guidance that recomputes burns in flight: too deep for this phase.
+**Rejected.** An Earth-centered frame with a Moon ephemeris: the flight software would spend most of its operations computing the Moon's position. A non-rotating Moon: touchdown speeds wrong by up to 4.6 m/s. Planar motion: real 3D chosen.
 
-**Limitations.** The precomputed plan fits only the nominal trajectory. The flight software cannot retarget after a fault pushes it off course, so some faults that replanning guidance would absorb will classify as SDC; results lean pessimistic. The plan is tied to one launch date and geometry.
+**Limitations.** No Earth gravity. Fixed spin axis. Uniform fault draws give the longer braking phase more faults than the final descent.
 
-**Impact.** `docs/architecture.md` sections 9 (Phase 6), 12, 15. New `workloads/moon/{plant,fsw}/`. New tuning script under `tools/`.
+**Impact.** `docs/architecture.md` sections 9, 12, 15. `workloads/moon/`.
 
-**Follow-up.** Open: touchdown tolerances that separate MASKED from SDC; how the runtime learns phase boundaries; a clean-vs-clean determinism check.
+**Follow-up.** None.
 
 ### ADR-0017 — Moon flight software builds at -O0; TMR and lockstep are written in the flight software source
 
@@ -439,5 +436,101 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Limitations.** Results describe unoptimized flight software. -O0 keeps operations an optimized build would remove, so the set of fault sites differs from an optimized binary.
 
 **Impact.** `tools/instrument.sh`. `docs/architecture.md` sections 7.1, 9, 12, 16. `workloads/moon/fsw/`.
+
+**Follow-up.** None.
+
+### ADR-0018 — Powered descent: start state, guidance rule, vehicle, sensors, landing score, build
+
+**Date:** 2026-10-31
+**Status:** Accepted. Refines ADR-0016.
+
+**Proposed.** Step 2 of the Phase 6 build order needs a descent the flight software can fly, a vehicle that can fly it, a rule for judging the landing, and a build that instruments only the flight software.
+
+**Decision.**
+- Start: circular equatorial prograde orbit at 15 km: position (R_M + 15 km, 0, 0), velocity (0, sqrt(GM_M / r), 0).
+- Guidance, two phases. Braking: full throttle, split each tick between a vertical part that holds a sink rate chosen to reach 1,500 m as horizontal speed reaches zero, and the remainder against horizontal velocity. Braking ends when horizontal speed drops below 50 m/s or altitude below 500 m. Final descent: thrust along a wanted acceleration that cancels gravity, tracks a target descent rate shrinking with altitude through a proportional controller, and opposes horizontal drift.
+- Vehicle: generic engine with Apollo Lunar Module descent-class numbers (about 15,100 kg at start, about 6,900 kg dry, about 45 kN, Isp about 311 s), verified against a source before coding.
+- Sensors: perfect. The flight software's navigation stage derives altitude, ground-relative velocity, and vertical and horizontal speed from the Moon-centered state. This stage runs before guidance, so under TMR a fault in it reaches every replica (common-mode).
+- Landing score, computed by the plant at touchdown: max(vertical speed / 3 m/s, horizontal speed / 1.2 m/s, distance from the clean run's touchdown point / 1000 m). Speeds are relative to the rotating lunar surface; the Moon is tidally locked, so it rotates at its orbital rate. No touchdown within the time limit scores infinity. The plant reports the score with `sdc_report_result`. The analyzer runs with reference 0.0 and `--abs-tol 1`: a score up to 1 passes; above 1, or NaN, is SDC. A hard landing is SDC, not CRASH; CRASH means the process died.
+- Build: `workloads/moon/fsw/` is instrumented with the moon profile (ADR-0017). `workloads/moon/sim/` and the plant are compiled normally. `tools/instrument.sh --profile moon` merges the flight software TUs with `llvm-link`, runs the pass, then internalizes every flight software symbol except `fsw_tick`.
+
+**Why.** Two-phase descent is about 30-40 lines and stable (estimated), and fits a demo that should stay out of the weeds. Lunar Module numbers are proven to cover this descent. Perfect sensors still give a navigation stage with real arithmetic ahead of guidance. Scoring in the plant keeps the judge on ground truth. One scalar score fits the analyzer's existing tolerance check, so the analyzer and the trace format stay unchanged. Internalizing is required because shared headers compile to `linkonce_odr` functions, and the linker would otherwise keep one copy for both sides: either the plant gets hooks, or the flight software loses them, with no build error.
+
+**Evidence.**
+- At -O0, `Vec3` `a + b` compiles to `call @_ZN4moonplENS_4Vec3ES0_`, defined `linkonce_odr`.
+- `src/analyzer/main.cpp:138-150`: `within_abs` and `within_rel` are both false for NaN, so a NaN score is outside tolerance.
+
+**Rejected.** Apollo polynomial guidance to a chosen site: about 3-4x the code (estimated). Noisy sensors with a filter: needs seeded noise to keep clean runs identical. Multiple metrics in the exit record: needs trace format and analyzer changes. Judging the landing in the flight software: the judge must be ground truth.
+
+**Limitations.** The lander touches down where braking ends, not at a chosen site; position is judged against the clean run. Touchdown tolerances follow the Lunar Module's gear limits (to verify). Sensors are perfect.
+
+**Impact.** New `workloads/moon/fsw/`, `workloads/moon/sim/`. `tools/instrument.sh`. `docs/architecture.md` sections 12, 15.
+
+**Follow-up.** Verify the Lunar Module numbers and gear limits before coding. Choose the time limit. Still open: how defenses report DETECTED and CORRECTED; how the runtime learns phase boundaries; the clean-vs-clean determinism check.
+
+### ADR-0019 — The pass instruments llvm.sqrt
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** The pass hooks only `fadd`, `fsub`, `fmul`, and `fdiv`. `std::sqrt` compiles to the intrinsic `llvm.sqrt.f64`, so square roots are never faulted, and the descent guidance computes distances with them.
+
+**Decision.** Calls to `llvm.sqrt.f64` become calls to `sdc_runtime_f64_sqrt_hook(op_id, x)`. The event records `x` in `operand0` and zero in `operand1`. `ops.json` records the kind as `sqrt`. The audit recomputes with `std::sqrt`, which IEEE 754 requires to be correctly rounded, so the recomputation is exact. Calls into the math library (`sin`, `cos`, `atan2`) stay uninstrumented.
+
+**Why.** A square root is one hardware instruction, as exposed to a fault as an add. Leaving it out would exclude every distance and altitude computation in the guidance from the campaign.
+
+**Evidence.** At -O0, `std::sqrt(x)` is `call double @llvm.sqrt.f64` in IR and `fsqrt d0, d0` on arm64. `src/instrumentation/SDCInstrument.cpp` selects only `BinaryOperator`.
+
+**Rejected.** Leaving the gap: biases results for guidance math. Instrumenting math library calls now: the descent rule does not use them.
+
+**Impact.** `src/instrumentation/SDCInstrument.cpp`, `src/runtime/runtime.{hpp,cpp}`, `src/core/op_kind.cpp`, `src/analyzer/audit.cpp`, `docs/trace-format.md` section 2, `docs/architecture.md` section 7.1.
+
+**Follow-up.** Math library calls, as one operation each with the flip on the result, when guidance first needs trigonometry.
+
+### ADR-0020 — Verified lander numbers and the Lunar Module touchdown envelope
+
+**Date:** 2026-10-31
+**Status:** Accepted. Supersedes the landing-score formula in ADR-0018; the rest of ADR-0018 stands.
+
+**Proposed.** ADR-0018 used remembered Lunar Module numbers and a box-shaped touchdown limit, `max(v / 3, h / 1.2, d / 1000)`, both to be verified before coding.
+
+**Decision.**
+- Vehicle: max thrust 45.04 kN, Isp 311 s, start mass 15,200 kg, dry mass 7,000 kg (15,200 kg total minus 8,200 kg descent propellant).
+- Touchdown score, with `v` vertical and `h` horizontal speed relative to the surface and `d` distance from the clean run's touchdown point:
+  `v_limit(h) = 3.05 - (3.05 - 2.13) * h / 1.22` (m/s), `score = max(v / v_limit(h), h / 1.22, d / 1000)`. A score up to 1 passes.
+- The real engine's throttle limits (10% floor, 65% to 92.5% avoided) are not modeled; the engine stays generic.
+
+**Why.** The Lunar Module gear's design envelope is not a box: it allows 3.05 m/s vertical when moving straight down but only 2.13 m/s at the 1.22 m/s horizontal limit, because sideways speed makes tipping more likely. The box would pass landings outside the real envelope. The descent guidance runs at full throttle while braking and in the 10% to 60% band near touchdown (estimated), so the unmodeled throttle limits rarely matter.
+
+**Evidence.**
+- Rogers, "Apollo Lunar Module Landing Gear", NASA JSC (NTRS 19730010151), Figures 6 and 8: design velocity envelope labeled 3.05 m/s (10 ft/s) and 2.13 m/s (7 ft/s) vertical, 1.22 m/s (4 ft/s) horizontal; all Apollo landings fell inside it. The trapezoid shape is read from the figure layout.
+- Wikipedia, "Descent propulsion system": "throttle between 1,050 and 10,125 pounds-force (4.67–45.04 kN)"; Isp "311 s (at full thrust)"; 65% to 92.5% "was avoided to prevent excessive nozzle erosion".
+- Wikipedia, "Apollo Lunar Module": launch mass "15,200 kg standard", DPS propellant "8,200 kg".
+- Available speed change: 311 s x 9.80665 m/s^2 x ln(15,200 / 7,000) = 2,365 m/s, against roughly 2,000 to 2,100 m/s needed (estimated).
+
+**Rejected.** The box limit: passes landings the real gear would not survive. Modeling the throttle limits: contradicts the generic engine and rarely binds.
+
+**Limitations.** Isp is the full-thrust value; the engine is less efficient at low throttle (285 s at 10%), and a flight measurement gave 305.8 s. Slope limits (12 degrees) do not apply because the model has no terrain.
+
+**Impact.** The landing score in `workloads/moon/sim/`. `docs/architecture.md` sections 13, 14, 15. `docs/math/moon-mission-math.tex` when the score is implemented.
+
+**Follow-up.** None.
+
+### ADR-0021 — Multi-file build profile is workload-generic
+
+**Date:** 2026-10-31
+**Status:** Accepted. Supersedes the `--profile moon` naming in ADR-0018.
+
+**Proposed.** ADR-0018 named the moon build `tools/instrument.sh --profile moon`, which risked tying the SDC platform to one workload.
+
+**Decision.** The build profile is named for what it does, `--profile o0`, and takes the list of files to instrument as arguments; any multi-file workload can use it.
+
+**Why.** The SDC platform (`src/`, `include/`, `tools/`) contains no workload-specific code, and `sum_plain` runs through it unchanged. Keeping it that way keeps the platform usable for other workloads.
+
+**Evidence.** `grep -rliE 'moon|lander|landing|plant' src include tools` finds no files.
+
+**Rejected.** Moon-named options in platform tools.
+
+**Impact.** `tools/instrument.sh`.
 
 **Follow-up.** None.

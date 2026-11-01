@@ -14,19 +14,26 @@ add_executable(test_vec3 test_vec3.cpp)
 target_include_directories(test_vec3 PRIVATE ${CMAKE_SOURCE_DIR}/workloads/moon/common)
 target_link_libraries(test_vec3 PRIVATE GTest::gtest_main)
 
-add_executable(test_moon_ephemeris test_moon_ephemeris.cpp)
-target_include_directories(test_moon_ephemeris PRIVATE ${CMAKE_SOURCE_DIR}/workloads/moon/common)
-target_link_libraries(test_moon_ephemeris PRIVATE GTest::gtest_main)
-
 add_executable(test_dynamics test_dynamics.cpp)
 target_link_libraries(test_dynamics PRIVATE moon_plant GTest::gtest_main)
 
 add_executable(test_integrator test_integrator.cpp)
 target_link_libraries(test_integrator PRIVATE moon_plant GTest::gtest_main)
 
+add_executable(test_navigation test_navigation.cpp)
+target_link_libraries(test_navigation PRIVATE moon_fsw GTest::gtest_main)
+
+add_executable(test_guidance test_guidance.cpp)
+target_link_libraries(test_guidance PRIVATE moon_fsw GTest::gtest_main)
+
+add_executable(test_judge test_judge.cpp)
+target_link_libraries(test_judge PRIVATE moon_plant GTest::gtest_main)
+
 gtest_discover_tests(test_trace_io)
 gtest_discover_tests(test_analyzer)
 gtest_discover_tests(test_vec3)
-gtest_discover_tests(test_moon_ephemeris)
 gtest_discover_tests(test_dynamics)
 gtest_discover_tests(test_integrator)
+gtest_discover_tests(test_navigation)
+gtest_discover_tests(test_guidance)
+gtest_discover_tests(test_judge)

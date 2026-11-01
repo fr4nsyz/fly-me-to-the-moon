@@ -4,6 +4,8 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/IntrinsicInst.h"
+#include "llvm/IR/Operator.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/Support/raw_ostream.h"
@@ -23,17 +25,6 @@ struct OpEntry {
     std::string function;
     std::string kind;
 };
-
-const char* kind_name(unsigned opcode) {
-    switch (opcode) {
-        case Instruction::FAdd: return "fadd";
-        case Instruction::FSub: return "fsub";
-        case Instruction::FMul: return "fmul";
-        case Instruction::FDiv: return "fdiv";
-        case Instruction::FRem: return "frem";
-        default: return "unknown";
-    }
-}
 
 std::string json_escape_local(const std::string& s) {
     std::string out;
@@ -57,6 +48,7 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
         FunctionCallee subHook = M.getOrInsertFunction("sdc_runtime_f64_sub_hook", DoubleTy, OpIdTy, DoubleTy, DoubleTy);
         FunctionCallee mulHook = M.getOrInsertFunction("sdc_runtime_f64_mul_hook", DoubleTy, OpIdTy, DoubleTy, DoubleTy);
         FunctionCallee divHook = M.getOrInsertFunction("sdc_runtime_f64_div_hook", DoubleTy, OpIdTy, DoubleTy, DoubleTy);
+        FunctionCallee sqrtHook = M.getOrInsertFunction("sdc_runtime_f64_sqrt_hook", DoubleTy, OpIdTy, DoubleTy);
 
         std::vector<OpEntry> ops;
         unsigned opId = 0;
@@ -64,7 +56,7 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
         // Phase 1: collect candidates. Erasing an instruction during iteration
         // invalidates the iterator, so the rewrite happens in a second pass.
         struct Candidate {
-            BinaryOperator* inst;
+            Instruction* inst;
             FunctionCallee hook;
             OpEntry entry;
         };
@@ -74,9 +66,24 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
             if (F.isDeclaration()) continue;
             for (BasicBlock& BB : F) {
                 for (Instruction& I : BB) {
-                    auto* BO = dyn_cast<BinaryOperator>(&I);
-                    if (!BO) continue;
-                    if (!BO->getType()->isDoubleTy()) continue;
+                    if (!I.getType()->isDoubleTy()) continue;
+
+                    FunctionCallee hook;
+                    const char* kind = nullptr;
+                    if (auto* BO = dyn_cast<BinaryOperator>(&I)) {
+                        switch (BO->getOpcode()) {
+                            case Instruction::FAdd: hook = addHook; kind = "fadd"; break;
+                            case Instruction::FSub: hook = subHook; kind = "fsub"; break;
+                            case Instruction::FMul: hook = mulHook; kind = "fmul"; break;
+                            case Instruction::FDiv: hook = divHook; kind = "fdiv"; break;
+                            default: continue;
+                        }
+                    } else if (auto* II = dyn_cast<IntrinsicInst>(&I); II && II->getIntrinsicID() == Intrinsic::sqrt) {
+                        hook = sqrtHook;
+                        kind = "sqrt";
+                    } else {
+                        continue;
+                    }
 
                     // ADR-0002: an instruction carrying a fast-math flag changes
                     // the arithmetic, so it must not be instrumented silently.
@@ -91,27 +98,19 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
                     // (for example on constants it has proven finite), and it
                     // does not change the arithmetic for finite operands.
                     // Rejecting it would make the pass unusable on normal code.
-                    if (BO->hasAllowReassoc() || BO->hasNoInfs() || BO->hasNoSignedZeros() ||
-                        BO->hasAllowContract() || BO->hasApproxFunc() || BO->hasAllowReciprocal()) {
+                    auto* FP = cast<FPMathOperator>(&I);
+                    if (FP->hasAllowReassoc() || FP->hasNoInfs() || FP->hasNoSignedZeros() ||
+                        FP->hasAllowContract() || FP->hasApproxFunc() || FP->hasAllowReciprocal()) {
                         report_fatal_error(
                             StringRef("sdc-instrument: refusing to instrument a fast-math "
                                       "instruction in function '" + F.getName().str() +
                                       "'. Rebuild with -ffp-contract=off -fno-fast-math."));
                     }
 
-                    FunctionCallee hook;
-                    switch (BO->getOpcode()) {
-                        case Instruction::FAdd: hook = addHook; break;
-                        case Instruction::FSub: hook = subHook; break;
-                        case Instruction::FMul: hook = mulHook; break;
-                        case Instruction::FDiv: hook = divHook; break;
-                        default: continue;
-                    }
-
                     OpEntry entry;
                     entry.function = F.getName().str();
-                    entry.kind = kind_name(BO->getOpcode());
-                    if (DebugLoc DL = BO->getDebugLoc()) {
+                    entry.kind = kind;
+                    if (DebugLoc DL = I.getDebugLoc()) {
                         entry.line = DL.getLine();
                         entry.column = DL.getCol();
                         if (auto* Scope = dyn_cast_or_null<DIScope>(DL.getScope())) {
@@ -119,7 +118,7 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
                         }
                     }
 
-                    candidates.push_back({BO, hook, entry});
+                    candidates.push_back({&I, hook, entry});
                 }
             }
         }
@@ -128,12 +127,19 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
         // which is deterministic for identical sources, flags, and LLVM version
         // (ADR-0003).
         for (Candidate& c : candidates) {
-            BinaryOperator* BO = c.inst;
-            IRBuilder<> Builder(BO);
+            Instruction* I = c.inst;
+            IRBuilder<> Builder(I);
             Value* OpIdVal = ConstantInt::get(OpIdTy, ++opId);
-            CallInst* Call = Builder.CreateCall(c.hook, {OpIdVal, BO->getOperand(0), BO->getOperand(1)});
-            BO->replaceAllUsesWith(Call);
-            BO->eraseFromParent();
+            SmallVector<Value*, 3> args{OpIdVal};
+            if (auto* BO = dyn_cast<BinaryOperator>(I)) {
+                args.push_back(BO->getOperand(0));
+                args.push_back(BO->getOperand(1));
+            } else {
+                args.push_back(cast<CallInst>(I)->getArgOperand(0));
+            }
+            CallInst* Call = Builder.CreateCall(c.hook, args);
+            I->replaceAllUsesWith(Call);
+            I->eraseFromParent();
             ops.push_back(c.entry);
         }
 

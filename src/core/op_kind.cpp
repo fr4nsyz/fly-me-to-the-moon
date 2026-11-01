@@ -9,6 +9,7 @@ const char* op_kind_name(OpKind kind) {
         case OpKind::FSub: return "fsub";
         case OpKind::FMul: return "fmul";
         case OpKind::FDiv: return "fdiv";
+        case OpKind::FSqrt: return "sqrt";
         default: return "unknown";
     }
 }
@@ -19,6 +20,7 @@ bool op_kind_from_name(const char* name, OpKind& out) {
     if (std::strcmp(name, "fsub") == 0) { out = OpKind::FSub; return true; }
     if (std::strcmp(name, "fmul") == 0) { out = OpKind::FMul; return true; }
     if (std::strcmp(name, "fdiv") == 0) { out = OpKind::FDiv; return true; }
+    if (std::strcmp(name, "sqrt") == 0) { out = OpKind::FSqrt; return true; }
     return false;
 }
 

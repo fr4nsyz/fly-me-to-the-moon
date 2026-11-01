@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interface.hpp"
 #include "vec3.hpp"
 
 namespace moon {
@@ -16,18 +17,13 @@ struct Vehicle {
     double isp = 0.0;        // s
 };
 
-struct EngineCommand {
-    double throttle = 0.0;
-    Vec3 direction;
-};
-
 struct Rates {
     Vec3 velocity;
     Vec3 acceleration;
     double mass_rate = 0.0;
 };
 
-Vec3 gravity(Vec3 position, double t);
-Rates derivative(const State& state, double t, const Vehicle& vehicle, const EngineCommand& command);
+Vec3 gravity(Vec3 position);
+Rates derivative(const State& state, const Vehicle& vehicle, const EngineCommand& command);
 
 } // namespace moon

@@ -17,6 +17,7 @@ add_subdirectory(src/runtime)
 add_subdirectory(src/core)
 add_subdirectory(src/analyzer)
 add_subdirectory(workloads/moon/plant)
+add_subdirectory(workloads/moon/fsw)
 
 option(SDC_BUILD_TESTS "Build unit tests (requires GoogleTest)" ON)
 if(SDC_BUILD_TESTS)

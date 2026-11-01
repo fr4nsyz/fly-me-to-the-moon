@@ -4,6 +4,6 @@
 
 namespace moon {
 
-State rk4_step(const State& state, double t, double dt, const Vehicle& vehicle, const EngineCommand& command);
+State rk4_step(const State& state, double dt, const Vehicle& vehicle, const EngineCommand& command);
 
 } // namespace moon
