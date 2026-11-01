@@ -21,13 +21,24 @@ int main(int argc, char** argv) {
     moon::Vec3 reference;
     bool have_reference = false;
     std::FILE* log = nullptr;
+    moon::Defense defense = moon::Defense::None;
     for (int i = 1; i + 1 < argc; i += 2) {
         if (std::strcmp(argv[i], "--reference") == 0) {
             have_reference = std::sscanf(argv[i + 1], "%lf,%lf,%lf", &reference.x, &reference.y, &reference.z) == 3;
         } else if (std::strcmp(argv[i], "--log") == 0) {
             log = std::fopen(argv[i + 1], "w");
+        } else if (std::strcmp(argv[i], "--defense") == 0) {
+            if (std::strcmp(argv[i + 1], "none") == 0) {
+                defense = moon::Defense::None;
+            } else if (std::strcmp(argv[i + 1], "tmr-lockstep") == 0) {
+                defense = moon::Defense::TmrLockstep;
+            } else {
+                std::fprintf(stderr, "unknown defense '%s'; expected none or tmr-lockstep\n", argv[i + 1]);
+                return 2;
+            }
         }
     }
+    fsw_configure(static_cast<int>(defense));
     if (log) std::fprintf(log, "t,altitude,vertical_speed,horizontal_speed,mass,throttle\n");
 
     const double r0 = moon::kMoonRadius + kStartAltitude;
@@ -35,12 +46,17 @@ int main(int argc, char** argv) {
     const moon::Vehicle vehicle{moon::kLanderDryMass, moon::kLanderMaxThrust, moon::kLanderIsp};
     moon::SurfaceState before = moon::surface_state(state);
     double score = std::numeric_limits<double>::infinity();
+    bool detected = false;
+    bool corrected = false;
 
     for (int i = 0; i * kDt < kTimeLimit; ++i) {
         const double t = i * kDt;
         const moon::Sensors sensors{state.position, state.velocity, state.mass};
         moon::EngineCommand command;
-        fsw_tick(&sensors, &command);
+        moon::FswStatus status;
+        fsw_tick(&sensors, &command, &status);
+        detected = detected || status.detected;
+        corrected = corrected || status.corrected;
         if (log && i % 10 == 0) {
             std::fprintf(log, "%.1f,%.3f,%.3f,%.3f,%.3f,%.4f\n", t, before.altitude, before.vertical_speed,
                          before.horizontal_speed, state.mass, command.throttle);
@@ -65,5 +81,7 @@ int main(int argc, char** argv) {
     }
     if (std::isinf(score)) std::printf("no touchdown within %.0f s score=inf\n", kTimeLimit);
     if (log) std::fclose(log);
+    if (detected) sdc_report_detected();
+    if (corrected) sdc_report_corrected();
     sdc_report_result(score);
 }

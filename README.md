@@ -38,7 +38,7 @@ ctest --test-dir build
   --instrument workloads/moon/fsw/fsw.cpp --instrument workloads/moon/fsw/navigation.cpp \
   --instrument workloads/moon/fsw/guidance.cpp \
   --plain workloads/moon/sim/main.cpp --plain build/workloads/moon/plant/libmoon_plant.a \
-  --keep fsw_tick -o build/moon/moon_instr
+  --keep fsw_tick --keep fsw_configure -o build/moon/moon_instr
 
 /opt/homebrew/bin/python3.14 tools/study/sweep.py --binary build/moon/moon_instr --ops build/moon/ops.json \
   --trials 200 --seed 1337 --workload moon --persistent \
