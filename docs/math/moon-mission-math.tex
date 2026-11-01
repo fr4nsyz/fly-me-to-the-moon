@@ -45,8 +45,12 @@ Mission time $t$ is seconds since the epoch
 $\mathrm{JD}_0 = 2\,434\,743.5$ (1954-01-01 00:00 UTC; Bart Howard's original
 ``Fly Me to the Moon'' sheet music was published in 1954). Julian centuries from J2000:
 \begin{equation}
-T = \frac{\mathrm{JD}_0 + t/86400 - 2\,451\,545.0}{36\,525}
+T = \frac{(\mathrm{JD}_0 - 2\,451\,545.0) + t/86400}{36\,525}
 \end{equation}
+The subtraction is evaluated first. $\mathrm{JD}_0 - 2\,451\,545.0 = -16\,801.5$ is exact
+in double precision, whereas adding $t/86400$ to $\mathrm{JD}_0$ first rounds time to the
+spacing of doubles near $2.4\times10^6$, about $4\times10^{-5}$ s, which made the
+differenced Moon velocity noisy at the $4\times10^{-2}$ m/s level.
 
 \section{Moon ephemeris}
 Circular orbit of radius $a_M$. Mean elements, Meeus,
@@ -80,6 +84,18 @@ $18.3^\circ$--$28.6^\circ$ over the 18.6-year nodal cycle.
 position differs from the true one by up to about $6^\circ$ in longitude and
 $20\,000$ km in distance. $u = L'-\Omega$ is the standard approximation.
 Code: \texttt{moon\_ephemeris.hpp}. Tests: \texttt{test\_moon\_ephemeris.cpp}.
+
+\subsection{Moon velocity}
+Central difference with $h = 1$ s:
+\begin{equation}
+\mathbf{v}_M(t) \approx \frac{\mathbf{r}_M(t+h) - \mathbf{r}_M(t-h)}{2h}
+\end{equation}
+A smaller $h$ amplifies rounding in $\mathbf{r}_M$; a larger $h$ increases the
+truncation error from the path's curvature. Measured: speed $1023.18$ m/s, matching the
+mean orbital speed $a_M\,\dot L'$; $\mathbf{r}_M\cdot\mathbf{v}_M$ vanishes to
+$3\times10^{-11}$ of $\lVert\mathbf{r}_M\rVert\lVert\mathbf{v}_M\rVert$; the result
+differs from an $h = 0.5$ s difference by at most $5.2\times10^{-4}$ m/s over 30 days,
+limited by rounding of the mean longitude angle (about $3900$ rad at the epoch).
 
 \section{Gravity}
 With $\mathbf{r}$ the spacecraft position, $\mathbf{r}_M$ the Moon position, and
