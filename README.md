@@ -35,8 +35,9 @@ ctest --test-dir build
 
 ```bash
 ./tools/instrument.sh --profile o0 --name moon -I workloads/moon/common -I workloads/moon/plant \
-  --instrument workloads/moon/fsw/fsw.cpp --instrument workloads/moon/fsw/navigation.cpp \
-  --instrument workloads/moon/fsw/guidance.cpp \
+  --replicate 6 --replicate-entry run_core --replicated workloads/moon/fsw/core.cpp \
+  --replicated workloads/moon/fsw/navigation.cpp --replicated workloads/moon/fsw/guidance.cpp \
+  --instrument workloads/moon/fsw/fsw.cpp --instrument workloads/moon/fsw/redundancy.cpp \
   --plain workloads/moon/sim/main.cpp --plain build/workloads/moon/plant/libmoon_plant.a \
   --keep fsw_tick --keep fsw_configure -o build/moon/moon_instr
 
