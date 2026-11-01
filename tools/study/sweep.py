@@ -370,7 +370,7 @@ def main():
     parser.add_argument(
         "--timeout-factor",
         type=float,
-        default=10.0,
+        default=100.0,
         help="per-trial timeout as a multiple of the clean run's wall time",
     )
     parser.add_argument(

@@ -549,13 +549,14 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Proposed.** The sweep ran each injected trial with no time limit, so a fault that made a workload loop forever would block the campaign. A process killed for running too long leaves no exit record, which the analyzer read as CRASH.
 
-**Decision.** The taxonomy gains HANG, checked after INCONCLUSIVE and before CRASH. The sweep driver times the clean run and gives each trial `max(--timeout-floor, --timeout-factor x clean wall time)`, defaulting to 10 s and 10x. A trial that exceeds it is killed; the driver runs the analyzer with `--timed-out` on whatever trace was written, or records HANG directly when no trace exists.
+**Decision.** The taxonomy gains HANG, checked after INCONCLUSIVE and before CRASH. The sweep driver times the clean run and gives each trial `max(--timeout-floor, --timeout-factor x clean wall time)`, defaulting to 10 s and 100x. A trial that exceeds it is killed; the driver runs the analyzer with `--timed-out` on whatever trace was written, or records HANG directly when no trace exists.
 
-**Why.** Classification stays in one place, the analyzer, and hang trials still get evidence from their partial trace. Scaling the limit to the clean run fits both a millisecond reduction and a second-long landing. The current workloads have no loops whose exit depends on a computed value (inferred from the code), so this guards future workloads and defenses.
+**Why.** Classification stays in one place, the analyzer, and hang trials still get evidence from their partial trace. Scaling the limit to the clean run fits both a millisecond reduction and a second-long landing. The factor is generous because a true hang never finishes, so a large limit costs nothing on real hangs, while a tight one turns slow runs into false HANGs. The current workloads have no loops whose exit depends on a computed value (inferred from the code), so this guards future workloads and defenses.
 
 **Evidence.**
 - A 3-trial sweep on a program that loops forever under injection finished in 6.8 s with 3 HANG verdicts, each with evidence giving the reason "injected run exceeded the time limit and was killed".
 - The 200-trial seed-1337 `sum_plain` sweep matches the stored results in totals, per bit region, per operation, and per trial, with HANG at 0.
+- With a 10x factor and eight trials running at once (`--jobs 8`), the lunar sweeps reported 9 and 10 false HANGs: rerun alone, every one finished in 1.6 to 6.6 s against a 12 s limit. Concurrent trials writing 15 to 92 MB traces stretched their wall time past the limit. The default factor became 100x.
 
 **Rejected.** Labeling HANG in the driver without the analyzer: classification logic in two places and no evidence for hang trials. A fixed timeout: too long for fast workloads or too short for slow ones.
 
