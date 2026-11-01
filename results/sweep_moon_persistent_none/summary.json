@@ -1,6 +1,6 @@
 {
   "workload": "moon",
-  "build_id": "a24dbf0a5b1fd532",
+  "build_id": "cdcd5b5e96ffe4c3",
   "compiler_flags": "-O0 -gline-tables-only -ffp-contract=off",
   "seed": 1337,
   "trials": 200,
@@ -10,8 +10,8 @@
     "HANG": 0,
     "CORRECTED": 0,
     "DETECTED": 0,
-    "SDC": 34,
-    "MASKED": 166,
+    "SDC": 31,
+    "MASKED": 169,
     "INCONCLUSIVE": 0
   },
   "by_bit_region": {
@@ -20,8 +20,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 22,
-      "MASKED": 13,
+      "SDC": 24,
+      "MASKED": 11,
       "INCONCLUSIVE": 0
     },
     "mantissa-high": {
@@ -29,8 +29,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 9,
-      "MASKED": 25,
+      "SDC": 5,
+      "MASKED": 29,
       "INCONCLUSIVE": 0
     },
     "mantissa-low": {
@@ -47,8 +47,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 3,
-      "MASKED": 0,
+      "SDC": 2,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     }
   },
@@ -67,8 +67,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 16,
+      "SDC": 4,
+      "MASKED": 12,
       "INCONCLUSIVE": 0
     },
     "7": {
@@ -76,8 +76,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 4,
-      "MASKED": 13,
+      "SDC": 3,
+      "MASKED": 14,
       "INCONCLUSIVE": 0
     },
     "12": {
@@ -85,8 +85,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 3,
-      "MASKED": 13,
+      "SDC": 0,
+      "MASKED": 16,
       "INCONCLUSIVE": 0
     },
     "13": {
@@ -103,8 +103,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 7,
-      "MASKED": 9,
+      "SDC": 4,
+      "MASKED": 12,
       "INCONCLUSIVE": 0
     },
     "19": {
@@ -112,8 +112,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 6,
-      "MASKED": 10,
+      "SDC": 3,
+      "MASKED": 13,
       "INCONCLUSIVE": 0
     },
     "24": {
@@ -130,8 +130,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 16,
+      "SDC": 2,
+      "MASKED": 14,
       "INCONCLUSIVE": 0
     },
     "31": {
@@ -139,8 +139,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 3,
-      "MASKED": 13,
+      "SDC": 0,
+      "MASKED": 16,
       "INCONCLUSIVE": 0
     },
     "37": {
@@ -148,8 +148,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 1,
-      "MASKED": 15,
+      "SDC": 8,
+      "MASKED": 8,
       "INCONCLUSIVE": 0
     },
     "43": {
@@ -166,8 +166,8 @@
       "HANG": 0,
       "CORRECTED": 0,
       "DETECTED": 0,
-      "SDC": 3,
-      "MASKED": 14,
+      "SDC": 0,
+      "MASKED": 17,
       "INCONCLUSIVE": 0
     }
   },
@@ -401,7 +401,7 @@
       "seed": 128041,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 1702,
+      "occurrence": 2113,
       "bit": 45,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -415,7 +415,7 @@
       "seed": 135960,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 5106,
+      "occurrence": 1907,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -429,7 +429,7 @@
       "seed": 143879,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 557,
+      "occurrence": 3405,
       "bit": 26,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -443,7 +443,7 @@
       "seed": 151798,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 1286,
+      "occurrence": 536,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -457,7 +457,7 @@
       "seed": 159717,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 4690,
+      "occurrence": 330,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -471,7 +471,7 @@
       "seed": 167636,
       "classification": "SDC",
       "op_id": 7,
-      "occurrence": 141,
+      "occurrence": 1828,
       "bit": 62,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -485,7 +485,7 @@
       "seed": 175555,
       "classification": "SDC",
       "op_id": 7,
-      "occurrence": 870,
+      "occurrence": 3326,
       "bit": 53,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -499,7 +499,7 @@
       "seed": 183474,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 4274,
+      "occurrence": 3120,
       "bit": 43,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -513,7 +513,7 @@
       "seed": 191393,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 5003,
+      "occurrence": 251,
       "bit": 34,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -527,7 +527,7 @@
       "seed": 199312,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 454,
+      "occurrence": 1749,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -541,7 +541,7 @@
       "seed": 207231,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 3858,
+      "occurrence": 1543,
       "bit": 15,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -555,7 +555,7 @@
       "seed": 215150,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 4587,
+      "occurrence": 3041,
       "bit": 6,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -569,7 +569,7 @@
       "seed": 223069,
       "classification": "SDC",
       "op_id": 7,
-      "occurrence": 38,
+      "occurrence": 172,
       "bit": 61,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -581,23 +581,23 @@
     {
       "trial": 29,
       "seed": 230988,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 3442,
+      "occurrence": 4333,
       "bit": 51,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 30,
       "seed": 238907,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 4171,
+      "occurrence": 1464,
       "bit": 42,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -611,7 +611,7 @@
       "seed": 246826,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 2297,
+      "occurrence": 1258,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -625,7 +625,7 @@
       "seed": 254745,
       "classification": "MASKED",
       "op_id": 7,
-      "occurrence": 3026,
+      "occurrence": 2756,
       "bit": 23,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -639,7 +639,7 @@
       "seed": 262664,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 14311,
+      "occurrence": 4254,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -653,7 +653,7 @@
       "seed": 270583,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 7159,
+      "occurrence": 4048,
       "bit": 4,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -667,7 +667,7 @@
       "seed": 278502,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 7888,
+      "occurrence": 1179,
       "bit": 59,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -681,7 +681,7 @@
       "seed": 286421,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 8617,
+      "occurrence": 2677,
       "bit": 50,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -695,7 +695,7 @@
       "seed": 294340,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 1465,
+      "occurrence": 2471,
       "bit": 40,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -709,7 +709,7 @@
       "seed": 302259,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 2194,
+      "occurrence": 3969,
       "bit": 31,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -723,7 +723,7 @@
       "seed": 310178,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 2923,
+      "occurrence": 1100,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -737,7 +737,7 @@
       "seed": 318097,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 16883,
+      "occurrence": 894,
       "bit": 12,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -751,7 +751,7 @@
       "seed": 326016,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 17612,
+      "occurrence": 2392,
       "bit": 3,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -765,7 +765,7 @@
       "seed": 333935,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 18341,
+      "occurrence": 3890,
       "bit": 58,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -779,7 +779,7 @@
       "seed": 341854,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 11189,
+      "occurrence": 3684,
       "bit": 48,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -793,7 +793,7 @@
       "seed": 349773,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 11918,
+      "occurrence": 815,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -807,7 +807,7 @@
       "seed": 357692,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 12647,
+      "occurrence": 2313,
       "bit": 29,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -821,7 +821,7 @@
       "seed": 365611,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 5495,
+      "occurrence": 2107,
       "bit": 20,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -835,7 +835,7 @@
       "seed": 373530,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 6224,
+      "occurrence": 3605,
       "bit": 11,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -849,7 +849,7 @@
       "seed": 381449,
       "classification": "MASKED",
       "op_id": 13,
-      "occurrence": 20184,
+      "occurrence": 3399,
       "bit": 1,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -863,7 +863,7 @@
       "seed": 389368,
       "classification": "SDC",
       "op_id": 19,
-      "occurrence": 11761,
+      "occurrence": 530,
       "bit": 56,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -875,23 +875,23 @@
     {
       "trial": 50,
       "seed": 397287,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 2082,
+      "occurrence": 2028,
       "bit": 47,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 51,
       "seed": 405206,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 12082,
+      "occurrence": 1822,
       "bit": 37,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -905,7 +905,7 @@
       "seed": 413125,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 2403,
+      "occurrence": 3320,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -919,7 +919,7 @@
       "seed": 421044,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 10380,
+      "occurrence": 451,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -933,7 +933,7 @@
       "seed": 428963,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 2724,
+      "occurrence": 245,
       "bit": 9,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -947,7 +947,7 @@
       "seed": 436882,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 10701,
+      "occurrence": 1743,
       "bit": 0,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -961,7 +961,7 @@
       "seed": 444801,
       "classification": "SDC",
       "op_id": 19,
-      "occurrence": 1022,
+      "occurrence": 3241,
       "bit": 55,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -973,23 +973,23 @@
     {
       "trial": 57,
       "seed": 452720,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 11022,
+      "occurrence": 3035,
       "bit": 45,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 58,
       "seed": 460639,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 1343,
+      "occurrence": 166,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1003,7 +1003,7 @@
       "seed": 468558,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 9320,
+      "occurrence": 1664,
       "bit": 26,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1017,7 +1017,7 @@
       "seed": 476477,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 1664,
+      "occurrence": 1458,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1031,7 +1031,7 @@
       "seed": 484396,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 9641,
+      "occurrence": 2956,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1043,10 +1043,24 @@
     {
       "trial": 62,
       "seed": 492315,
+      "classification": "SDC",
+      "op_id": 19,
+      "occurrence": 87,
+      "bit": 62,
+      "reasons": [
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": true
+    },
+    {
+      "trial": 63,
+      "seed": 500234,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 17618,
-      "bit": 62,
+      "occurrence": 4248,
+      "bit": 53,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
         "a divergence occurred but was absorbed before the final result"
@@ -1055,39 +1069,25 @@
       "final_result_outside_tolerance": false
     },
     {
-      "trial": 63,
-      "seed": 500234,
-      "classification": "SDC",
-      "op_id": 19,
-      "occurrence": 9962,
-      "bit": 53,
-      "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
-      ],
-      "diverged": true,
-      "final_result_outside_tolerance": true
-    },
-    {
       "trial": 64,
       "seed": 508153,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 283,
+      "occurrence": 1379,
       "bit": 44,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 65,
       "seed": 516072,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 6403,
+      "occurrence": 70,
       "bit": 34,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1101,7 +1101,7 @@
       "seed": 523991,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 7132,
+      "occurrence": 153,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1115,7 +1115,7 @@
       "seed": 531910,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 7861,
+      "occurrence": 236,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1129,7 +1129,7 @@
       "seed": 539829,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 709,
+      "occurrence": 64,
       "bit": 6,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1141,23 +1141,23 @@
     {
       "trial": 69,
       "seed": 547748,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 25,
-      "occurrence": 1438,
+      "occurrence": 147,
       "bit": 61,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 70,
       "seed": 555667,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 2167,
+      "occurrence": 230,
       "bit": 51,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1171,7 +1171,7 @@
       "seed": 563586,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 16127,
+      "occurrence": 58,
       "bit": 42,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1185,7 +1185,7 @@
       "seed": 571505,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 16856,
+      "occurrence": 141,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1199,7 +1199,7 @@
       "seed": 579424,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 17585,
+      "occurrence": 224,
       "bit": 23,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1213,7 +1213,7 @@
       "seed": 587343,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 10433,
+      "occurrence": 52,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1227,7 +1227,7 @@
       "seed": 595262,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 11162,
+      "occurrence": 135,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1239,23 +1239,23 @@
     {
       "trial": 76,
       "seed": 603181,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 25,
-      "occurrence": 11891,
+      "occurrence": 218,
       "bit": 59,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 77,
       "seed": 611100,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 4739,
+      "occurrence": 46,
       "bit": 50,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1269,7 +1269,7 @@
       "seed": 619019,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 5468,
+      "occurrence": 129,
       "bit": 41,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1283,7 +1283,7 @@
       "seed": 626938,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 6197,
+      "occurrence": 212,
       "bit": 31,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1297,7 +1297,7 @@
       "seed": 634857,
       "classification": "MASKED",
       "op_id": 25,
-      "occurrence": 20157,
+      "occurrence": 40,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1311,7 +1311,7 @@
       "seed": 642776,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 3520,
+      "occurrence": 20886,
       "bit": 12,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1325,7 +1325,7 @@
       "seed": 650695,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 3314,
+      "occurrence": 13734,
       "bit": 3,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1337,37 +1337,37 @@
     {
       "trial": 83,
       "seed": 658614,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 445,
+      "occurrence": 14463,
       "bit": 58,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 84,
       "seed": 666533,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 1943,
+      "occurrence": 15192,
       "bit": 48,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 85,
       "seed": 674452,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 1737,
+      "occurrence": 8040,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1381,7 +1381,7 @@
       "seed": 682371,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 3235,
+      "occurrence": 8769,
       "bit": 30,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1395,7 +1395,7 @@
       "seed": 690290,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 366,
+      "occurrence": 9498,
       "bit": 20,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1409,7 +1409,7 @@
       "seed": 698209,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 160,
+      "occurrence": 2346,
       "bit": 11,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1423,7 +1423,7 @@
       "seed": 706128,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 1658,
+      "occurrence": 3075,
       "bit": 2,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1435,23 +1435,23 @@
     {
       "trial": 90,
       "seed": 714047,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 3156,
+      "occurrence": 3804,
       "bit": 56,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 91,
       "seed": 721966,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 2950,
+      "occurrence": 17764,
       "bit": 47,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1465,7 +1465,7 @@
       "seed": 729885,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 81,
+      "occurrence": 18493,
       "bit": 37,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1479,7 +1479,7 @@
       "seed": 737804,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 1579,
+      "occurrence": 19222,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1493,7 +1493,7 @@
       "seed": 745723,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 1373,
+      "occurrence": 12070,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1507,7 +1507,7 @@
       "seed": 753642,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 2871,
+      "occurrence": 12799,
       "bit": 9,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1521,7 +1521,7 @@
       "seed": 761561,
       "classification": "MASKED",
       "op_id": 31,
-      "occurrence": 2,
+      "occurrence": 13528,
       "bit": 0,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1533,37 +1533,37 @@
     {
       "trial": 97,
       "seed": 769480,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 37,
-      "occurrence": 4163,
+      "occurrence": 292,
       "bit": 55,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 98,
       "seed": 777399,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 37,
-      "occurrence": 1294,
+      "occurrence": 3472,
       "bit": 45,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 99,
       "seed": 785318,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 1088,
+      "occurrence": 7874,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1577,7 +1577,7 @@
       "seed": 793237,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 2586,
+      "occurrence": 11054,
       "bit": 27,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1591,7 +1591,7 @@
       "seed": 801156,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 4084,
+      "occurrence": 2767,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1605,7 +1605,7 @@
       "seed": 809075,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 3878,
+      "occurrence": 7169,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1619,7 +1619,7 @@
       "seed": 816994,
       "classification": "SDC",
       "op_id": 37,
-      "occurrence": 1009,
+      "occurrence": 10349,
       "bit": 63,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -1631,37 +1631,37 @@
     {
       "trial": 104,
       "seed": 824913,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 37,
-      "occurrence": 2507,
+      "occurrence": 2062,
       "bit": 53,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 105,
       "seed": 832832,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 37,
-      "occurrence": 2301,
+      "occurrence": 6464,
       "bit": 44,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 106,
       "seed": 840751,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 3799,
+      "occurrence": 9644,
       "bit": 34,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1675,7 +1675,7 @@
       "seed": 848670,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 930,
+      "occurrence": 1357,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1689,7 +1689,7 @@
       "seed": 856589,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 724,
+      "occurrence": 5759,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1703,7 +1703,7 @@
       "seed": 864508,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 2222,
+      "occurrence": 8939,
       "bit": 6,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1715,51 +1715,51 @@
     {
       "trial": 110,
       "seed": 872427,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 37,
-      "occurrence": 3720,
+      "occurrence": 652,
       "bit": 61,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 111,
       "seed": 880346,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 37,
-      "occurrence": 3514,
+      "occurrence": 5054,
       "bit": 52,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 112,
       "seed": 888265,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 37,
-      "occurrence": 645,
+      "occurrence": 8234,
       "bit": 42,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 113,
       "seed": 896184,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 2143,
+      "occurrence": 5025,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1773,7 +1773,7 @@
       "seed": 904103,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 1937,
+      "occurrence": 3151,
       "bit": 24,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1787,7 +1787,7 @@
       "seed": 912022,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 3435,
+      "occurrence": 3880,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1801,7 +1801,7 @@
       "seed": 919941,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 566,
+      "occurrence": 4609,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1815,7 +1815,7 @@
       "seed": 927860,
       "classification": "SDC",
       "op_id": 43,
-      "occurrence": 360,
+      "occurrence": 2735,
       "bit": 59,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -1829,7 +1829,7 @@
       "seed": 935779,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 1858,
+      "occurrence": 3464,
       "bit": 50,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1843,7 +1843,7 @@
       "seed": 943698,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 1652,
+      "occurrence": 1590,
       "bit": 41,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1857,7 +1857,7 @@
       "seed": 951617,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 3150,
+      "occurrence": 2319,
       "bit": 31,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1871,7 +1871,7 @@
       "seed": 959536,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 281,
+      "occurrence": 3048,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1885,7 +1885,7 @@
       "seed": 967455,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 75,
+      "occurrence": 1174,
       "bit": 13,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1899,7 +1899,7 @@
       "seed": 975374,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 1573,
+      "occurrence": 1903,
       "bit": 3,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1913,7 +1913,7 @@
       "seed": 983293,
       "classification": "SDC",
       "op_id": 43,
-      "occurrence": 3071,
+      "occurrence": 2632,
       "bit": 58,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -1927,7 +1927,7 @@
       "seed": 991212,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 2865,
+      "occurrence": 758,
       "bit": 49,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1941,7 +1941,7 @@
       "seed": 999131,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 4363,
+      "occurrence": 1487,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1955,7 +1955,7 @@
       "seed": 1007050,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 1494,
+      "occurrence": 2216,
       "bit": 30,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1969,7 +1969,7 @@
       "seed": 1014969,
       "classification": "MASKED",
       "op_id": 43,
-      "occurrence": 1288,
+      "occurrence": 342,
       "bit": 20,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1983,7 +1983,7 @@
       "seed": 1022888,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 683,
+      "occurrence": 1071,
       "bit": 11,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1997,7 +1997,7 @@
       "seed": 1030807,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 766,
+      "occurrence": 1800,
       "bit": 2,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2009,23 +2009,23 @@
     {
       "trial": 131,
       "seed": 1038726,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 594,
+      "occurrence": 5204,
       "bit": 56,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 132,
       "seed": 1046645,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 677,
+      "occurrence": 655,
       "bit": 47,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2039,7 +2039,7 @@
       "seed": 1054564,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 760,
+      "occurrence": 1384,
       "bit": 38,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2053,7 +2053,7 @@
       "seed": 1062483,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 588,
+      "occurrence": 4788,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2067,7 +2067,7 @@
       "seed": 1070402,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 671,
+      "occurrence": 239,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2081,7 +2081,7 @@
       "seed": 1078321,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 499,
+      "occurrence": 3643,
       "bit": 10,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2095,7 +2095,7 @@
       "seed": 1086240,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 582,
+      "occurrence": 4372,
       "bit": 0,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2107,23 +2107,23 @@
     {
       "trial": 138,
       "seed": 1094159,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 665,
+      "occurrence": 5101,
       "bit": 55,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 139,
       "seed": 1102078,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 493,
+      "occurrence": 3227,
       "bit": 46,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2137,7 +2137,7 @@
       "seed": 1109997,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 576,
+      "occurrence": 3956,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2151,7 +2151,7 @@
       "seed": 1117916,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 659,
+      "occurrence": 4685,
       "bit": 27,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2165,7 +2165,7 @@
       "seed": 1125835,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 487,
+      "occurrence": 2811,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2179,7 +2179,7 @@
       "seed": 1133754,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 570,
+      "occurrence": 3540,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2191,23 +2191,23 @@
     {
       "trial": 144,
       "seed": 1141673,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 653,
+      "occurrence": 4269,
       "bit": 63,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 145,
       "seed": 1149592,
       "classification": "MASKED",
       "op_id": 49,
-      "occurrence": 481,
+      "occurrence": 2395,
       "bit": 53,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2221,7 +2221,7 @@
       "seed": 1157511,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 3124,
+      "occurrence": 560,
       "bit": 44,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2235,7 +2235,7 @@
       "seed": 1165430,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 3853,
+      "occurrence": 2058,
       "bit": 35,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2249,7 +2249,7 @@
       "seed": 1173349,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 1979,
+      "occurrence": 1852,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2263,7 +2263,7 @@
       "seed": 1181268,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 2708,
+      "occurrence": 3350,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2277,7 +2277,7 @@
       "seed": 1189187,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 3437,
+      "occurrence": 481,
       "bit": 7,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2289,37 +2289,37 @@
     {
       "trial": 151,
       "seed": 1197106,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 6,
-      "occurrence": 1563,
+      "occurrence": 275,
       "bit": 61,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 152,
       "seed": 1205025,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 6,
-      "occurrence": 2292,
+      "occurrence": 1773,
       "bit": 52,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 153,
       "seed": 1212944,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 418,
+      "occurrence": 1567,
       "bit": 42,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2333,7 +2333,7 @@
       "seed": 1220863,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 1147,
+      "occurrence": 3065,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2347,7 +2347,7 @@
       "seed": 1228782,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 1876,
+      "occurrence": 196,
       "bit": 24,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2361,7 +2361,7 @@
       "seed": 1236701,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 2,
+      "occurrence": 4357,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2375,7 +2375,7 @@
       "seed": 1244620,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 731,
+      "occurrence": 1488,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2387,37 +2387,37 @@
     {
       "trial": 158,
       "seed": 1252539,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 6,
-      "occurrence": 1460,
+      "occurrence": 2986,
       "bit": 60,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 159,
       "seed": 1260458,
-      "classification": "MASKED",
+      "classification": "SDC",
       "op_id": 6,
-      "occurrence": 4864,
+      "occurrence": 2780,
       "bit": 50,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "the final result is outside the acceptance criterion and nothing noticed the fault",
+        "the injected value propagated to the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": false
+      "final_result_outside_tolerance": true
     },
     {
       "trial": 160,
       "seed": 1268377,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 315,
+      "occurrence": 4278,
       "bit": 41,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2431,7 +2431,7 @@
       "seed": 1276296,
       "classification": "MASKED",
       "op_id": 6,
-      "occurrence": 1044,
+      "occurrence": 1409,
       "bit": 32,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2445,7 +2445,7 @@
       "seed": 1284215,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 20282,
+      "occurrence": 1203,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2459,7 +2459,7 @@
       "seed": 1292134,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 21011,
+      "occurrence": 2701,
       "bit": 13,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2473,7 +2473,7 @@
       "seed": 1300053,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 628,
+      "occurrence": 4199,
       "bit": 3,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2485,37 +2485,37 @@
     {
       "trial": 165,
       "seed": 1307972,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 14588,
+      "occurrence": 3993,
       "bit": 58,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 166,
       "seed": 1315891,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 15317,
+      "occurrence": 1124,
       "bit": 49,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 167,
       "seed": 1323810,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 16046,
+      "occurrence": 2622,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2529,7 +2529,7 @@
       "seed": 1331729,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 8894,
+      "occurrence": 2416,
       "bit": 30,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2543,7 +2543,7 @@
       "seed": 1339648,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 9623,
+      "occurrence": 3914,
       "bit": 21,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2557,7 +2557,7 @@
       "seed": 1347567,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 2471,
+      "occurrence": 3708,
       "bit": 11,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2571,7 +2571,7 @@
       "seed": 1355486,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 3200,
+      "occurrence": 839,
       "bit": 2,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2583,23 +2583,23 @@
     {
       "trial": 172,
       "seed": 1363405,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 3929,
+      "occurrence": 2337,
       "bit": 57,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 173,
       "seed": 1371324,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 17889,
+      "occurrence": 2131,
       "bit": 47,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2613,7 +2613,7 @@
       "seed": 1379243,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 18618,
+      "occurrence": 3629,
       "bit": 38,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2627,7 +2627,7 @@
       "seed": 1387162,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 19347,
+      "occurrence": 760,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2641,7 +2641,7 @@
       "seed": 1395081,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 12195,
+      "occurrence": 554,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2655,7 +2655,7 @@
       "seed": 1403000,
       "classification": "MASKED",
       "op_id": 12,
-      "occurrence": 12924,
+      "occurrence": 2052,
       "bit": 10,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2669,7 +2669,7 @@
       "seed": 1410919,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 1845,
+      "occurrence": 3550,
       "bit": 0,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2683,7 +2683,7 @@
       "seed": 1418838,
       "classification": "SDC",
       "op_id": 18,
-      "occurrence": 11845,
+      "occurrence": 3344,
       "bit": 55,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -2695,23 +2695,23 @@
     {
       "trial": 180,
       "seed": 1426757,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 2166,
+      "occurrence": 475,
       "bit": 46,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 181,
       "seed": 1434676,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 10143,
+      "occurrence": 1973,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2725,7 +2725,7 @@
       "seed": 1442595,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 2487,
+      "occurrence": 1767,
       "bit": 27,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2739,7 +2739,7 @@
       "seed": 1450514,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 10464,
+      "occurrence": 3265,
       "bit": 18,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2753,7 +2753,7 @@
       "seed": 1458433,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 785,
+      "occurrence": 396,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2767,7 +2767,7 @@
       "seed": 1466352,
       "classification": "SDC",
       "op_id": 18,
-      "occurrence": 10785,
+      "occurrence": 190,
       "bit": 63,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -2781,7 +2781,7 @@
       "seed": 1474271,
       "classification": "SDC",
       "op_id": 18,
-      "occurrence": 1106,
+      "occurrence": 1688,
       "bit": 54,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -2793,23 +2793,23 @@
     {
       "trial": 187,
       "seed": 1482190,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 11106,
+      "occurrence": 1482,
       "bit": 44,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 188,
       "seed": 1490109,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 1427,
+      "occurrence": 2980,
       "bit": 35,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2823,7 +2823,7 @@
       "seed": 1498028,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 9404,
+      "occurrence": 111,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2837,7 +2837,7 @@
       "seed": 1505947,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 1748,
+      "occurrence": 4272,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2851,7 +2851,7 @@
       "seed": 1513866,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 9725,
+      "occurrence": 1403,
       "bit": 7,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2865,7 +2865,7 @@
       "seed": 1521785,
       "classification": "SDC",
       "op_id": 18,
-      "occurrence": 46,
+      "occurrence": 2901,
       "bit": 61,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",
@@ -2877,23 +2877,23 @@
     {
       "trial": 193,
       "seed": 1529704,
-      "classification": "SDC",
+      "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 10046,
+      "occurrence": 2695,
       "bit": 52,
       "reasons": [
-        "the final result is outside the acceptance criterion and nothing noticed the fault",
-        "the injected value propagated to the final result"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
-      "final_result_outside_tolerance": true
+      "final_result_outside_tolerance": false
     },
     {
       "trial": 194,
       "seed": 1537623,
       "classification": "MASKED",
       "op_id": 24,
-      "occurrence": 20255,
+      "occurrence": 213,
       "bit": 43,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2907,7 +2907,7 @@
       "seed": 1545542,
       "classification": "MASKED",
       "op_id": 24,
-      "occurrence": 20984,
+      "occurrence": 296,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2921,7 +2921,7 @@
       "seed": 1553461,
       "classification": "MASKED",
       "op_id": 24,
-      "occurrence": 13832,
+      "occurrence": 124,
       "bit": 24,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2935,7 +2935,7 @@
       "seed": 1561380,
       "classification": "MASKED",
       "op_id": 24,
-      "occurrence": 14561,
+      "occurrence": 207,
       "bit": 15,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2949,7 +2949,7 @@
       "seed": 1569299,
       "classification": "MASKED",
       "op_id": 24,
-      "occurrence": 15290,
+      "occurrence": 290,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2963,7 +2963,7 @@
       "seed": 1577218,
       "classification": "SDC",
       "op_id": 24,
-      "occurrence": 8138,
+      "occurrence": 118,
       "bit": 60,
       "reasons": [
         "the final result is outside the acceptance criterion and nothing noticed the fault",

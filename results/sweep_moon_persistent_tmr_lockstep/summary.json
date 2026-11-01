@@ -1,0 +1,3561 @@
+{
+  "workload": "moon",
+  "build_id": "cdcd5b5e96ffe4c3",
+  "compiler_flags": "-O0 -gline-tables-only -ffp-contract=off",
+  "seed": 1337,
+  "trials": 200,
+  "bit_range": "0-63",
+  "classifications": {
+    "CRASH": 0,
+    "HANG": 0,
+    "CORRECTED": 199,
+    "DETECTED": 0,
+    "SDC": 0,
+    "MASKED": 1,
+    "INCONCLUSIVE": 0
+  },
+  "by_bit_region": {
+    "exponent": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 35,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "mantissa-high": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 34,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "mantissa-low": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 127,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "sign": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    }
+  },
+  "by_op_id": {
+    "1": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "6": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "7": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "12": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "13": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "18": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "19": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "24": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "25": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "31": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "37": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "43": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "49": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "50": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "55": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "56": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "61": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "62": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "67": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "68": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "73": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "74": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "80": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "86": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "92": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "98": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "99": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "104": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "105": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "110": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "111": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "116": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "117": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "122": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "123": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "129": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "135": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "141": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "147": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "148": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "153": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "154": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "159": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "160": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "165": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "166": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "171": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "172": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "178": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "184": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "190": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "196": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "197": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "202": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "203": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "208": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "209": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "214": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "215": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "220": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "221": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "227": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "233": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "239": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "245": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "246": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "251": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "252": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "257": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "258": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "263": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "264": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "269": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "270": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "276": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "282": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 2,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "288": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "294": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 3,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    }
+  },
+  "records": [
+    {
+      "trial": 0,
+      "seed": 1337,
+      "classification": "CORRECTED",
+      "op_id": 246,
+      "occurrence": 3053,
+      "bit": 3,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 1,
+      "seed": 9256,
+      "classification": "CORRECTED",
+      "op_id": 197,
+      "occurrence": 3782,
+      "bit": 57,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 2,
+      "seed": 17175,
+      "classification": "CORRECTED",
+      "op_id": 148,
+      "occurrence": 4511,
+      "bit": 48,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 3,
+      "seed": 25094,
+      "classification": "CORRECTED",
+      "op_id": 99,
+      "occurrence": 2637,
+      "bit": 39,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 4,
+      "seed": 33013,
+      "classification": "CORRECTED",
+      "op_id": 50,
+      "occurrence": 3366,
+      "bit": 29,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 5,
+      "seed": 40932,
+      "classification": "CORRECTED",
+      "op_id": 1,
+      "occurrence": 4095,
+      "bit": 20,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 6,
+      "seed": 48851,
+      "classification": "CORRECTED",
+      "op_id": 246,
+      "occurrence": 2221,
+      "bit": 11,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 7,
+      "seed": 56770,
+      "classification": "CORRECTED",
+      "op_id": 197,
+      "occurrence": 2950,
+      "bit": 1,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 8,
+      "seed": 64689,
+      "classification": "CORRECTED",
+      "op_id": 148,
+      "occurrence": 3679,
+      "bit": 56,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 9,
+      "seed": 72608,
+      "classification": "CORRECTED",
+      "op_id": 99,
+      "occurrence": 1805,
+      "bit": 46,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 10,
+      "seed": 80527,
+      "classification": "CORRECTED",
+      "op_id": 50,
+      "occurrence": 2534,
+      "bit": 37,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 11,
+      "seed": 88446,
+      "classification": "CORRECTED",
+      "op_id": 1,
+      "occurrence": 660,
+      "bit": 28,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 12,
+      "seed": 96365,
+      "classification": "CORRECTED",
+      "op_id": 246,
+      "occurrence": 1389,
+      "bit": 18,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 13,
+      "seed": 104284,
+      "classification": "CORRECTED",
+      "op_id": 197,
+      "occurrence": 2118,
+      "bit": 9,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 14,
+      "seed": 112203,
+      "classification": "CORRECTED",
+      "op_id": 148,
+      "occurrence": 244,
+      "bit": 0,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 15,
+      "seed": 120122,
+      "classification": "CORRECTED",
+      "op_id": 99,
+      "occurrence": 973,
+      "bit": 54,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 16,
+      "seed": 128041,
+      "classification": "CORRECTED",
+      "op_id": 7,
+      "occurrence": 2113,
+      "bit": 45,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 17,
+      "seed": 135960,
+      "classification": "CORRECTED",
+      "op_id": 252,
+      "occurrence": 1907,
+      "bit": 36,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 18,
+      "seed": 143879,
+      "classification": "CORRECTED",
+      "op_id": 203,
+      "occurrence": 3405,
+      "bit": 26,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 19,
+      "seed": 151798,
+      "classification": "CORRECTED",
+      "op_id": 154,
+      "occurrence": 536,
+      "bit": 17,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 20,
+      "seed": 159717,
+      "classification": "CORRECTED",
+      "op_id": 105,
+      "occurrence": 330,
+      "bit": 8,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 21,
+      "seed": 167636,
+      "classification": "CORRECTED",
+      "op_id": 56,
+      "occurrence": 1828,
+      "bit": 62,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 22,
+      "seed": 175555,
+      "classification": "CORRECTED",
+      "op_id": 7,
+      "occurrence": 3326,
+      "bit": 53,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 23,
+      "seed": 183474,
+      "classification": "CORRECTED",
+      "op_id": 252,
+      "occurrence": 3120,
+      "bit": 43,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 24,
+      "seed": 191393,
+      "classification": "CORRECTED",
+      "op_id": 203,
+      "occurrence": 251,
+      "bit": 34,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 25,
+      "seed": 199312,
+      "classification": "CORRECTED",
+      "op_id": 154,
+      "occurrence": 1749,
+      "bit": 25,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 26,
+      "seed": 207231,
+      "classification": "CORRECTED",
+      "op_id": 105,
+      "occurrence": 1543,
+      "bit": 15,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 27,
+      "seed": 215150,
+      "classification": "CORRECTED",
+      "op_id": 56,
+      "occurrence": 3041,
+      "bit": 6,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 28,
+      "seed": 223069,
+      "classification": "CORRECTED",
+      "op_id": 7,
+      "occurrence": 172,
+      "bit": 61,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 29,
+      "seed": 230988,
+      "classification": "CORRECTED",
+      "op_id": 252,
+      "occurrence": 4333,
+      "bit": 51,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 30,
+      "seed": 238907,
+      "classification": "CORRECTED",
+      "op_id": 203,
+      "occurrence": 1464,
+      "bit": 42,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 31,
+      "seed": 246826,
+      "classification": "CORRECTED",
+      "op_id": 154,
+      "occurrence": 1258,
+      "bit": 33,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 32,
+      "seed": 254745,
+      "classification": "CORRECTED",
+      "op_id": 105,
+      "occurrence": 2756,
+      "bit": 23,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 33,
+      "seed": 262664,
+      "classification": "CORRECTED",
+      "op_id": 13,
+      "occurrence": 4254,
+      "bit": 14,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 34,
+      "seed": 270583,
+      "classification": "CORRECTED",
+      "op_id": 258,
+      "occurrence": 4048,
+      "bit": 4,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 35,
+      "seed": 278502,
+      "classification": "CORRECTED",
+      "op_id": 209,
+      "occurrence": 1179,
+      "bit": 59,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 36,
+      "seed": 286421,
+      "classification": "CORRECTED",
+      "op_id": 160,
+      "occurrence": 2677,
+      "bit": 50,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 37,
+      "seed": 294340,
+      "classification": "CORRECTED",
+      "op_id": 111,
+      "occurrence": 2471,
+      "bit": 40,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 38,
+      "seed": 302259,
+      "classification": "CORRECTED",
+      "op_id": 62,
+      "occurrence": 3969,
+      "bit": 31,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 39,
+      "seed": 310178,
+      "classification": "CORRECTED",
+      "op_id": 13,
+      "occurrence": 1100,
+      "bit": 22,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 40,
+      "seed": 318097,
+      "classification": "CORRECTED",
+      "op_id": 258,
+      "occurrence": 894,
+      "bit": 12,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 41,
+      "seed": 326016,
+      "classification": "CORRECTED",
+      "op_id": 209,
+      "occurrence": 2392,
+      "bit": 3,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 42,
+      "seed": 333935,
+      "classification": "CORRECTED",
+      "op_id": 160,
+      "occurrence": 3890,
+      "bit": 58,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 43,
+      "seed": 341854,
+      "classification": "CORRECTED",
+      "op_id": 111,
+      "occurrence": 3684,
+      "bit": 48,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 44,
+      "seed": 349773,
+      "classification": "CORRECTED",
+      "op_id": 62,
+      "occurrence": 815,
+      "bit": 39,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 45,
+      "seed": 357692,
+      "classification": "CORRECTED",
+      "op_id": 13,
+      "occurrence": 2313,
+      "bit": 29,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 46,
+      "seed": 365611,
+      "classification": "CORRECTED",
+      "op_id": 258,
+      "occurrence": 2107,
+      "bit": 20,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 47,
+      "seed": 373530,
+      "classification": "CORRECTED",
+      "op_id": 209,
+      "occurrence": 3605,
+      "bit": 11,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 48,
+      "seed": 381449,
+      "classification": "MASKED",
+      "op_id": 160,
+      "occurrence": 3399,
+      "bit": 1,
+      "reasons": [
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 49,
+      "seed": 389368,
+      "classification": "CORRECTED",
+      "op_id": 68,
+      "occurrence": 530,
+      "bit": 56,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 50,
+      "seed": 397287,
+      "classification": "CORRECTED",
+      "op_id": 19,
+      "occurrence": 2028,
+      "bit": 47,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 51,
+      "seed": 405206,
+      "classification": "CORRECTED",
+      "op_id": 264,
+      "occurrence": 1822,
+      "bit": 37,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 52,
+      "seed": 413125,
+      "classification": "CORRECTED",
+      "op_id": 215,
+      "occurrence": 3320,
+      "bit": 28,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 53,
+      "seed": 421044,
+      "classification": "CORRECTED",
+      "op_id": 166,
+      "occurrence": 451,
+      "bit": 19,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 54,
+      "seed": 428963,
+      "classification": "CORRECTED",
+      "op_id": 117,
+      "occurrence": 245,
+      "bit": 9,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 55,
+      "seed": 436882,
+      "classification": "CORRECTED",
+      "op_id": 68,
+      "occurrence": 1743,
+      "bit": 0,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 56,
+      "seed": 444801,
+      "classification": "CORRECTED",
+      "op_id": 19,
+      "occurrence": 3241,
+      "bit": 55,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 57,
+      "seed": 452720,
+      "classification": "CORRECTED",
+      "op_id": 264,
+      "occurrence": 3035,
+      "bit": 45,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 58,
+      "seed": 460639,
+      "classification": "CORRECTED",
+      "op_id": 215,
+      "occurrence": 166,
+      "bit": 36,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 59,
+      "seed": 468558,
+      "classification": "CORRECTED",
+      "op_id": 166,
+      "occurrence": 1664,
+      "bit": 26,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 60,
+      "seed": 476477,
+      "classification": "CORRECTED",
+      "op_id": 117,
+      "occurrence": 1458,
+      "bit": 17,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 61,
+      "seed": 484396,
+      "classification": "CORRECTED",
+      "op_id": 68,
+      "occurrence": 2956,
+      "bit": 8,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 62,
+      "seed": 492315,
+      "classification": "CORRECTED",
+      "op_id": 19,
+      "occurrence": 87,
+      "bit": 62,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 63,
+      "seed": 500234,
+      "classification": "CORRECTED",
+      "op_id": 264,
+      "occurrence": 4248,
+      "bit": 53,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 64,
+      "seed": 508153,
+      "classification": "CORRECTED",
+      "op_id": 215,
+      "occurrence": 1379,
+      "bit": 44,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 65,
+      "seed": 516072,
+      "classification": "CORRECTED",
+      "op_id": 123,
+      "occurrence": 70,
+      "bit": 34,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 66,
+      "seed": 523991,
+      "classification": "CORRECTED",
+      "op_id": 74,
+      "occurrence": 153,
+      "bit": 25,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 67,
+      "seed": 531910,
+      "classification": "CORRECTED",
+      "op_id": 25,
+      "occurrence": 236,
+      "bit": 16,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 68,
+      "seed": 539829,
+      "classification": "CORRECTED",
+      "op_id": 270,
+      "occurrence": 64,
+      "bit": 6,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 69,
+      "seed": 547748,
+      "classification": "CORRECTED",
+      "op_id": 221,
+      "occurrence": 147,
+      "bit": 61,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 70,
+      "seed": 555667,
+      "classification": "CORRECTED",
+      "op_id": 172,
+      "occurrence": 230,
+      "bit": 51,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 71,
+      "seed": 563586,
+      "classification": "CORRECTED",
+      "op_id": 123,
+      "occurrence": 58,
+      "bit": 42,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 72,
+      "seed": 571505,
+      "classification": "CORRECTED",
+      "op_id": 74,
+      "occurrence": 141,
+      "bit": 33,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 73,
+      "seed": 579424,
+      "classification": "CORRECTED",
+      "op_id": 25,
+      "occurrence": 224,
+      "bit": 23,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 74,
+      "seed": 587343,
+      "classification": "CORRECTED",
+      "op_id": 270,
+      "occurrence": 52,
+      "bit": 14,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 75,
+      "seed": 595262,
+      "classification": "CORRECTED",
+      "op_id": 221,
+      "occurrence": 135,
+      "bit": 5,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 76,
+      "seed": 603181,
+      "classification": "CORRECTED",
+      "op_id": 172,
+      "occurrence": 218,
+      "bit": 59,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 77,
+      "seed": 611100,
+      "classification": "CORRECTED",
+      "op_id": 123,
+      "occurrence": 46,
+      "bit": 50,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 78,
+      "seed": 619019,
+      "classification": "CORRECTED",
+      "op_id": 74,
+      "occurrence": 129,
+      "bit": 41,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 79,
+      "seed": 626938,
+      "classification": "CORRECTED",
+      "op_id": 25,
+      "occurrence": 212,
+      "bit": 31,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 80,
+      "seed": 634857,
+      "classification": "CORRECTED",
+      "op_id": 270,
+      "occurrence": 40,
+      "bit": 22,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 81,
+      "seed": 642776,
+      "classification": "CORRECTED",
+      "op_id": 178,
+      "occurrence": 20886,
+      "bit": 12,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 82,
+      "seed": 650695,
+      "classification": "CORRECTED",
+      "op_id": 129,
+      "occurrence": 13734,
+      "bit": 3,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 83,
+      "seed": 658614,
+      "classification": "CORRECTED",
+      "op_id": 80,
+      "occurrence": 14463,
+      "bit": 58,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 84,
+      "seed": 666533,
+      "classification": "CORRECTED",
+      "op_id": 31,
+      "occurrence": 15192,
+      "bit": 48,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 85,
+      "seed": 674452,
+      "classification": "CORRECTED",
+      "op_id": 276,
+      "occurrence": 8040,
+      "bit": 39,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 86,
+      "seed": 682371,
+      "classification": "CORRECTED",
+      "op_id": 227,
+      "occurrence": 8769,
+      "bit": 30,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 87,
+      "seed": 690290,
+      "classification": "CORRECTED",
+      "op_id": 178,
+      "occurrence": 9498,
+      "bit": 20,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 88,
+      "seed": 698209,
+      "classification": "CORRECTED",
+      "op_id": 129,
+      "occurrence": 2346,
+      "bit": 11,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 89,
+      "seed": 706128,
+      "classification": "CORRECTED",
+      "op_id": 80,
+      "occurrence": 3075,
+      "bit": 2,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 90,
+      "seed": 714047,
+      "classification": "CORRECTED",
+      "op_id": 31,
+      "occurrence": 3804,
+      "bit": 56,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 91,
+      "seed": 721966,
+      "classification": "CORRECTED",
+      "op_id": 276,
+      "occurrence": 17764,
+      "bit": 47,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 92,
+      "seed": 729885,
+      "classification": "CORRECTED",
+      "op_id": 227,
+      "occurrence": 18493,
+      "bit": 37,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 93,
+      "seed": 737804,
+      "classification": "CORRECTED",
+      "op_id": 178,
+      "occurrence": 19222,
+      "bit": 28,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 94,
+      "seed": 745723,
+      "classification": "CORRECTED",
+      "op_id": 129,
+      "occurrence": 12070,
+      "bit": 19,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 95,
+      "seed": 753642,
+      "classification": "CORRECTED",
+      "op_id": 80,
+      "occurrence": 12799,
+      "bit": 9,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 96,
+      "seed": 761561,
+      "classification": "CORRECTED",
+      "op_id": 31,
+      "occurrence": 13528,
+      "bit": 0,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 97,
+      "seed": 769480,
+      "classification": "CORRECTED",
+      "op_id": 233,
+      "occurrence": 292,
+      "bit": 55,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 98,
+      "seed": 777399,
+      "classification": "CORRECTED",
+      "op_id": 184,
+      "occurrence": 3472,
+      "bit": 45,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 99,
+      "seed": 785318,
+      "classification": "CORRECTED",
+      "op_id": 135,
+      "occurrence": 7874,
+      "bit": 36,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 100,
+      "seed": 793237,
+      "classification": "CORRECTED",
+      "op_id": 86,
+      "occurrence": 11054,
+      "bit": 27,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 101,
+      "seed": 801156,
+      "classification": "CORRECTED",
+      "op_id": 37,
+      "occurrence": 2767,
+      "bit": 17,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 102,
+      "seed": 809075,
+      "classification": "CORRECTED",
+      "op_id": 282,
+      "occurrence": 7169,
+      "bit": 8,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 103,
+      "seed": 816994,
+      "classification": "CORRECTED",
+      "op_id": 233,
+      "occurrence": 10349,
+      "bit": 63,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 104,
+      "seed": 824913,
+      "classification": "CORRECTED",
+      "op_id": 184,
+      "occurrence": 2062,
+      "bit": 53,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 105,
+      "seed": 832832,
+      "classification": "CORRECTED",
+      "op_id": 135,
+      "occurrence": 6464,
+      "bit": 44,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 106,
+      "seed": 840751,
+      "classification": "CORRECTED",
+      "op_id": 86,
+      "occurrence": 9644,
+      "bit": 34,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 107,
+      "seed": 848670,
+      "classification": "CORRECTED",
+      "op_id": 37,
+      "occurrence": 1357,
+      "bit": 25,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 108,
+      "seed": 856589,
+      "classification": "CORRECTED",
+      "op_id": 282,
+      "occurrence": 5759,
+      "bit": 16,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 109,
+      "seed": 864508,
+      "classification": "CORRECTED",
+      "op_id": 233,
+      "occurrence": 8939,
+      "bit": 6,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 110,
+      "seed": 872427,
+      "classification": "CORRECTED",
+      "op_id": 184,
+      "occurrence": 652,
+      "bit": 61,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 111,
+      "seed": 880346,
+      "classification": "CORRECTED",
+      "op_id": 135,
+      "occurrence": 5054,
+      "bit": 52,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 112,
+      "seed": 888265,
+      "classification": "CORRECTED",
+      "op_id": 86,
+      "occurrence": 8234,
+      "bit": 42,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 113,
+      "seed": 896184,
+      "classification": "CORRECTED",
+      "op_id": 288,
+      "occurrence": 5025,
+      "bit": 33,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 114,
+      "seed": 904103,
+      "classification": "CORRECTED",
+      "op_id": 239,
+      "occurrence": 3151,
+      "bit": 24,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 115,
+      "seed": 912022,
+      "classification": "CORRECTED",
+      "op_id": 190,
+      "occurrence": 3880,
+      "bit": 14,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 116,
+      "seed": 919941,
+      "classification": "CORRECTED",
+      "op_id": 141,
+      "occurrence": 4609,
+      "bit": 5,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 117,
+      "seed": 927860,
+      "classification": "CORRECTED",
+      "op_id": 92,
+      "occurrence": 2735,
+      "bit": 59,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 118,
+      "seed": 935779,
+      "classification": "CORRECTED",
+      "op_id": 43,
+      "occurrence": 3464,
+      "bit": 50,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 119,
+      "seed": 943698,
+      "classification": "CORRECTED",
+      "op_id": 288,
+      "occurrence": 1590,
+      "bit": 41,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 120,
+      "seed": 951617,
+      "classification": "CORRECTED",
+      "op_id": 239,
+      "occurrence": 2319,
+      "bit": 31,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 121,
+      "seed": 959536,
+      "classification": "CORRECTED",
+      "op_id": 190,
+      "occurrence": 3048,
+      "bit": 22,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 122,
+      "seed": 967455,
+      "classification": "CORRECTED",
+      "op_id": 141,
+      "occurrence": 1174,
+      "bit": 13,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 123,
+      "seed": 975374,
+      "classification": "CORRECTED",
+      "op_id": 92,
+      "occurrence": 1903,
+      "bit": 3,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 124,
+      "seed": 983293,
+      "classification": "CORRECTED",
+      "op_id": 43,
+      "occurrence": 2632,
+      "bit": 58,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 125,
+      "seed": 991212,
+      "classification": "CORRECTED",
+      "op_id": 288,
+      "occurrence": 758,
+      "bit": 49,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 126,
+      "seed": 999131,
+      "classification": "CORRECTED",
+      "op_id": 239,
+      "occurrence": 1487,
+      "bit": 39,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 127,
+      "seed": 1007050,
+      "classification": "CORRECTED",
+      "op_id": 190,
+      "occurrence": 2216,
+      "bit": 30,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 128,
+      "seed": 1014969,
+      "classification": "CORRECTED",
+      "op_id": 141,
+      "occurrence": 342,
+      "bit": 20,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 129,
+      "seed": 1022888,
+      "classification": "CORRECTED",
+      "op_id": 49,
+      "occurrence": 1071,
+      "bit": 11,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 130,
+      "seed": 1030807,
+      "classification": "CORRECTED",
+      "op_id": 294,
+      "occurrence": 1800,
+      "bit": 2,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 131,
+      "seed": 1038726,
+      "classification": "CORRECTED",
+      "op_id": 245,
+      "occurrence": 5204,
+      "bit": 56,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 132,
+      "seed": 1046645,
+      "classification": "CORRECTED",
+      "op_id": 196,
+      "occurrence": 655,
+      "bit": 47,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 133,
+      "seed": 1054564,
+      "classification": "CORRECTED",
+      "op_id": 147,
+      "occurrence": 1384,
+      "bit": 38,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 134,
+      "seed": 1062483,
+      "classification": "CORRECTED",
+      "op_id": 98,
+      "occurrence": 4788,
+      "bit": 28,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 135,
+      "seed": 1070402,
+      "classification": "CORRECTED",
+      "op_id": 49,
+      "occurrence": 239,
+      "bit": 19,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 136,
+      "seed": 1078321,
+      "classification": "CORRECTED",
+      "op_id": 294,
+      "occurrence": 3643,
+      "bit": 10,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 137,
+      "seed": 1086240,
+      "classification": "CORRECTED",
+      "op_id": 245,
+      "occurrence": 4372,
+      "bit": 0,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 138,
+      "seed": 1094159,
+      "classification": "CORRECTED",
+      "op_id": 196,
+      "occurrence": 5101,
+      "bit": 55,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 139,
+      "seed": 1102078,
+      "classification": "CORRECTED",
+      "op_id": 147,
+      "occurrence": 3227,
+      "bit": 46,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 140,
+      "seed": 1109997,
+      "classification": "CORRECTED",
+      "op_id": 98,
+      "occurrence": 3956,
+      "bit": 36,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 141,
+      "seed": 1117916,
+      "classification": "CORRECTED",
+      "op_id": 49,
+      "occurrence": 4685,
+      "bit": 27,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 142,
+      "seed": 1125835,
+      "classification": "CORRECTED",
+      "op_id": 294,
+      "occurrence": 2811,
+      "bit": 17,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 143,
+      "seed": 1133754,
+      "classification": "CORRECTED",
+      "op_id": 245,
+      "occurrence": 3540,
+      "bit": 8,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 144,
+      "seed": 1141673,
+      "classification": "CORRECTED",
+      "op_id": 196,
+      "occurrence": 4269,
+      "bit": 63,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 145,
+      "seed": 1149592,
+      "classification": "CORRECTED",
+      "op_id": 147,
+      "occurrence": 2395,
+      "bit": 53,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 146,
+      "seed": 1157511,
+      "classification": "CORRECTED",
+      "op_id": 55,
+      "occurrence": 560,
+      "bit": 44,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 147,
+      "seed": 1165430,
+      "classification": "CORRECTED",
+      "op_id": 6,
+      "occurrence": 2058,
+      "bit": 35,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 148,
+      "seed": 1173349,
+      "classification": "CORRECTED",
+      "op_id": 251,
+      "occurrence": 1852,
+      "bit": 25,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 149,
+      "seed": 1181268,
+      "classification": "CORRECTED",
+      "op_id": 202,
+      "occurrence": 3350,
+      "bit": 16,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 150,
+      "seed": 1189187,
+      "classification": "CORRECTED",
+      "op_id": 153,
+      "occurrence": 481,
+      "bit": 7,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 151,
+      "seed": 1197106,
+      "classification": "CORRECTED",
+      "op_id": 104,
+      "occurrence": 275,
+      "bit": 61,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 152,
+      "seed": 1205025,
+      "classification": "CORRECTED",
+      "op_id": 55,
+      "occurrence": 1773,
+      "bit": 52,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 153,
+      "seed": 1212944,
+      "classification": "CORRECTED",
+      "op_id": 6,
+      "occurrence": 1567,
+      "bit": 42,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 154,
+      "seed": 1220863,
+      "classification": "CORRECTED",
+      "op_id": 251,
+      "occurrence": 3065,
+      "bit": 33,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 155,
+      "seed": 1228782,
+      "classification": "CORRECTED",
+      "op_id": 202,
+      "occurrence": 196,
+      "bit": 24,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 156,
+      "seed": 1236701,
+      "classification": "CORRECTED",
+      "op_id": 153,
+      "occurrence": 4357,
+      "bit": 14,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 157,
+      "seed": 1244620,
+      "classification": "CORRECTED",
+      "op_id": 104,
+      "occurrence": 1488,
+      "bit": 5,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 158,
+      "seed": 1252539,
+      "classification": "CORRECTED",
+      "op_id": 55,
+      "occurrence": 2986,
+      "bit": 60,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 159,
+      "seed": 1260458,
+      "classification": "CORRECTED",
+      "op_id": 6,
+      "occurrence": 2780,
+      "bit": 50,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 160,
+      "seed": 1268377,
+      "classification": "CORRECTED",
+      "op_id": 251,
+      "occurrence": 4278,
+      "bit": 41,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 161,
+      "seed": 1276296,
+      "classification": "CORRECTED",
+      "op_id": 202,
+      "occurrence": 1409,
+      "bit": 32,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 162,
+      "seed": 1284215,
+      "classification": "CORRECTED",
+      "op_id": 110,
+      "occurrence": 1203,
+      "bit": 22,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 163,
+      "seed": 1292134,
+      "classification": "CORRECTED",
+      "op_id": 61,
+      "occurrence": 2701,
+      "bit": 13,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 164,
+      "seed": 1300053,
+      "classification": "CORRECTED",
+      "op_id": 12,
+      "occurrence": 4199,
+      "bit": 3,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 165,
+      "seed": 1307972,
+      "classification": "CORRECTED",
+      "op_id": 257,
+      "occurrence": 3993,
+      "bit": 58,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 166,
+      "seed": 1315891,
+      "classification": "CORRECTED",
+      "op_id": 208,
+      "occurrence": 1124,
+      "bit": 49,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 167,
+      "seed": 1323810,
+      "classification": "CORRECTED",
+      "op_id": 159,
+      "occurrence": 2622,
+      "bit": 39,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 168,
+      "seed": 1331729,
+      "classification": "CORRECTED",
+      "op_id": 110,
+      "occurrence": 2416,
+      "bit": 30,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 169,
+      "seed": 1339648,
+      "classification": "CORRECTED",
+      "op_id": 61,
+      "occurrence": 3914,
+      "bit": 21,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 170,
+      "seed": 1347567,
+      "classification": "CORRECTED",
+      "op_id": 12,
+      "occurrence": 3708,
+      "bit": 11,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 171,
+      "seed": 1355486,
+      "classification": "CORRECTED",
+      "op_id": 257,
+      "occurrence": 839,
+      "bit": 2,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 172,
+      "seed": 1363405,
+      "classification": "CORRECTED",
+      "op_id": 208,
+      "occurrence": 2337,
+      "bit": 57,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 173,
+      "seed": 1371324,
+      "classification": "CORRECTED",
+      "op_id": 159,
+      "occurrence": 2131,
+      "bit": 47,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 174,
+      "seed": 1379243,
+      "classification": "CORRECTED",
+      "op_id": 110,
+      "occurrence": 3629,
+      "bit": 38,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 175,
+      "seed": 1387162,
+      "classification": "CORRECTED",
+      "op_id": 61,
+      "occurrence": 760,
+      "bit": 28,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 176,
+      "seed": 1395081,
+      "classification": "CORRECTED",
+      "op_id": 12,
+      "occurrence": 554,
+      "bit": 19,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 177,
+      "seed": 1403000,
+      "classification": "CORRECTED",
+      "op_id": 257,
+      "occurrence": 2052,
+      "bit": 10,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 178,
+      "seed": 1410919,
+      "classification": "CORRECTED",
+      "op_id": 165,
+      "occurrence": 3550,
+      "bit": 0,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 179,
+      "seed": 1418838,
+      "classification": "CORRECTED",
+      "op_id": 116,
+      "occurrence": 3344,
+      "bit": 55,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 180,
+      "seed": 1426757,
+      "classification": "CORRECTED",
+      "op_id": 67,
+      "occurrence": 475,
+      "bit": 46,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 181,
+      "seed": 1434676,
+      "classification": "CORRECTED",
+      "op_id": 18,
+      "occurrence": 1973,
+      "bit": 36,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 182,
+      "seed": 1442595,
+      "classification": "CORRECTED",
+      "op_id": 263,
+      "occurrence": 1767,
+      "bit": 27,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 183,
+      "seed": 1450514,
+      "classification": "CORRECTED",
+      "op_id": 214,
+      "occurrence": 3265,
+      "bit": 18,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 184,
+      "seed": 1458433,
+      "classification": "CORRECTED",
+      "op_id": 165,
+      "occurrence": 396,
+      "bit": 8,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 185,
+      "seed": 1466352,
+      "classification": "CORRECTED",
+      "op_id": 116,
+      "occurrence": 190,
+      "bit": 63,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 186,
+      "seed": 1474271,
+      "classification": "CORRECTED",
+      "op_id": 67,
+      "occurrence": 1688,
+      "bit": 54,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 187,
+      "seed": 1482190,
+      "classification": "CORRECTED",
+      "op_id": 18,
+      "occurrence": 1482,
+      "bit": 44,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 188,
+      "seed": 1490109,
+      "classification": "CORRECTED",
+      "op_id": 263,
+      "occurrence": 2980,
+      "bit": 35,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 189,
+      "seed": 1498028,
+      "classification": "CORRECTED",
+      "op_id": 214,
+      "occurrence": 111,
+      "bit": 25,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 190,
+      "seed": 1505947,
+      "classification": "CORRECTED",
+      "op_id": 165,
+      "occurrence": 4272,
+      "bit": 16,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 191,
+      "seed": 1513866,
+      "classification": "CORRECTED",
+      "op_id": 116,
+      "occurrence": 1403,
+      "bit": 7,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 192,
+      "seed": 1521785,
+      "classification": "CORRECTED",
+      "op_id": 67,
+      "occurrence": 2901,
+      "bit": 61,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 193,
+      "seed": 1529704,
+      "classification": "CORRECTED",
+      "op_id": 18,
+      "occurrence": 2695,
+      "bit": 52,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 194,
+      "seed": 1537623,
+      "classification": "CORRECTED",
+      "op_id": 220,
+      "occurrence": 213,
+      "bit": 43,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 195,
+      "seed": 1545542,
+      "classification": "CORRECTED",
+      "op_id": 171,
+      "occurrence": 296,
+      "bit": 33,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 196,
+      "seed": 1553461,
+      "classification": "CORRECTED",
+      "op_id": 122,
+      "occurrence": 124,
+      "bit": 24,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 197,
+      "seed": 1561380,
+      "classification": "CORRECTED",
+      "op_id": 73,
+      "occurrence": 207,
+      "bit": 15,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 198,
+      "seed": 1569299,
+      "classification": "CORRECTED",
+      "op_id": 24,
+      "occurrence": 290,
+      "bit": 5,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    },
+    {
+      "trial": 199,
+      "seed": 1577218,
+      "classification": "CORRECTED",
+      "op_id": 269,
+      "occurrence": 118,
+      "bit": 60,
+      "reasons": [
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
+      ],
+      "diverged": true,
+      "final_result_outside_tolerance": false
+    }
+  ]
+}
