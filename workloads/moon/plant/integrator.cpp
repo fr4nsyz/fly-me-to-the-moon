@@ -10,11 +10,11 @@ State advance(const State& s, const Rates& k, double h) {
 
 } // namespace
 
-State rk4_step(const State& state, double t, double dt, const Vehicle& vehicle, const EngineCommand& command) {
-    const Rates k1 = derivative(state, t, vehicle, command);
-    const Rates k2 = derivative(advance(state, k1, dt / 2), t + dt / 2, vehicle, command);
-    const Rates k3 = derivative(advance(state, k2, dt / 2), t + dt / 2, vehicle, command);
-    const Rates k4 = derivative(advance(state, k3, dt), t + dt, vehicle, command);
+State rk4_step(const State& state, double dt, const Vehicle& vehicle, const EngineCommand& command) {
+    const Rates k1 = derivative(state, vehicle, command);
+    const Rates k2 = derivative(advance(state, k1, dt / 2), vehicle, command);
+    const Rates k3 = derivative(advance(state, k2, dt / 2), vehicle, command);
+    const Rates k4 = derivative(advance(state, k3, dt), vehicle, command);
 
     State next;
     next.position = state.position + (dt / 6) * (k1.velocity + 2 * k2.velocity + 2 * k3.velocity + k4.velocity);
