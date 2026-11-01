@@ -489,3 +489,51 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `src/instrumentation/SDCInstrument.cpp`, `src/runtime/runtime.{hpp,cpp}`, `src/core/op_kind.cpp`, `src/analyzer/audit.cpp`, `docs/trace-format.md` section 2, `docs/architecture.md` section 7.1.
 
 **Follow-up.** Math library calls, as one operation each with the flip on the result, when guidance first needs trigonometry.
+
+### ADR-0020 — Verified lander numbers and the Lunar Module touchdown envelope
+
+**Date:** 2026-10-31
+**Status:** Accepted. Supersedes the landing-score formula in ADR-0018; the rest of ADR-0018 stands.
+
+**Proposed.** ADR-0018 used remembered Lunar Module numbers and a box-shaped touchdown limit, `max(v / 3, h / 1.2, d / 1000)`, both to be verified before coding.
+
+**Decision.**
+- Vehicle: max thrust 45.04 kN, Isp 311 s, start mass 15,200 kg, dry mass 7,000 kg (15,200 kg total minus 8,200 kg descent propellant).
+- Touchdown score, with `v` vertical and `h` horizontal speed relative to the surface and `d` distance from the clean run's touchdown point:
+  `v_limit(h) = 3.05 - (3.05 - 2.13) * h / 1.22` (m/s), `score = max(v / v_limit(h), h / 1.22, d / 1000)`. A score up to 1 passes.
+- The real engine's throttle limits (10% floor, 65% to 92.5% avoided) are not modeled; the engine stays generic.
+
+**Why.** The Lunar Module gear's design envelope is not a box: it allows 3.05 m/s vertical when moving straight down but only 2.13 m/s at the 1.22 m/s horizontal limit, because sideways speed makes tipping more likely. The box would pass landings outside the real envelope. The descent guidance runs at full throttle while braking and in the 10% to 60% band near touchdown (estimated), so the unmodeled throttle limits rarely matter.
+
+**Evidence.**
+- Rogers, "Apollo Lunar Module Landing Gear", NASA JSC (NTRS 19730010151), Figures 6 and 8: design velocity envelope labeled 3.05 m/s (10 ft/s) and 2.13 m/s (7 ft/s) vertical, 1.22 m/s (4 ft/s) horizontal; all Apollo landings fell inside it. The trapezoid shape is read from the figure layout.
+- Wikipedia, "Descent propulsion system": "throttle between 1,050 and 10,125 pounds-force (4.67–45.04 kN)"; Isp "311 s (at full thrust)"; 65% to 92.5% "was avoided to prevent excessive nozzle erosion".
+- Wikipedia, "Apollo Lunar Module": launch mass "15,200 kg standard", DPS propellant "8,200 kg".
+- Available speed change: 311 s x 9.80665 m/s^2 x ln(15,200 / 7,000) = 2,365 m/s, against roughly 2,000 to 2,100 m/s needed (estimated).
+
+**Rejected.** The box limit: passes landings the real gear would not survive. Modeling the throttle limits: contradicts the generic engine and rarely binds.
+
+**Limitations.** Isp is the full-thrust value; the engine is less efficient at low throttle (285 s at 10%), and a flight measurement gave 305.8 s. Slope limits (12 degrees) do not apply because the model has no terrain.
+
+**Impact.** The landing score in `workloads/moon/sim/`. `docs/architecture.md` sections 13, 14, 15. `docs/math/moon-mission-math.tex` when the score is implemented.
+
+**Follow-up.** None.
+
+### ADR-0021 — Multi-file build profile and phase markers are workload-generic
+
+**Date:** 2026-10-31
+**Status:** Accepted. Supersedes the `--profile moon` naming in ADR-0018.
+
+**Proposed.** ADR-0018 named the moon build `tools/instrument.sh --profile moon`, and per-phase campaigns (ADR-0016) need the runtime to know phase boundaries. Both risked tying the SDC platform to one workload.
+
+**Decision.** The build profile is named for what it does, `--profile o0`, and takes the list of files to instrument as arguments; any multi-file workload can use it. Phase boundaries are reported through a generic region marker that any workload can call, not a moon-specific concept.
+
+**Why.** The SDC platform (`src/`, `include/`, `tools/`) contains no workload-specific code, and `sum_plain` runs through it unchanged. Keeping it that way keeps the platform usable for other workloads.
+
+**Evidence.** `grep -rliE 'moon|lander|landing|plant' src include tools` finds no files.
+
+**Rejected.** Moon-named options in platform tools.
+
+**Impact.** `tools/instrument.sh`. The runtime API when region markers are added.
+
+**Follow-up.** Define the region marker API when per-phase campaigns are built.
