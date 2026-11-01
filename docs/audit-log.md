@@ -534,3 +534,24 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `tools/instrument.sh`.
 
 **Follow-up.** None.
+
+### ADR-0022 — Per-trial timeout and HANG outcome
+
+**Date:** 2026-10-31
+**Status:** Accepted
+
+**Proposed.** The sweep ran each injected trial with no time limit, so a fault that made a workload loop forever would block the campaign. A process killed for running too long leaves no exit record, which the analyzer read as CRASH.
+
+**Decision.** The taxonomy gains HANG, checked after INCONCLUSIVE and before CRASH. The sweep driver times the clean run and gives each trial `max(--timeout-floor, --timeout-factor x clean wall time)`, defaulting to 10 s and 10x. A trial that exceeds it is killed; the driver runs the analyzer with `--timed-out` on whatever trace was written, or records HANG directly when no trace exists.
+
+**Why.** Classification stays in one place, the analyzer, and hang trials still get evidence from their partial trace. Scaling the limit to the clean run fits both a millisecond reduction and a second-long landing. The current workloads have no loops whose exit depends on a computed value (inferred from the code), so this guards future workloads and defenses.
+
+**Evidence.**
+- A 3-trial sweep on a program that loops forever under injection finished in 6.8 s with 3 HANG verdicts, each with evidence giving the reason "injected run exceeded the time limit and was killed".
+- The 200-trial seed-1337 `sum_plain` sweep matches the stored results in totals, per bit region, per operation, and per trial, with HANG at 0.
+
+**Rejected.** Labeling HANG in the driver without the analyzer: classification logic in two places and no evidence for hang trials. A fixed timeout: too long for fast workloads or too short for slow ones.
+
+**Impact.** `src/analyzer/{classify.hpp,classify.cpp,main.cpp}`, `tools/study/sweep.py`, `tools/study/report.py`, `tests/unit/test_analyzer.cpp`, `docs/architecture.md` section 7.4.
+
+**Follow-up.** None.

@@ -17,7 +17,7 @@ void usage() {
         "usage: sdc-analyze --clean <trace.sdct> --injected <trace.sdct>\n"
         "                    [--ops <ops.json>] [--out|-o <evidence.json>]\n"
         "                    [--abs-tol <double>] [--rel-tol <double>]\n"
-        "                    [--reference-bits <hex>]\n";
+        "                    [--reference-bits <hex>] [--timed-out]\n";
 }
 
 bool parse_double(const char* text, double& out) {
@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
     double rel_tol = 0.0;
     bool have_reference = false;
     std::uint64_t reference_bits = 0;
+    bool timed_out = false;
 
     for (int i = 1; i < argc; ++i) {
         const std::string arg = argv[i];
@@ -75,6 +76,8 @@ int main(int argc, char** argv) {
         } else if (arg == "--reference-bits") {
             if (!parse_u64_hex(next("--reference-bits"), reference_bits)) { usage(); return 2; }
             have_reference = true;
+        } else if (arg == "--timed-out") {
+            timed_out = true;
         } else if (arg == "--help" || arg == "-h") {
             usage();
             return 0;
@@ -159,6 +162,7 @@ int main(int argc, char** argv) {
     vi.divergence_found = alignment.diverged;
     vi.arithmetic_inconsistent = arithmetic_inconsistent;
     vi.evidence_sufficient = true;
+    vi.timed_out = timed_out;
 
     sdc::Verdict verdict = sdc::classify(vi);
 

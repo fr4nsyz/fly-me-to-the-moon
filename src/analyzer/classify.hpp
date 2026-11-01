@@ -9,6 +9,7 @@ namespace sdc {
 // Precedence: CRASH > CORRECTED > DETECTED > SDC > MASKED > INCONCLUSIVE.
 enum class Classification {
     CRASH,
+    HANG,
     CORRECTED,
     DETECTED,
     SDC,
@@ -28,6 +29,7 @@ struct VerdictInput {
     bool divergence_found = false;
     bool arithmetic_inconsistent = false;
     bool evidence_sufficient = true;
+    bool timed_out = false;
 };
 
 struct Verdict {

@@ -296,6 +296,7 @@ Revision 1 assumed the two streams are identical up to the injection point, and 
 | Class        | Meaning                                                       |
 | ------------ | ------------------------------------------------------------- |
 | CRASH        | Process died; a readable trace was still produced             |
+| HANG         | Process exceeded the per-trial time limit and was killed (ADR-0022) |
 | DETECTED     | Workload’s own check raised a flag                            |
 | CORRECTED    | A redundancy mechanism (e.g. TMR vote) corrected the corruption before producing the final result; outcome is within acceptance criterion |
 | SDC          | Final result outside acceptance criterion and nothing noticed |
@@ -411,7 +412,7 @@ The same seed always produces the same campaign. See ADR-0012 for how the inject
 ### Phase 7 — Viewer & Polish
 
 - Implement Three.js mission-control HUD (vendored offline). Reads only `trajectory.json` + `evidence.json`.
-- Show clean vs injected trajectories, injection point, first divergence, outcome badge (CORRECTED/SDC/MASKED/DETECTED/CRASH).
+- Show clean vs injected trajectories, injection point, first divergence, outcome badge (CORRECTED/SDC/MASKED/DETECTED/CRASH/HANG).
 - Overhead numbers (runtime, binary size, trace size).
 - Crash-safety of the recorder.
 - Documentation and example notebooks / reports.
@@ -452,7 +453,7 @@ SDC_WORKLOAD=sum_plain SDC_BUILD_ID=<id> SDC_COMPILER_FLAGS='<flags>' \
 jq .classification evidence.json
 ```
 
-and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / CRASH / INCONCLUSIVE).
+and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / CRASH / HANG / INCONCLUSIVE).
 
 **Runtime interface.** The workload is plain C++ with no annotations, so everything the runtime needs comes from the environment.
 
@@ -524,6 +525,7 @@ Settled in this revision:
 | ADR-0019 | The pass instruments `llvm.sqrt` |
 | ADR-0020 | Verified lander numbers; trapezoid Lunar Module touchdown envelope |
 | ADR-0021 | Multi-file build profile is workload-generic |
+| ADR-0022 | Per-trial timeout and HANG outcome |
 
 ---
 
@@ -554,6 +556,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0019 | 2026-10-31 | The pass instruments llvm.sqrt | Accepted |
 | ADR-0020 | 2026-10-31 | Verified lander numbers and the Lunar Module touchdown envelope | Accepted |
 | ADR-0021 | 2026-10-31 | Multi-file build profile is workload-generic | Accepted |
+| ADR-0022 | 2026-10-31 | Per-trial timeout and HANG outcome | Accepted |
 
 ---
 

@@ -279,8 +279,8 @@ Phase 6 build order (ADR-0016). The user wants to understand this phase deeply: 
 1. Moon-centered rework: delete the ephemeris, Earth gravity, and unused constants; Moon-only gravity; navigation with constant spin.
 2. Piece G: simulation loop, start orbit, touchdown interpolation, landing judge and score, flight log.
 3. First clean landing; tune guidance values.
-4. Per-trial timeout and HANG class (own ADR).
+4. Per-trial timeout and HANG class: done (ADR-0022).
 5. Defenses in FSW source at -O0 (ADR-0017): lockstep, TMR, invariant (checksum to be decided).
 6. Sweep with landing score, defense table.
-Open: clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results). Math library calls (`sin`, `cos`, `atan2`) are not faulted; `sqrt` is instrumented (ADR-0019). No HANG outcome and no per-trial timeout: `tools/study/sweep.py` sets none, so a fault that makes the workload loop forever blocks the sweep. Add a timeout and a HANG class (own ADR) before the first moon sweep.
+Open: clean-vs-clean determinism check, how defenses report DETECTED/CORRECTED given the plain-workload principle, and checksum vs the ALU-result fault model (checksums protect memory, faults hit op results). Math library calls (`sin`, `cos`, `atan2`) are not faulted; `sqrt` is instrumented (ADR-0019).
 Then Phase 7: Three.js HUD reading `trajectory.json` and `evidence.json` (ADR-0010).
