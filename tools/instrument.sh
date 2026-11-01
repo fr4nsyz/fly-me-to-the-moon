@@ -92,7 +92,6 @@ for i in "${!INSTRUMENT[@]}"; do
   BCS+=("$bc")
 done
 
-# One input skips llvm-link so a single-file build is unchanged.
 if [[ ${#BCS[@]} -eq 1 ]]; then
   mv "${BCS[0]}" "$BC"
 else
