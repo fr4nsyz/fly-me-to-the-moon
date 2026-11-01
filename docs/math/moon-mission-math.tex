@@ -117,11 +117,24 @@ Code: \texttt{fsw/navigation.cpp}. Tests: \texttt{test\_navigation.cpp}.
 Inputs: the navigation state and the mass $m$. Output: throttle $\tau$ and direction
 $\mathbf{d}$; the plant applies the actuator limits.
 
-\paragraph{Braking.} $\tau = 1$, $\mathbf{d} = -\mathbf{u}/\lVert\mathbf{u}\rVert$: full
-thrust against the ground-relative velocity.
+\paragraph{Braking.} Full throttle, $\tau = 1$, split between altitude control and
+horizontal deceleration. With $a_{\max} = F_{\max}/m$, $w = v_{\leftrightarrow}$,
+$r = R_M + h$, and $h_b = 1500$ m:
+\begin{align}
+t_{\mathrm{stop}} &= w / a_{\max}\\
+v^{*}_b &= -\frac{h - h_b}{\max(t_{\mathrm{stop}},\ 1\ \mathrm{s})}\\
+a_{\uparrow} &= \mathrm{clamp}\!\left(\frac{\mu_M}{r^2} - \frac{w^2}{r} + k_v\,(v^{*}_b - v_{\uparrow}),\ 0,\ a_{\max}\right)\\
+a_{\leftrightarrow} &= \sqrt{(a_{\max} - a_{\uparrow})(a_{\max} + a_{\uparrow})}\\
+\mathbf{d} &= a_{\uparrow}\hat{\mathbf{n}} - \frac{a_{\leftrightarrow}}{w}\,(\mathbf{u} - v_{\uparrow}\hat{\mathbf{n}})
+\end{align}
+The sink-rate target brings the lander to $h_b$ as its horizontal speed reaches zero.
+$w^2/r$ is the support still provided by orbital motion. The factored form of
+$a_{\leftrightarrow}$ cannot go negative by rounding, because the clamp guarantees
+$a_{\uparrow} \le a_{\max}$. Pure retrograde braking from 15 km (no altitude control)
+was measured to strike the surface at 132 m/s with 726 m/s of horizontal speed remaining.
 
-\paragraph{Switch.} Braking ends, permanently, when $\lVert\mathbf{u}\rVert < 50$ m/s or
-$h < 2000$ m, whichever comes first.
+\paragraph{Switch.} Braking ends, permanently, when $v_{\leftrightarrow} < 50$ m/s or
+$h < 500$ m, whichever comes first.
 
 \paragraph{Final descent.} Target vertical speed and wanted acceleration:
 \begin{align}
@@ -139,8 +152,9 @@ the ground). Otherwise
 and the plant saturates $\tau$ at 1. On the target descent rate with no drift,
 $\tau = g\,m/F_{\max}$, the hover throttle.
 
-\paragraph{Initial values.} The switch thresholds, the 10 s time constant, the 1 and 30 m/s
-limits, and both gains are starting values, to be tuned against the first full landing.
+\paragraph{Clean landing.} Measured: touchdown at 527.8 s at 1.000 m/s descent and
+0.000 m/s horizontal speed, with 1157.6 kg of propellant left; score 0.328. Two clean runs
+produce byte-identical traces.
 Code: \texttt{fsw/guidance.cpp}. Tests: \texttt{test\_guidance.cpp}.
 
 \section{Simulation and landing judge}

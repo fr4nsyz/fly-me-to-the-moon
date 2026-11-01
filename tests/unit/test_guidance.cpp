@@ -44,8 +44,16 @@ TEST(Guidance, SwitchesToFinalBelowSwitchSpeedAndStaysThere) {
 
 TEST(Guidance, SwitchesToFinalBelowSwitchAltitudeEvenWhenFast) {
     GuidanceState state;
-    guide(nav_at(1500.0, -40.0, Vec3{200.0, 0, 0}), 9000.0, state);
+    guide(nav_at(400.0, -40.0, Vec3{200.0, 0, 0}), 9000.0, state);
     EXPECT_EQ(state.phase, DescentPhase::Final);
+}
+
+TEST(Guidance, BrakingHoldsAltitudeWhenSinkingTooFast) {
+    GuidanceState state;
+    const EngineCommand c = guide(nav_at(10000.0, -200.0, Vec3{1000.0, 0, 0}), 12000.0, state);
+    EXPECT_EQ(state.phase, DescentPhase::Braking);
+    EXPECT_EQ(c.throttle, 1.0);
+    EXPECT_GT(c.direction.z, 0.0);
 }
 
 TEST(Guidance, OnTargetDescentRateThrottleCancelsGravity) {
