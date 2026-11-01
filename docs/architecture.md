@@ -326,7 +326,7 @@ Keep them plain C++. Suggested starter set:
 1. Simple reduction (sum / product of an array) — easy to reason about masking.
 2. Iterative linear solver (Jacobi or CG) — interesting propagation.
 3. Hardened moon flight software (ADR-0016, ADR-0017): lockstep, TMR, invariants, checksums. This is where the defense-mode table is generated.
-4. Moon mission (full surface → lunar landing) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the Three.js HUD.
+4. Lunar descent (ADR-0007, ADR-0016) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the Three.js HUD.
 
 ---
 
@@ -483,8 +483,8 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 - Visualization of value propagation (data-flow graph extracted from the two traces)
 - Support for integer arithmetic or mixed-precision codes
 - Replication that survives -O2 (compiler barriers, separate TUs, or `optnone` replicas); see ADR-0017
-- Onboard guidance that retargets in flight instead of a precomputed mission plan; see ADR-0016
-- Attitude dynamics and atmosphere drag in the moon plant
+- Attitude dynamics in the moon plant
+- Full Earth-to-Moon mission (ascent, translunar injection, coast, lunar orbit insertion) in an Earth-centered frame with a Moon ephemeris
 - Noisy sensors with a navigation filter in the moon flight software (ADR-0018)
 - Powered descent to a chosen landing site instead of where braking ends (ADR-0018)
 - Instrumenting math library calls (`sin`, `cos`, `atan2`) as one operation each (ADR-0019)
@@ -509,7 +509,7 @@ Settled in this revision:
 | ADR-0004 | Alignment is a prefix scan on key and payload (ADR-0014) |
 | ADR-0005 | Taxonomy adds `CORRECTED` class with precedence rules |
 | ADR-0006 | Bit 0 = LSB of uint64 IEEE-754 pattern (bit 63 sign, 62..52 exponent) |
-| ADR-0007 | Moon workload: full surface to lunar landing, hand-rolled plant |
+| ADR-0007 | Moon workload: powered lunar descent, hand-rolled plant |
 | ADR-0008 | Defense semantics: replicate before, vote after, protect the voter |
 | ADR-0009 | Only FSW translation units are instrumented |
 | ADR-0010 | Separate `trajectory.json`, offline Three.js HUD |
@@ -518,12 +518,12 @@ Settled in this revision:
 | ADR-0013 | Ratifies ADR-0003, ADR-0005, ADR-0007 to ADR-0010 |
 | ADR-0014 | Alignment is a prefix scan on key and payload; no resynchronization |
 | ADR-0015 | Unit tests use GoogleTest 1.18 from Homebrew |
-| ADR-0016 | Moon mission: full trip in 3D, point-mass physics, precomputed plan, per-phase campaigns |
+| ADR-0016 | Descent model: Moon-centered frame, point-mass physics, uniform fault campaigns |
 | ADR-0017 | Moon FSW builds at -O0; TMR and lockstep written in FSW source |
 | ADR-0018 | Powered descent: 15 km start, two-phase guidance, LM-class vehicle, plant-computed landing score |
 | ADR-0019 | The pass instruments `llvm.sqrt` |
 | ADR-0020 | Verified lander numbers; trapezoid Lunar Module touchdown envelope |
-| ADR-0021 | Multi-file build profile and phase markers are workload-generic |
+| ADR-0021 | Multi-file build profile is workload-generic |
 
 ---
 
@@ -539,7 +539,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0004 | 2026-10-29 | Trace alignment when corruption changes control flow | Accepted |
 | ADR-0005 | 2026-10-29 | Outcome taxonomy adds CORRECTED class | Accepted |
 | ADR-0006 | 2026-10-29 | Bit position convention (LSB 0) | Accepted |
-| ADR-0007 | 2026-10-31 | Moon workload: full surface→lunar landing, hand-rolled plant, FSW-only instrumentation | Accepted |
+| ADR-0007 | 2026-10-31 | Moon workload: powered lunar descent, hand-rolled plant, FSW-only instrumentation | Accepted |
 | ADR-0008 | 2026-10-31 | Defense semantics: replicate before critical section, vote after, protect voter; injection before replication = common-mode | Accepted |
 | ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Accepted |
 | ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Accepted |
@@ -548,32 +548,30 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0013 | 2026-10-31 | Ratify ADR-0003, ADR-0005, ADR-0007 to ADR-0010 | Accepted |
 | ADR-0014 | 2026-10-31 | Alignment is a prefix scan on key and payload | Accepted |
 | ADR-0015 | 2026-10-31 | Unit tests use GoogleTest | Accepted |
-| ADR-0016 | 2026-10-31 | Moon mission model: full trip in 3D, simplified physics, precomputed plan, per-phase campaigns | Accepted |
+| ADR-0016 | 2026-10-31 | Descent model: Moon-centered frame, point-mass physics, uniform fault campaigns | Accepted |
 | ADR-0017 | 2026-10-31 | Moon FSW builds at -O0; task-level TMR and lockstep in FSW source | Accepted |
 | ADR-0018 | 2026-10-31 | Powered descent design and moon build plumbing | Accepted |
 | ADR-0019 | 2026-10-31 | The pass instruments llvm.sqrt | Accepted |
 | ADR-0020 | 2026-10-31 | Verified lander numbers and the Lunar Module touchdown envelope | Accepted |
-| ADR-0021 | 2026-10-31 | Multi-file build profile and phase markers are workload-generic | Accepted |
+| ADR-0021 | 2026-10-31 | Multi-file build profile is workload-generic | Accepted |
 
 ---
 
-## 15. Moon Mission Specification (ADR-0007, ADR-0016)
+## 15. Lunar Descent Specification (ADR-0007, ADR-0016)
 
-**Goal:** A recognizable full Earth-to-Moon trip that demonstrates SDC effects on a mission.
+**Goal:** A powered lunar landing whose flight computer demonstrates SDC effects and defenses.
 
-**Phases:** Ascent → Parking orbit → TLI → Coast → LOI → Powered Descent → Landing.
+**Scope:** From a circular 15 km equatorial prograde lunar orbit to touchdown.
 
-**Plant (not instrumented):** Hand-rolled C++ (MIT). 3D point mass: position, velocity, propellant mass. Rotating Earth with a real launch latitude; the Moon on a fixed circular orbit inclined to Earth's equator. Earth and Moon gravity only; no drag, no Sun, no attitude dynamics. Fixed-step RK4. Deterministic.
+**Plant (not instrumented):** Hand-rolled C++ (MIT). 3D point mass: position, velocity, propellant mass. Moon-centered inertial frame, z along the spin axis; the Moon does not move and spins at a constant sidereal rate. Moon gravity only; no attitude dynamics. Fixed-step RK4. Deterministic.
 
-**FSW (instrumented, -O0 per ADR-0017):** Executes a precomputed mission plan with a simple closed-loop rule per phase. Ticks at 10 Hz during ascent, burns, and descent; 1 Hz during coast.
+**FSW (instrumented, -O0 per ADR-0017):** Navigation derives altitude and ground-relative velocity; guidance brakes at full throttle against the ground-relative velocity, then flies a final descent that cancels gravity, tracks a target descent rate, and opposes horizontal drift (ADR-0018). Ticks at 10 Hz.
 
-**Mission plan:** Burn times, directions, and targets come from a tuning script run once against the clean simulation. Limitation: the plan fits only the nominal trajectory, so the FSW cannot retarget after a fault and results lean pessimistic. The plan is tied to one launch date and geometry.
+**Vehicle:** Lunar Module descent class: 45.04 kN, Isp 311 s, 15,200 kg at start, 7,000 kg dry (ADR-0020).
 
-**Campaigns:** Every trial flies the whole mission. Faults are drawn per phase, with equal trials per phase.
+**Campaigns:** Faults are drawn uniformly over executed flight software operations.
 
 **Success criterion:** The plant's true touchdown state inside the Lunar Module touchdown envelope and within 1 km of the clean run's touchdown point, combined into one score where up to 1 passes (ADR-0020).
-
-**Powered descent (ADR-0018):** Starts from a circular 15 km lunar orbit. Braking at full throttle against the Moon-relative velocity, then a final descent with thrust straight up and a proportional controller tracking a target descent rate. Lunar Module descent-class vehicle. Perfect sensors; the flight software converts to Moon-relative terms itself, ahead of guidance.
 
 **Trajectory log:** `trajectory.json` written by the plant/driver, consumed only by the Three.js HUD. Separate from `SDCTRACE`.
 
