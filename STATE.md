@@ -30,7 +30,7 @@ Notes that will save time later:
 - Platform: LLVM IR pass hooks double `fadd`, `fsub`, `fmul`, `fdiv`, and `llvm.sqrt` (ADR-0019); binary `SDCTRACE` traces (ADR-0001); analyzer with prefix-scan alignment (ADR-0014) and seven outcome classes including CORRECTED (ADR-0005) and HANG (ADR-0022).
 - Fault models: transient (one flip) and persistent (the same bit on every execution of the op from a chosen occurrence on, ADR-0023).
 - Workload: powered lunar descent in a Moon-centered frame (ADR-0007, ADR-0016), Lunar Module class vehicle and touchdown envelope (ADR-0020), flight software instrumented at -O0 (ADR-0017), plant not instrumented (ADR-0009).
-- Defenses: `none` and `tmr-lockstep`, a TMR and lockstep hybrid that mimics real rocket flight computers (ADR-0008): three computers, each a lockstep pair of cores, commands compared across computers. Each core is a distinct template instantiation with its own operations.
+- Defenses: `none` and `tmr-lockstep`, a TMR and lockstep hybrid that mimics real rocket flight computers (ADR-0008): three computers, each a lockstep pair of cores, commands compared across computers. Each core is a separate copy of the same flight software made by the build (`instrument.sh --replicate`, per-copy internalize), so each has its own operations. The voter is assumed reliable (integer comparisons are outside the fault model).
 - Viewer: Three.js HUD, vendored offline, reads `trajectory.json` and `evidence.json` (ADR-0010).
 - Audit-log entries are rewritten when a decision changes; a new entry is added only for a new decision.
 
@@ -50,7 +50,7 @@ Notes that will save time later:
 ## Next move
 The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
 1. D1 plumbing: `--defense none|tmr-lockstep` in the simulation, `fsw_configure`, a status flag from the flight software, the simulation reports it to the runtime.
-2. D2 the hybrid: six core copies as template instantiations, pair comparison, cross-computer vote, phase-memory resync.
+2. D2 the hybrid: six core copies via `instrument.sh --replicate`, pair comparison, cross-computer vote, phase-memory resync.
 3. D3 sweeps for both modes under persistent faults, and the comparison table with a safe-landings column.
 4. Navigation filter, to give the flight software state so a single transient flip can linger.
 5. Phase 7 viewer.

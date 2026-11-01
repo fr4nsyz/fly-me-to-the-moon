@@ -228,8 +228,8 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 **Decision.** The flight software runs in two modes, chosen at run time with `--defense none|tmr-lockstep`.
 - `none`: one core runs navigation and guidance.
 - `tmr-lockstep`: a hybrid of TMR and lockstep that mimics real rocket flight computers. TMR is defined over three separate computers, and each computer is a lockstep pair of cores running the full flight software. Each computer compares its two cores bit for bit; a computer whose cores disagree goes silent for that tick. The commands of the computers still talking are then compared: with three, the majority wins; with two that agree, that command is used; with two that disagree, the computer with the longer record of agreement is used; with one, it is used. Every computer's phase memory is resynchronized to the chosen computer after each tick.
-- Each core is a distinct template instantiation of the flight software, so each has its own operations and a persistent fault breaks one core, not every copy.
-- The comparisons use instructions the pass does not instrument, so the voter is never faulted.
+- Each core is a separate copy of the same flight software, made by the build: `tools/instrument.sh --replicate` compiles the per-core sources once per core and internalizes each copy, so every copy keeps its own functions, helpers, and globals, and gets its own operations. A persistent fault breaks one core, not every copy. The source stays plain C++.
+- The voter is assumed reliable. It compares integer bit patterns, and the fault model covers only floating-point arithmetic, so the campaign never faults it. Real systems keep voters small, hardened, or replicated.
 - The flight software returns a status flag with its command. The simulation reports it to the runtime: any silenced computer or outvoted command reports CORRECTED.
 
 **Why.** Real launch vehicles combine the two: SpaceX describes Falcon 9 and Dragon as three computer units, each with two computers checking each other, with commands compared across units, so a unit that disagrees with itself drops out and the vehicle flies on the rest. Lockstep lets each computer tell that it is broken; TMR across computers supplies the backup. On its own, lockstep in a single computer can only detect, with nothing to hand control to, and TMR across copies on one core cannot survive a persistent fault, because every copy runs on the same core.
@@ -238,9 +238,9 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 **Rejected.** TMR and lockstep as separate modes: standalone lockstep never saves a landing, and the comparison obscures how real systems use them. TMR limited to navigation or guidance, and invariant checks: not needed for the demo's question. Checksums: deferred until memory faults exist.
 
-**Limitations.** A fault that hits both cores of one computer identically cannot occur in this model, because each core has its own operations; real designs offset the two cores in time for that case. The six copies make the flight software do about six times the work per tick, which also gives random faults six times as many targets.
+**Limitations.** A fault that hits both cores of one computer identically cannot occur in this model, because each core has its own operations; real designs offset the two cores in time for that case. The voter is a single point of failure the campaign does not measure; faulting integer and compare instructions (future work) would make it measurable. The six copies make the flight software do about six times the work per tick, which also gives random faults six times as many targets.
 
-**Impact.** `workloads/moon/common/interface.hpp`, `workloads/moon/fsw/`, `workloads/moon/sim/main.cpp`, the `tools/instrument.sh` invocation (`--keep fsw_configure`), `docs/architecture.md` section 16.
+**Impact.** `workloads/moon/common/interface.hpp`, `workloads/moon/fsw/`, `workloads/moon/sim/main.cpp`, `tools/instrument.sh` (`--replicate`, `--keep fsw_configure`), `docs/architecture.md` section 16.
 
 **Follow-up.** Multi-fault campaigns would show the hybrid surviving two broken computers.
 
@@ -434,7 +434,7 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Decision.** The moon flight software uses its own pinned flag set, `-O0 -gline-tables-only -ffp-contract=off`, selected with `tools/instrument.sh --profile o0`. The TMR and lockstep hybrid (ADR-0008) is written as plain code in the flight software. All other workloads keep the ADR-0002 flags.
 
-**Why.** At -O0 each copy stays a separate call, so a fault inside one copy spreads through its operations before the comparison. The comparisons use instructions the pass does not instrument, so they are never faulted; that matches ADR-0008's protected voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
+**Why.** At -O0 each copy stays a separate call, so a fault inside one copy spreads through its operations before the comparison. The comparisons are integer comparisons, which the fault model does not cover, so the campaign never faults them; ADR-0008 assumes a reliable voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
 
 **Evidence.** Three `guidance()` replicas plus `vote()`, built with Homebrew clang 23.1.4. At -O2: one copy of the arithmetic (`fmul`, `fmul`, `fmul`, `fsub`, `ret`) and no voter. At -O0: three `call @guidance` and one `call @vote`.
 

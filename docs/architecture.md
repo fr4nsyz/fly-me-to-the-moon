@@ -466,7 +466,7 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 - Memory faults (corrupting stored values, not computed results), with checksums as the matching defense
 - Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening
 - Visualization of value propagation (data-flow graph extracted from the two traces)
-- Support for integer arithmetic or mixed-precision codes
+- Support for integer arithmetic or mixed-precision codes; faulting integer and compare instructions would also make the voter faultable
 - Replication that survives -O2 (compiler barriers, separate TUs, or `optnone` replicas); see ADR-0017
 - Attitude dynamics in the moon plant
 - Full Earth-to-Moon mission (ascent, translunar injection, coast, lunar orbit insertion) in an Earth-centered frame with a Moon ephemeris
@@ -571,8 +571,8 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 - **Lockstep inside a computer:** the two cores are compared bit for bit; a computer whose cores disagree goes silent for that tick.
 - **TMR across computers:** the remaining computers' commands are compared. Three: majority. Two that agree: use it. Two that disagree: the computer with the longer record of agreement. One: use it.
 - **Resync:** after each tick, every computer's phase memory is set to the chosen computer's.
-- **Separate cores:** each core is its own template instantiation with its own operations, so a persistent fault breaks one core.
-- **Protected voter:** the comparisons are not instrumented, so they are never faulted. The flight software is built at -O0 so the copies and comparisons survive (ADR-0017).
+- **Separate cores:** the build makes each core a separate, internalized copy of the same flight software (`instrument.sh --replicate`), so each has its own operations and a persistent fault breaks one core. The source stays plain C++.
+- **Voter assumed reliable:** it compares integer bit patterns, which the floating-point fault model does not cover, so the campaign never faults it. It is a single point of failure the campaign does not measure. The flight software is built at -O0 so the copies and comparisons survive (ADR-0017).
 - **Reporting:** the flight software returns a status flag; the simulation reports a silenced or outvoted computer as CORRECTED.
 
 ## 17. Instrumentation Scope (ADR-0009)
