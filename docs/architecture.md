@@ -92,58 +92,45 @@ The 3D viewer is a read-only consumer: it renders `trajectory.json` and annotate
 
 ---
 
-## 5. Recommended Repository Layout
+## 5. Repository Layout
 
 ```
-sdc-investigator/
+fly-me-to-the-moon/
 ├── CMakeLists.txt
 ├── README.md
-├── .gitignore
+├── STATE.md                      # Current state and next move
+├── AGENTS.md                     # Instructions for coding agents
 ├── include/sdc/                  # Shared contracts (header-only)
 │   ├── event.hpp
 │   ├── exit_record.hpp
 │   ├── injection.hpp
 │   └── types.hpp
 ├── src/
-│   ├── instrumentation/          # LLVM IR pass
-│   │   ├── SDCInstrument.cpp
-│   │   └── CMakeLists.txt
-│   ├── runtime/                  # Linked into instrumented binary
-│   │   ├── witness.cpp
-│   │   ├── recorder.cpp
-│   │   └── CMakeLists.txt
-│   ├── core/                     # Trace I/O
-│   │   ├── trace_writer.cpp
-│   │   ├── trace_reader.cpp
-│   │   └── CMakeLists.txt
-│   └── analyzer/                 # Stand-alone CLI
-│       ├── main.cpp
-│       ├── align.cpp
-│       ├── classify.cpp
-│       ├── audit.cpp
-│       └── CMakeLists.txt
+│   ├── instrumentation/          # LLVM IR pass: SDCInstrument.cpp
+│   ├── runtime/                  # Hooks, injection, trace recording: runtime.cpp
+│   ├── core/                     # Trace I/O, op kinds, JSON
+│   └── analyzer/                 # sdc-analyze: align, audit, classify, evidence, ops_map
 ├── tools/
-│   ├── instrument.sh             # Convenience wrapper around clang + opt
+│   ├── instrument.sh             # Build an instrumented binary (canonical or o0 profile)
 │   ├── trace_dump.py             # Pretty-print a binary trace
-│   └── study/                    # Experiment drivers (Python)
-│       ├── sweep.py
-│       ├── defenses.py
-│       ├── overhead.py
-│       └── report.py
+│   ├── sdctrace.py               # Python trace reader
+│   └── study/                    # Experiment drivers: sweep.py, report.py, overhead.py
 ├── workloads/
-│   ├── reductions/
-│   ├── solvers/
-│   └── moon/                     # Plant + instrumented FSW with the TMR and lockstep hybrid
-│       ├── plant/                # Hand-rolled dynamics, not instrumented
-│       └── fsw/                  # Instrumented flight software
+│   ├── reductions/               # sum.cpp, sum_plain.cpp
+│   └── moon/
+│       ├── common/               # Shared headers: vec3, constants, lander, interface
+│       ├── plant/                # Dynamics, RK4, landing judge (not instrumented)
+│       ├── fsw/                  # Navigation and guidance (instrumented)
+│       └── sim/                  # Simulation loop: main.cpp (not instrumented)
+├── results/                      # Committed sweep reports, summaries, and evidence
 ├── docs/
 │   ├── architecture.md           # This document (living spec)
 │   ├── architecture-v1.md        # Frozen original blueprint
 │   ├── trace-format.md           # Normative SDCTRACE binary spec
-│   └── audit-log.md              # Append-only architectural change log
+│   ├── audit-log.md              # Architectural decisions, revised in place
+│   └── math/                     # LaTeX math reference for the lunar descent
 └── tests/
-    ├── unit/
-    └── integration/
+    └── unit/                     # GoogleTest unit tests
 ```
 
 ---
