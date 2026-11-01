@@ -143,4 +143,35 @@ $\tau = g\,m/F_{\max}$, the hover throttle.
 limits, and both gains are starting values, to be tuned against the first full landing.
 Code: \texttt{fsw/guidance.cpp}. Tests: \texttt{test\_guidance.cpp}.
 
+\section{Simulation and landing judge}
+\paragraph{Start.} Circular equatorial prograde orbit at $h_0 = 15$ km:
+$\mathbf{r}_0 = (R_M + h_0, 0, 0)$, $\mathbf{v}_0 = (0, \sqrt{\mu_M / (R_M + h_0)}, 0)$,
+$m_0 = 15\,200$ kg. The flight software and the plant step together at $\Delta t = 0.1$ s,
+for at most 3600 s.
+
+\paragraph{Independence.} The judge computes altitude and ground-relative velocity with
+the same formulas as navigation, in uninstrumented plant code. If it reused the flight
+software's navigation, a fault there would corrupt the judge as well.
+
+\paragraph{Touchdown.} When altitude changes sign within a step, from $h_a > 0$ to
+$h_b \le 0$, the crossing fraction is $f = h_a / (h_a - h_b)$, and touchdown speeds,
+time, and position are interpolated linearly at $f$.
+
+\paragraph{Ground-fixed spot.} With $\alpha = -\omega_M t$, the touchdown point is rotated
+back to the ground's orientation at $t = 0$:
+\begin{equation}
+\mathbf{s} = \begin{pmatrix}\cos\alpha & -\sin\alpha & 0\\ \sin\alpha & \cos\alpha & 0\\ 0&0&1\end{pmatrix}\mathbf{r}
+\end{equation}
+so two runs landing on the same ground spot at different times give the same $\mathbf{s}$.
+
+\paragraph{Score.} With descent speed $v$, horizontal speed $w$, and distance $d$ from the
+clean run's spot (zero for the clean run itself):
+\begin{equation}
+v_{\lim}(w) = 3.05 - (3.05 - 2.13)\frac{w}{1.22}, \qquad
+S = \max\left(\frac{v}{v_{\lim}(w)},\ \frac{w}{1.22},\ \frac{d}{1000}\right)
+\end{equation}
+in m/s and m (ADR-0020). $S \le 1$ passes. No touchdown within the time limit gives
+$S = \infty$. The plant reports $S$ as the run's final result.
+Code: \texttt{plant/judge.cpp}, \texttt{sim/main.cpp}. Tests: \texttt{test\_judge.cpp}.
+
 \end{document}
