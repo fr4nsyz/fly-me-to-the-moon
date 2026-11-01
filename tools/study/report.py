@@ -15,7 +15,7 @@ import json
 import os
 import sys
 
-CLASSES = ("CRASH", "CORRECTED", "DETECTED", "SDC", "MASKED", "INCONCLUSIVE")
+CLASSES = ("CRASH", "HANG", "CORRECTED", "DETECTED", "SDC", "MASKED", "INCONCLUSIVE")
 
 
 def load(summary_dir):

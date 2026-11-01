@@ -19,6 +19,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -27,18 +28,23 @@ import sdctrace  # noqa: E402
 
 ANALYZER = os.path.join("build", "src", "analyzer", "sdc-analyze")
 
-CLASSES = ("CRASH", "CORRECTED", "DETECTED", "SDC", "MASKED", "INCONCLUSIVE")
+CLASSES = ("CRASH", "HANG", "CORRECTED", "DETECTED", "SDC", "MASKED", "INCONCLUSIVE")
 
 
-def run_workload(binary, env_extra, args):
+def run_workload(binary, env_extra, args, timeout=None):
+    """Run the workload; returns the CompletedProcess, or None if it timed out and was killed."""
     env = dict(os.environ)
     env.update(env_extra)
-    return subprocess.run(
-        [binary] + list(args),
-        env=env,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        return subprocess.run(
+            [binary] + list(args),
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return None
 
 
 def build_plan(trace_path, out_path):
@@ -61,18 +67,17 @@ def build_plan(trace_path, out_path):
     return counts
 
 
-def classify(clean_trace, injected_trace, ops_path, evidence_path):
-    result = subprocess.run(
-        [
-            ANALYZER,
-            "--clean", clean_trace,
-            "--injected", injected_trace,
-            "--ops", ops_path,
-            "--out", evidence_path,
-        ],
-        capture_output=True,
-        text=True,
-    )
+def classify(clean_trace, injected_trace, ops_path, evidence_path, timed_out=False):
+    command = [
+        ANALYZER,
+        "--clean", clean_trace,
+        "--injected", injected_trace,
+        "--ops", ops_path,
+        "--out", evidence_path,
+    ]
+    if timed_out:
+        command.append("--timed-out")
+    result = subprocess.run(command, capture_output=True, text=True)
     if result.returncode != 0:
         raise SystemExit(
             f"analyzer failed on {injected_trace}: {result.stderr.strip()}"
@@ -88,6 +93,7 @@ def run_campaign(args):
     plan_path = os.path.join(args.out, "inject_plan.txt")
 
     print(f"[sweep] clean run -> {clean_trace}")
+    clean_start = time.monotonic()
     clean_result = run_workload(
         args.binary,
         {
@@ -100,6 +106,9 @@ def run_campaign(args):
     )
     if clean_result.returncode != 0:
         raise SystemExit(f"clean run failed: {clean_result.stderr.strip()}")
+    clean_seconds = time.monotonic() - clean_start
+    timeout = max(args.timeout_floor, args.timeout_factor * clean_seconds)
+    print(f"[sweep] clean run took {clean_seconds:.2f} s; per-trial timeout {timeout:.1f} s")
 
     counts = build_plan(clean_trace, plan_path)
     total_sites = sum(counts.values())
@@ -133,7 +142,14 @@ def run_campaign(args):
                 "SDC_COMPILER_FLAGS": args.compiler_flags,
             },
             args.workload_args,
+            timeout=timeout,
         )
+        timed_out = result is None
+
+        if timed_out and not os.path.exists(trial_trace):
+            records.append({"trial": trial, "seed": seed, "classification": "HANG"})
+            print(f"[sweep] trial {trial:4d}  HANG (no trace)")
+            continue
 
         if not os.path.exists(trial_trace):
             records.append({
@@ -145,7 +161,7 @@ def run_campaign(args):
             print(f"[sweep] trial {trial:4d}  CRASH (no trace)")
             continue
 
-        evidence = classify(clean_trace, trial_trace, args.ops, evidence_path)
+        evidence = classify(clean_trace, trial_trace, args.ops, evidence_path, timed_out)
         injected = sdctrace.read(trial_trace)
 
         site = injected.metadata.get("inject", {})
@@ -311,6 +327,18 @@ def main():
     parser.add_argument("--build-id", default="unknown")
     parser.add_argument("--compiler-flags", default="unknown")
     parser.add_argument("--bit-range", default="0-63")
+    parser.add_argument(
+        "--timeout-factor",
+        type=float,
+        default=10.0,
+        help="per-trial timeout as a multiple of the clean run's wall time",
+    )
+    parser.add_argument(
+        "--timeout-floor",
+        type=float,
+        default=10.0,
+        help="minimum per-trial timeout in seconds",
+    )
     parser.add_argument(
         "--keep-traces",
         action="store_true",

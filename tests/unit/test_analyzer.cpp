@@ -152,8 +152,17 @@ TEST(Classify, Precedence) {
     EXPECT_EQ(classify(vi).classification, Classification::INCONCLUSIVE);
 }
 
+TEST(Classify, TimedOutRunIsHangEvenWithoutExitRecord) {
+    VerdictInput vi;
+    vi.clean_has_exit = true;
+    vi.injected_has_exit = false;
+    vi.timed_out = true;
+    EXPECT_EQ(classify(vi).classification, Classification::HANG);
+}
+
 TEST(Classify, Names) {
     EXPECT_EQ(std::string(classification_name(Classification::CRASH)), "CRASH");
+    EXPECT_EQ(std::string(classification_name(Classification::HANG)), "HANG");
     EXPECT_EQ(std::string(classification_name(Classification::CORRECTED)), "CORRECTED");
     EXPECT_EQ(std::string(classification_name(Classification::DETECTED)), "DETECTED");
     EXPECT_EQ(std::string(classification_name(Classification::SDC)), "SDC");
