@@ -22,6 +22,7 @@ AuditResult audit_event(const Event& event, OpKind kind) {
             if (rhs == 0.0) return result;
             recomputed = lhs / rhs;
             break;
+        case OpKind::FSqrt: recomputed = std::sqrt(lhs); break;
         default:
             return result;
     }

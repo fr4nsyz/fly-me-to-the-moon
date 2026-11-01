@@ -102,6 +102,15 @@ TEST(Audit, DetectsCorruption) {
     EXPECT_FALSE(corrupted.consistent);
 }
 
+TEST(Audit, SqrtRecomputesExactly) {
+    Event good = make_event(1, 1, 0x4010000000000000ULL, 0, 0x4000000000000000ULL); // sqrt(4) = 2
+    EXPECT_TRUE(audit_event(good, OpKind::FSqrt).consistent);
+
+    Event bad = good;
+    bad.result_bits ^= 1ULL;
+    EXPECT_FALSE(audit_event(bad, OpKind::FSqrt).consistent);
+}
+
 TEST(Classify, Precedence) {
     VerdictInput vi;
     vi.evidence_sufficient = true;
