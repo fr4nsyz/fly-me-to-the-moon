@@ -75,16 +75,17 @@ if [[ -z "$WORKLOAD_NAME" ]]; then
   WORKLOAD_NAME="$(basename "${INSTRUMENT[0]}" .cpp)"
 fi
 
+mkdir -p "$(dirname "$OUT")"
 OUT_DIR="$(cd "$(dirname "$OUT")" && pwd)"
 OUT_ABS="$OUT_DIR/$(basename "$OUT")"
 BUILD_DIR="$OUT_DIR/.sdc-instrument"
-mkdir -p "$OUT_DIR"
 rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 
 BC="$BUILD_DIR/workload.bc"
 INST_BC="$BUILD_DIR/workload.instrumented.bc"
-PLUGIN="$HERE/build/src/instrumentation/SDCInstrument.dylib"
+case "$(uname)" in Darwin) PLUGIN_EXT=dylib ;; *) PLUGIN_EXT=so ;; esac
+PLUGIN="$HERE/build/src/instrumentation/SDCInstrument.$PLUGIN_EXT"
 
 BCS=()
 for i in "${!INSTRUMENT[@]}"; do

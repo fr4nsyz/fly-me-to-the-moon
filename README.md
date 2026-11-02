@@ -1,6 +1,10 @@
 # SDC Investigator
 
-An offline, deterministic platform for studying silent data corruption (SDC) in numerical C++ programs, demonstrated on a lunar landing computer.
+Flip one bit in one floating-point result inside a compiled C++ program, then trace bit for bit whether the damage is masked, caught by a defense, or silently changes the answer.
+
+![A single persistent bit flip silently crashes the lander](docs/img/viewer_sdc.gif)
+
+On a lunar landing computer, one persistent bit flip in the flight software silently ruins the landing in 28 of 200 trials. A TMR and lockstep flight-computer design, modeled on real rocket avionics, brings that to 0 of 200.
 
 An LLVM IR pass rewrites every double-precision add, subtract, multiply, divide, and square root into a runtime hook. The runtime records each operation in a bit-exact binary trace and can flip one bit of one result, either once (transient) or on every later execution of that operation (persistent, like a defective core). The analyzer compares a clean run against an injected run and classifies the outcome as MASKED, SDC, DETECTED, CORRECTED, CRASH, HANG, or INCONCLUSIVE, with an evidence package that cites the events behind the verdict.
 
@@ -51,9 +55,7 @@ The undefended run's speeds: the fault takes over during braking at t = 261 s, a
 
 The interactive viewer (see [View a run](#view-a-run)) replaying three outcomes from t = 240 s: clean in blue, faulty in orange, rows flagged where the two runs differ.
 
-SDC, no defense (trial 35): the fault becomes visible at 261 s and the lander strikes the surface at 113.5 m/s.
-
-![SDC replay](docs/img/viewer_sdc.gif)
+SDC, no defense (trial 35), the replay at the top of this page: the fault becomes visible at 261 s and the lander strikes the surface at 113.5 m/s.
 
 MASKED, no defense (trial 0): the fault never changes the trajectory and the lander touches down like the clean run.
 
@@ -75,7 +77,7 @@ ninja -C build
 ctest --test-dir build
 ```
 
-`-DSDC_BUILD_TESTS=OFF` builds without GoogleTest.
+`-DSDC_BUILD_TESTS=OFF` builds without GoogleTest. On Linux, `.github/workflows/ci.yml` shows the setup with LLVM 23 from apt.llvm.org; set `LLVM_ROOT=/usr/lib/llvm-23` for `tools/instrument.sh`.
 
 ## Run the lander
 
