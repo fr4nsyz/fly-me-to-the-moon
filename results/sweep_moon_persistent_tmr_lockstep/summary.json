@@ -1,7 +1,7 @@
 {
   "workload": "moon",
-  "build_id": "cdcd5b5e96ffe4c3",
-  "compiler_flags": "-O0 -gline-tables-only -ffp-contract=off",
+  "build_id": "0d9644643b9e30ef",
+  "compiler_flags": "-O2 -gline-tables-only -ffp-contract=off -fno-vectorize -fno-slp-vectorize",
   "seed": 1337,
   "persistent": true,
   "workload_args": [
@@ -13,55 +13,64 @@
   "classifications": {
     "CRASH": 0,
     "HANG": 0,
-    "CORRECTED": 199,
+    "CORRECTED": 170,
     "DETECTED": 0,
     "SDC": 0,
-    "MASKED": 1,
+    "MASKED": 30,
     "INCONCLUSIVE": 0
   },
   "by_bit_region": {
     "exponent": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 35,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "mantissa-high": {
-      "CRASH": 0,
-      "HANG": 0,
       "CORRECTED": 34,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "mantissa-low": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 127,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 1,
       "INCONCLUSIVE": 0
     },
+    "mantissa-high": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 26,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 8,
+      "INCONCLUSIVE": 0
+    },
+    "mantissa-low": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 108,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 20,
+      "INCONCLUSIVE": 0
+    },
     "sign": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 2,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 0,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     }
   },
   "by_op_id": {
-    "1": {
+    "2": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "4": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -70,43 +79,34 @@
     "6": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "7": {
+    "9": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "12": {
+    "11": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "13": {
+    "17": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "18": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -115,7 +115,16 @@
     "19": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "22": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -130,115 +139,7 @@
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "25": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "31": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "37": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "43": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "49": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "50": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "55": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "56": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "61": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "62": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "67": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "68": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "73": {
+    "26": {
       "CRASH": 0,
       "HANG": 0,
       "CORRECTED": 1,
@@ -247,28 +148,217 @@
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "74": {
+    "29": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "31": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "80": {
+    "36": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "38": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "86": {
+    "41": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "43": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "45": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "49": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "51": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "53": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "56": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "58": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "61": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "63": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "65": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "68": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "70": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "75": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "77": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "81": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "83": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "85": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "88": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "90": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -277,25 +367,43 @@
     "92": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "98": {
+    "95": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "99": {
+    "97": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "100": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "102": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -304,43 +412,34 @@
     "104": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "105": {
+    "107": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "110": {
+    "109": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "111": {
+    "115": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "116": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -349,10 +448,19 @@
     "117": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "120": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     },
     "122": {
@@ -364,115 +472,25 @@
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "123": {
+    "124": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "129": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "135": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "141": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "147": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "148": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "153": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "154": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "159": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "160": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 1,
       "INCONCLUSIVE": 0
     },
-    "165": {
+    "127": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 0,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     },
-    "166": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "171": {
+    "129": {
       "CRASH": 0,
       "HANG": 0,
       "CORRECTED": 1,
@@ -481,28 +499,190 @@
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "172": {
+    "131": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "134": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "178": {
+    "136": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "184": {
+    "139": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "141": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "143": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "147": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "149": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "151": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "154": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "156": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "161": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "163": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "166": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "168": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "170": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "173": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "175": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "181": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "186": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "188": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -511,25 +691,34 @@
     "190": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "196": {
+    "193": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "197": {
+    "195": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "200": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -538,25 +727,25 @@
     "202": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "203": {
+    "205": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 0,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     },
-    "208": {
+    "207": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -565,25 +754,7 @@
     "209": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "214": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "215": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -598,115 +769,16 @@
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "221": {
+    "222": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 0,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     },
-    "227": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "233": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "239": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "245": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "246": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "251": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "252": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "257": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "258": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "263": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 2,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "264": {
-      "CRASH": 0,
-      "HANG": 0,
-      "CORRECTED": 3,
-      "DETECTED": 0,
-      "SDC": 0,
-      "MASKED": 0,
-      "INCONCLUSIVE": 0
-    },
-    "269": {
+    "225": {
       "CRASH": 0,
       "HANG": 0,
       "CORRECTED": 1,
@@ -715,46 +787,1072 @@
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "270": {
+    "227": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "276": {
+    "229": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "282": {
+    "232": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 2,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "234": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "239": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "241": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "252": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "254": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "256": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "259": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "261": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "264": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "266": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "268": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "271": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "273": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "280": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "284": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "286": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     },
     "288": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
       "INCONCLUSIVE": 0
     },
-    "294": {
+    "291": {
       "CRASH": 0,
       "HANG": 0,
-      "CORRECTED": 3,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "293": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "295": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "298": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "300": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "303": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "305": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "307": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "310": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "312": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "318": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "320": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "323": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "325": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "327": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "330": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "332": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "334": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "337": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "339": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "342": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "344": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "346": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "350": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "352": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "354": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "357": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "359": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "364": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "366": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "369": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "371": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "373": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "376": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "378": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "384": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "386": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "389": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "391": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "393": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "396": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "398": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "403": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "405": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "408": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "410": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "412": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "416": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "418": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "420": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "423": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "425": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "428": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "430": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "432": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "435": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "437": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "442": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "444": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "448": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "450": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "455": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "457": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "459": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "462": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "464": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "467": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "469": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "471": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "474": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "476": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "487": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "489": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "491": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "494": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "496": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "498": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "501": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "503": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "506": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "508": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "510": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "521": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "523": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "528": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "530": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "533": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "535": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "537": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "540": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "542": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "549": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "553": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "555": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "557": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "560": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "562": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "567": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 0,
+      "INCONCLUSIVE": 0
+    },
+    "569": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 1,
       "DETECTED": 0,
       "SDC": 0,
       "MASKED": 0,
@@ -766,7 +1864,7 @@
       "trial": 0,
       "seed": 1337,
       "classification": "CORRECTED",
-      "op_id": 246,
+      "op_id": 420,
       "occurrence": 3053,
       "bit": 3,
       "reasons": [
@@ -780,8 +1878,8 @@
       "trial": 1,
       "seed": 9256,
       "classification": "CORRECTED",
-      "op_id": 197,
-      "occurrence": 3782,
+      "op_id": 53,
+      "occurrence": 1264,
       "bit": 57,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -794,8 +1892,8 @@
       "trial": 2,
       "seed": 17175,
       "classification": "CORRECTED",
-      "op_id": 148,
-      "occurrence": 4511,
+      "op_id": 256,
+      "occurrence": 2762,
       "bit": 48,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -808,8 +1906,8 @@
       "trial": 3,
       "seed": 25094,
       "classification": "CORRECTED",
-      "op_id": 99,
-      "occurrence": 2637,
+      "op_id": 459,
+      "occurrence": 534,
       "bit": 39,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -822,8 +1920,8 @@
       "trial": 4,
       "seed": 33013,
       "classification": "CORRECTED",
-      "op_id": 50,
-      "occurrence": 3366,
+      "op_id": 92,
+      "occurrence": 617,
       "bit": 29,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -836,7 +1934,7 @@
       "trial": 5,
       "seed": 40932,
       "classification": "CORRECTED",
-      "op_id": 1,
+      "op_id": 295,
       "occurrence": 4095,
       "bit": 20,
       "reasons": [
@@ -850,7 +1948,7 @@
       "trial": 6,
       "seed": 48851,
       "classification": "CORRECTED",
-      "op_id": 246,
+      "op_id": 498,
       "occurrence": 2221,
       "bit": 11,
       "reasons": [
@@ -863,13 +1961,13 @@
     {
       "trial": 7,
       "seed": 56770,
-      "classification": "CORRECTED",
-      "op_id": 197,
+      "classification": "MASKED",
+      "op_id": 131,
       "occurrence": 2950,
       "bit": 1,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -878,8 +1976,8 @@
       "trial": 8,
       "seed": 64689,
       "classification": "CORRECTED",
-      "op_id": 148,
-      "occurrence": 3679,
+      "op_id": 334,
+      "occurrence": 3975,
       "bit": 56,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -892,8 +1990,8 @@
       "trial": 9,
       "seed": 72608,
       "classification": "CORRECTED",
-      "op_id": 99,
-      "occurrence": 1805,
+      "op_id": 537,
+      "occurrence": 3769,
       "bit": 46,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -906,8 +2004,8 @@
       "trial": 10,
       "seed": 80527,
       "classification": "CORRECTED",
-      "op_id": 50,
-      "occurrence": 2534,
+      "op_id": 170,
+      "occurrence": 605,
       "bit": 37,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -920,8 +2018,8 @@
       "trial": 11,
       "seed": 88446,
       "classification": "CORRECTED",
-      "op_id": 1,
-      "occurrence": 660,
+      "op_id": 373,
+      "occurrence": 433,
       "bit": 28,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -934,7 +2032,7 @@
       "trial": 12,
       "seed": 96365,
       "classification": "CORRECTED",
-      "op_id": 246,
+      "op_id": 6,
       "occurrence": 1389,
       "bit": 18,
       "reasons": [
@@ -948,7 +2046,7 @@
       "trial": 13,
       "seed": 104284,
       "classification": "CORRECTED",
-      "op_id": 197,
+      "op_id": 209,
       "occurrence": 2118,
       "bit": 9,
       "reasons": [
@@ -961,13 +2059,13 @@
     {
       "trial": 14,
       "seed": 112203,
-      "classification": "CORRECTED",
-      "op_id": 148,
+      "classification": "MASKED",
+      "op_id": 412,
       "occurrence": 244,
       "bit": 0,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -976,7 +2074,7 @@
       "trial": 15,
       "seed": 120122,
       "classification": "CORRECTED",
-      "op_id": 99,
+      "op_id": 45,
       "occurrence": 973,
       "bit": 54,
       "reasons": [
@@ -990,7 +2088,7 @@
       "trial": 16,
       "seed": 128041,
       "classification": "CORRECTED",
-      "op_id": 7,
+      "op_id": 151,
       "occurrence": 2113,
       "bit": 45,
       "reasons": [
@@ -1004,7 +2102,7 @@
       "trial": 17,
       "seed": 135960,
       "classification": "CORRECTED",
-      "op_id": 252,
+      "op_id": 354,
       "occurrence": 1907,
       "bit": 36,
       "reasons": [
@@ -1018,8 +2116,8 @@
       "trial": 18,
       "seed": 143879,
       "classification": "CORRECTED",
-      "op_id": 203,
-      "occurrence": 3405,
+      "op_id": 557,
+      "occurrence": 504,
       "bit": 26,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1032,8 +2130,8 @@
       "trial": 19,
       "seed": 151798,
       "classification": "CORRECTED",
-      "op_id": 154,
-      "occurrence": 536,
+      "op_id": 190,
+      "occurrence": 587,
       "bit": 17,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1046,8 +2144,8 @@
       "trial": 20,
       "seed": 159717,
       "classification": "CORRECTED",
-      "op_id": 105,
-      "occurrence": 330,
+      "op_id": 393,
+      "occurrence": 4690,
       "bit": 8,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1060,8 +2158,8 @@
       "trial": 21,
       "seed": 167636,
       "classification": "CORRECTED",
-      "op_id": 56,
-      "occurrence": 1828,
+      "op_id": 26,
+      "occurrence": 141,
       "bit": 62,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1074,8 +2172,8 @@
       "trial": 22,
       "seed": 175555,
       "classification": "CORRECTED",
-      "op_id": 7,
-      "occurrence": 3326,
+      "op_id": 229,
+      "occurrence": 870,
       "bit": 53,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1088,7 +2186,7 @@
       "trial": 23,
       "seed": 183474,
       "classification": "CORRECTED",
-      "op_id": 252,
+      "op_id": 432,
       "occurrence": 3120,
       "bit": 43,
       "reasons": [
@@ -1102,7 +2200,7 @@
       "trial": 24,
       "seed": 191393,
       "classification": "CORRECTED",
-      "op_id": 203,
+      "op_id": 65,
       "occurrence": 251,
       "bit": 34,
       "reasons": [
@@ -1116,8 +2214,8 @@
       "trial": 25,
       "seed": 199312,
       "classification": "CORRECTED",
-      "op_id": 154,
-      "occurrence": 1749,
+      "op_id": 268,
+      "occurrence": 575,
       "bit": 25,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1129,13 +2227,13 @@
     {
       "trial": 26,
       "seed": 207231,
-      "classification": "CORRECTED",
-      "op_id": 105,
-      "occurrence": 1543,
+      "classification": "MASKED",
+      "op_id": 471,
+      "occurrence": 403,
       "bit": 15,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1144,8 +2242,8 @@
       "trial": 27,
       "seed": 215150,
       "classification": "CORRECTED",
-      "op_id": 56,
-      "occurrence": 3041,
+      "op_id": 104,
+      "occurrence": 4587,
       "bit": 6,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1158,8 +2256,8 @@
       "trial": 28,
       "seed": 223069,
       "classification": "CORRECTED",
-      "op_id": 7,
-      "occurrence": 172,
+      "op_id": 307,
+      "occurrence": 38,
       "bit": 61,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1172,8 +2270,8 @@
       "trial": 29,
       "seed": 230988,
       "classification": "CORRECTED",
-      "op_id": 252,
-      "occurrence": 4333,
+      "op_id": 510,
+      "occurrence": 3442,
       "bit": 51,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1186,7 +2284,7 @@
       "trial": 30,
       "seed": 238907,
       "classification": "CORRECTED",
-      "op_id": 203,
+      "op_id": 143,
       "occurrence": 1464,
       "bit": 42,
       "reasons": [
@@ -1200,7 +2298,7 @@
       "trial": 31,
       "seed": 246826,
       "classification": "CORRECTED",
-      "op_id": 154,
+      "op_id": 346,
       "occurrence": 1258,
       "bit": 33,
       "reasons": [
@@ -1214,8 +2312,8 @@
       "trial": 32,
       "seed": 254745,
       "classification": "CORRECTED",
-      "op_id": 105,
-      "occurrence": 2756,
+      "op_id": 549,
+      "occurrence": 391,
       "bit": 23,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1227,13 +2325,13 @@
     {
       "trial": 33,
       "seed": 262664,
-      "classification": "CORRECTED",
-      "op_id": 13,
-      "occurrence": 4254,
+      "classification": "MASKED",
+      "op_id": 85,
+      "occurrence": 474,
       "bit": 14,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1242,8 +2340,8 @@
       "trial": 34,
       "seed": 270583,
       "classification": "CORRECTED",
-      "op_id": 258,
-      "occurrence": 4048,
+      "op_id": 288,
+      "occurrence": 1881,
       "bit": 4,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1256,8 +2354,8 @@
       "trial": 35,
       "seed": 278502,
       "classification": "CORRECTED",
-      "op_id": 209,
-      "occurrence": 1179,
+      "op_id": 491,
+      "occurrence": 2610,
       "bit": 59,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1269,13 +2367,13 @@
     {
       "trial": 36,
       "seed": 286421,
-      "classification": "CORRECTED",
-      "op_id": 160,
-      "occurrence": 2677,
+      "classification": "MASKED",
+      "op_id": 124,
+      "occurrence": 3339,
       "bit": 50,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1284,8 +2382,8 @@
       "trial": 37,
       "seed": 294340,
       "classification": "CORRECTED",
-      "op_id": 111,
-      "occurrence": 2471,
+      "op_id": 327,
+      "occurrence": 1465,
       "bit": 40,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1298,7 +2396,7 @@
       "trial": 38,
       "seed": 302259,
       "classification": "CORRECTED",
-      "op_id": 62,
+      "op_id": 530,
       "occurrence": 3969,
       "bit": 31,
       "reasons": [
@@ -1312,7 +2410,7 @@
       "trial": 39,
       "seed": 310178,
       "classification": "CORRECTED",
-      "op_id": 13,
+      "op_id": 163,
       "occurrence": 1100,
       "bit": 22,
       "reasons": [
@@ -1326,8 +2424,8 @@
       "trial": 40,
       "seed": 318097,
       "classification": "CORRECTED",
-      "op_id": 258,
-      "occurrence": 894,
+      "op_id": 366,
+      "occurrence": 290,
       "bit": 12,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1340,8 +2438,8 @@
       "trial": 41,
       "seed": 326016,
       "classification": "CORRECTED",
-      "op_id": 209,
-      "occurrence": 2392,
+      "op_id": 569,
+      "occurrence": 373,
       "bit": 3,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1354,8 +2452,8 @@
       "trial": 42,
       "seed": 333935,
       "classification": "CORRECTED",
-      "op_id": 160,
-      "occurrence": 3890,
+      "op_id": 202,
+      "occurrence": 2507,
       "bit": 58,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1367,13 +2465,13 @@
     {
       "trial": 43,
       "seed": 341854,
-      "classification": "CORRECTED",
-      "op_id": 111,
-      "occurrence": 3684,
+      "classification": "MASKED",
+      "op_id": 405,
+      "occurrence": 633,
       "bit": 48,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1382,8 +2480,8 @@
       "trial": 44,
       "seed": 349773,
       "classification": "CORRECTED",
-      "op_id": 62,
-      "occurrence": 815,
+      "op_id": 38,
+      "occurrence": 1362,
       "bit": 39,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1396,7 +2494,7 @@
       "trial": 45,
       "seed": 357692,
       "classification": "CORRECTED",
-      "op_id": 13,
+      "op_id": 241,
       "occurrence": 2313,
       "bit": 29,
       "reasons": [
@@ -1410,7 +2508,7 @@
       "trial": 46,
       "seed": 365611,
       "classification": "CORRECTED",
-      "op_id": 258,
+      "op_id": 444,
       "occurrence": 2107,
       "bit": 20,
       "reasons": [
@@ -1424,8 +2522,8 @@
       "trial": 47,
       "seed": 373530,
       "classification": "CORRECTED",
-      "op_id": 209,
-      "occurrence": 3605,
+      "op_id": 77,
+      "occurrence": 361,
       "bit": 11,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1437,13 +2535,13 @@
     {
       "trial": 48,
       "seed": 381449,
-      "classification": "MASKED",
-      "op_id": 160,
-      "occurrence": 3399,
+      "classification": "CORRECTED",
+      "op_id": 280,
+      "occurrence": 189,
       "bit": 1,
       "reasons": [
-        "the final result stayed inside the acceptance criterion",
-        "a divergence occurred but was absorbed before the final result"
+        "a redundancy mechanism repaired the fault and the final result is within tolerance",
+        "the corrupted intermediate was observed in the trace before repair"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1452,8 +2550,8 @@
       "trial": 49,
       "seed": 389368,
       "classification": "CORRECTED",
-      "op_id": 68,
-      "occurrence": 530,
+      "op_id": 386,
+      "occurrence": 5079,
       "bit": 56,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1467,7 +2565,7 @@
       "seed": 397287,
       "classification": "CORRECTED",
       "op_id": 19,
-      "occurrence": 2028,
+      "occurrence": 530,
       "bit": 47,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1479,13 +2577,13 @@
     {
       "trial": 51,
       "seed": 405206,
-      "classification": "CORRECTED",
-      "op_id": 264,
-      "occurrence": 1822,
+      "classification": "MASKED",
+      "op_id": 222,
+      "occurrence": 3934,
       "bit": 37,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1494,8 +2592,8 @@
       "trial": 52,
       "seed": 413125,
       "classification": "CORRECTED",
-      "op_id": 215,
-      "occurrence": 3320,
+      "op_id": 425,
+      "occurrence": 4663,
       "bit": 28,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1508,7 +2606,7 @@
       "trial": 53,
       "seed": 421044,
       "classification": "CORRECTED",
-      "op_id": 166,
+      "op_id": 58,
       "occurrence": 451,
       "bit": 19,
       "reasons": [
@@ -1522,8 +2620,8 @@
       "trial": 54,
       "seed": 428963,
       "classification": "CORRECTED",
-      "op_id": 117,
-      "occurrence": 245,
+      "op_id": 261,
+      "occurrence": 177,
       "bit": 9,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1535,13 +2633,13 @@
     {
       "trial": 55,
       "seed": 436882,
-      "classification": "CORRECTED",
-      "op_id": 68,
-      "occurrence": 1743,
+      "classification": "MASKED",
+      "op_id": 464,
+      "occurrence": 260,
       "bit": 0,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1550,8 +2648,8 @@
       "trial": 56,
       "seed": 444801,
       "classification": "CORRECTED",
-      "op_id": 19,
-      "occurrence": 3241,
+      "op_id": 97,
+      "occurrence": 4976,
       "bit": 55,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1563,13 +2661,13 @@
     {
       "trial": 57,
       "seed": 452720,
-      "classification": "CORRECTED",
-      "op_id": 264,
-      "occurrence": 3035,
+      "classification": "MASKED",
+      "op_id": 300,
+      "occurrence": 3102,
       "bit": 45,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1578,8 +2676,8 @@
       "trial": 58,
       "seed": 460639,
       "classification": "CORRECTED",
-      "op_id": 215,
-      "occurrence": 166,
+      "op_id": 503,
+      "occurrence": 3831,
       "bit": 36,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1592,8 +2690,8 @@
       "trial": 59,
       "seed": 468558,
       "classification": "CORRECTED",
-      "op_id": 166,
-      "occurrence": 1664,
+      "op_id": 136,
+      "occurrence": 4560,
       "bit": 26,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1606,7 +2704,7 @@
       "trial": 60,
       "seed": 476477,
       "classification": "CORRECTED",
-      "op_id": 117,
+      "op_id": 339,
       "occurrence": 1458,
       "bit": 17,
       "reasons": [
@@ -1620,7 +2718,7 @@
       "trial": 61,
       "seed": 484396,
       "classification": "CORRECTED",
-      "op_id": 68,
+      "op_id": 542,
       "occurrence": 2956,
       "bit": 8,
       "reasons": [
@@ -1634,8 +2732,8 @@
       "trial": 62,
       "seed": 492315,
       "classification": "CORRECTED",
-      "op_id": 19,
-      "occurrence": 87,
+      "op_id": 175,
+      "occurrence": 331,
       "bit": 62,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1648,8 +2746,8 @@
       "trial": 63,
       "seed": 500234,
       "classification": "CORRECTED",
-      "op_id": 264,
-      "occurrence": 4248,
+      "op_id": 378,
+      "occurrence": 159,
       "bit": 53,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1662,8 +2760,8 @@
       "trial": 64,
       "seed": 508153,
       "classification": "CORRECTED",
-      "op_id": 215,
-      "occurrence": 1379,
+      "op_id": 11,
+      "occurrence": 2999,
       "bit": 44,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1676,8 +2774,8 @@
       "trial": 65,
       "seed": 516072,
       "classification": "CORRECTED",
-      "op_id": 123,
-      "occurrence": 70,
+      "op_id": 117,
+      "occurrence": 1125,
       "bit": 34,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1690,8 +2788,8 @@
       "trial": 66,
       "seed": 523991,
       "classification": "CORRECTED",
-      "op_id": 74,
-      "occurrence": 153,
+      "op_id": 320,
+      "occurrence": 1854,
       "bit": 25,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1704,8 +2802,8 @@
       "trial": 67,
       "seed": 531910,
       "classification": "CORRECTED",
-      "op_id": 25,
-      "occurrence": 236,
+      "op_id": 523,
+      "occurrence": 4169,
       "bit": 16,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1718,8 +2816,8 @@
       "trial": 68,
       "seed": 539829,
       "classification": "CORRECTED",
-      "op_id": 270,
-      "occurrence": 64,
+      "op_id": 156,
+      "occurrence": 3963,
       "bit": 6,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1732,7 +2830,7 @@
       "trial": 69,
       "seed": 547748,
       "classification": "CORRECTED",
-      "op_id": 221,
+      "op_id": 359,
       "occurrence": 147,
       "bit": 61,
       "reasons": [
@@ -1745,13 +2843,13 @@
     {
       "trial": 70,
       "seed": 555667,
-      "classification": "CORRECTED",
-      "op_id": 172,
+      "classification": "MASKED",
+      "op_id": 562,
       "occurrence": 230,
       "bit": 51,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1760,8 +2858,8 @@
       "trial": 71,
       "seed": 563586,
       "classification": "CORRECTED",
-      "op_id": 123,
-      "occurrence": 58,
+      "op_id": 195,
+      "occurrence": 293,
       "bit": 42,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1774,8 +2872,8 @@
       "trial": 72,
       "seed": 571505,
       "classification": "CORRECTED",
-      "op_id": 74,
-      "occurrence": 141,
+      "op_id": 398,
+      "occurrence": 1022,
       "bit": 33,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1788,8 +2886,8 @@
       "trial": 73,
       "seed": 579424,
       "classification": "CORRECTED",
-      "op_id": 25,
-      "occurrence": 224,
+      "op_id": 31,
+      "occurrence": 1751,
       "bit": 23,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1802,8 +2900,8 @@
       "trial": 74,
       "seed": 587343,
       "classification": "CORRECTED",
-      "op_id": 270,
-      "occurrence": 52,
+      "op_id": 234,
+      "occurrence": 5155,
       "bit": 14,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1816,8 +2914,8 @@
       "trial": 75,
       "seed": 595262,
       "classification": "CORRECTED",
-      "op_id": 221,
-      "occurrence": 135,
+      "op_id": 437,
+      "occurrence": 2307,
       "bit": 5,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1830,8 +2928,8 @@
       "trial": 76,
       "seed": 603181,
       "classification": "CORRECTED",
-      "op_id": 172,
-      "occurrence": 218,
+      "op_id": 70,
+      "occurrence": 3805,
       "bit": 59,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1843,13 +2941,13 @@
     {
       "trial": 77,
       "seed": 611100,
-      "classification": "CORRECTED",
-      "op_id": 123,
+      "classification": "MASKED",
+      "op_id": 273,
       "occurrence": 46,
       "bit": 50,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1857,13 +2955,13 @@
     {
       "trial": 78,
       "seed": 619019,
-      "classification": "CORRECTED",
-      "op_id": 74,
-      "occurrence": 129,
+      "classification": "MASKED",
+      "op_id": 476,
+      "occurrence": 190,
       "bit": 41,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1872,8 +2970,8 @@
       "trial": 79,
       "seed": 626938,
       "classification": "CORRECTED",
-      "op_id": 25,
-      "occurrence": 212,
+      "op_id": 109,
+      "occurrence": 919,
       "bit": 31,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1886,8 +2984,8 @@
       "trial": 80,
       "seed": 634857,
       "classification": "CORRECTED",
-      "op_id": 270,
-      "occurrence": 40,
+      "op_id": 312,
+      "occurrence": 4323,
       "bit": 22,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1899,13 +2997,13 @@
     {
       "trial": 81,
       "seed": 642776,
-      "classification": "CORRECTED",
-      "op_id": 178,
-      "occurrence": 20886,
+      "classification": "MASKED",
+      "op_id": 418,
+      "occurrence": 5052,
       "bit": 12,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -1914,8 +3012,8 @@
       "trial": 82,
       "seed": 650695,
       "classification": "CORRECTED",
-      "op_id": 129,
-      "occurrence": 13734,
+      "op_id": 51,
+      "occurrence": 3314,
       "bit": 3,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1928,8 +3026,8 @@
       "trial": 83,
       "seed": 658614,
       "classification": "CORRECTED",
-      "op_id": 80,
-      "occurrence": 14463,
+      "op_id": 254,
+      "occurrence": 445,
       "bit": 58,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1942,8 +3040,8 @@
       "trial": 84,
       "seed": 666533,
       "classification": "CORRECTED",
-      "op_id": 31,
-      "occurrence": 15192,
+      "op_id": 457,
+      "occurrence": 117,
       "bit": 48,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1956,8 +3054,8 @@
       "trial": 85,
       "seed": 674452,
       "classification": "CORRECTED",
-      "op_id": 276,
-      "occurrence": 8040,
+      "op_id": 90,
+      "occurrence": 856,
       "bit": 39,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1970,8 +3068,8 @@
       "trial": 86,
       "seed": 682371,
       "classification": "CORRECTED",
-      "op_id": 227,
-      "occurrence": 8769,
+      "op_id": 293,
+      "occurrence": 3491,
       "bit": 30,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -1984,8 +3082,8 @@
       "trial": 87,
       "seed": 690290,
       "classification": "CORRECTED",
-      "op_id": 178,
-      "occurrence": 9498,
+      "op_id": 496,
+      "occurrence": 4220,
       "bit": 20,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2012,7 +3110,7 @@
       "trial": 89,
       "seed": 706128,
       "classification": "CORRECTED",
-      "op_id": 80,
+      "op_id": 332,
       "occurrence": 3075,
       "bit": 2,
       "reasons": [
@@ -2026,8 +3124,8 @@
       "trial": 90,
       "seed": 714047,
       "classification": "CORRECTED",
-      "op_id": 31,
-      "occurrence": 3804,
+      "op_id": 535,
+      "occurrence": 3156,
       "bit": 56,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2040,8 +3138,8 @@
       "trial": 91,
       "seed": 721966,
       "classification": "CORRECTED",
-      "op_id": 276,
-      "occurrence": 17764,
+      "op_id": 168,
+      "occurrence": 844,
       "bit": 47,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2053,13 +3151,13 @@
     {
       "trial": 92,
       "seed": 729885,
-      "classification": "CORRECTED",
-      "op_id": 227,
-      "occurrence": 18493,
+      "classification": "MASKED",
+      "op_id": 371,
+      "occurrence": 16,
       "bit": 37,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2068,8 +3166,8 @@
       "trial": 93,
       "seed": 737804,
       "classification": "CORRECTED",
-      "op_id": 178,
-      "occurrence": 19222,
+      "op_id": 4,
+      "occurrence": 3388,
       "bit": 28,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2082,8 +3180,8 @@
       "trial": 94,
       "seed": 745723,
       "classification": "CORRECTED",
-      "op_id": 129,
-      "occurrence": 12070,
+      "op_id": 207,
+      "occurrence": 1514,
       "bit": 19,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2096,8 +3194,8 @@
       "trial": 95,
       "seed": 753642,
       "classification": "CORRECTED",
-      "op_id": 80,
-      "occurrence": 12799,
+      "op_id": 410,
+      "occurrence": 2243,
       "bit": 9,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2110,8 +3208,8 @@
       "trial": 96,
       "seed": 761561,
       "classification": "CORRECTED",
-      "op_id": 31,
-      "occurrence": 13528,
+      "op_id": 43,
+      "occurrence": 2972,
       "bit": 0,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2124,8 +3222,8 @@
       "trial": 97,
       "seed": 769480,
       "classification": "CORRECTED",
-      "op_id": 233,
-      "occurrence": 292,
+      "op_id": 149,
+      "occurrence": 4163,
       "bit": 55,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2138,8 +3236,8 @@
       "trial": 98,
       "seed": 777399,
       "classification": "CORRECTED",
-      "op_id": 184,
-      "occurrence": 3472,
+      "op_id": 352,
+      "occurrence": 1294,
       "bit": 45,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2152,8 +3250,8 @@
       "trial": 99,
       "seed": 785318,
       "classification": "CORRECTED",
-      "op_id": 135,
-      "occurrence": 7874,
+      "op_id": 555,
+      "occurrence": 743,
       "bit": 36,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2166,8 +3264,8 @@
       "trial": 100,
       "seed": 793237,
       "classification": "CORRECTED",
-      "op_id": 86,
-      "occurrence": 11054,
+      "op_id": 188,
+      "occurrence": 826,
       "bit": 27,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2180,8 +3278,8 @@
       "trial": 101,
       "seed": 801156,
       "classification": "CORRECTED",
-      "op_id": 37,
-      "occurrence": 2767,
+      "op_id": 391,
+      "occurrence": 1411,
       "bit": 17,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2194,8 +3292,8 @@
       "trial": 102,
       "seed": 809075,
       "classification": "CORRECTED",
-      "op_id": 282,
-      "occurrence": 7169,
+      "op_id": 24,
+      "occurrence": 4815,
       "bit": 8,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2208,8 +3306,8 @@
       "trial": 103,
       "seed": 816994,
       "classification": "CORRECTED",
-      "op_id": 233,
-      "occurrence": 10349,
+      "op_id": 227,
+      "occurrence": 266,
       "bit": 63,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2222,8 +3320,8 @@
       "trial": 104,
       "seed": 824913,
       "classification": "CORRECTED",
-      "op_id": 184,
-      "occurrence": 2062,
+      "op_id": 430,
+      "occurrence": 2507,
       "bit": 53,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2236,8 +3334,8 @@
       "trial": 105,
       "seed": 832832,
       "classification": "CORRECTED",
-      "op_id": 135,
-      "occurrence": 6464,
+      "op_id": 63,
+      "occurrence": 2301,
       "bit": 44,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2250,8 +3348,8 @@
       "trial": 106,
       "seed": 840751,
       "classification": "CORRECTED",
-      "op_id": 86,
-      "occurrence": 9644,
+      "op_id": 266,
+      "occurrence": 814,
       "bit": 34,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2264,8 +3362,8 @@
       "trial": 107,
       "seed": 848670,
       "classification": "CORRECTED",
-      "op_id": 37,
-      "occurrence": 1357,
+      "op_id": 469,
+      "occurrence": 897,
       "bit": 25,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2278,8 +3376,8 @@
       "trial": 108,
       "seed": 856589,
       "classification": "CORRECTED",
-      "op_id": 282,
-      "occurrence": 5759,
+      "op_id": 102,
+      "occurrence": 3983,
       "bit": 16,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2292,8 +3390,8 @@
       "trial": 109,
       "seed": 864508,
       "classification": "CORRECTED",
-      "op_id": 233,
-      "occurrence": 8939,
+      "op_id": 305,
+      "occurrence": 4712,
       "bit": 6,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2306,8 +3404,8 @@
       "trial": 110,
       "seed": 872427,
       "classification": "CORRECTED",
-      "op_id": 184,
-      "occurrence": 652,
+      "op_id": 508,
+      "occurrence": 163,
       "bit": 61,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2320,8 +3418,8 @@
       "trial": 111,
       "seed": 880346,
       "classification": "CORRECTED",
-      "op_id": 135,
-      "occurrence": 5054,
+      "op_id": 141,
+      "occurrence": 3567,
       "bit": 52,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2334,8 +3432,8 @@
       "trial": 112,
       "seed": 888265,
       "classification": "CORRECTED",
-      "op_id": 86,
-      "occurrence": 8234,
+      "op_id": 344,
+      "occurrence": 645,
       "bit": 42,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2348,8 +3446,8 @@
       "trial": 113,
       "seed": 896184,
       "classification": "CORRECTED",
-      "op_id": 288,
-      "occurrence": 5025,
+      "op_id": 450,
+      "occurrence": 2143,
       "bit": 33,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2361,13 +3459,13 @@
     {
       "trial": 114,
       "seed": 904103,
-      "classification": "CORRECTED",
-      "op_id": 239,
-      "occurrence": 3151,
+      "classification": "MASKED",
+      "op_id": 83,
+      "occurrence": 713,
       "bit": 24,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2375,13 +3473,13 @@
     {
       "trial": 115,
       "seed": 912022,
-      "classification": "CORRECTED",
-      "op_id": 190,
+      "classification": "MASKED",
+      "op_id": 286,
       "occurrence": 3880,
       "bit": 14,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2390,7 +3488,7 @@
       "trial": 116,
       "seed": 919941,
       "classification": "CORRECTED",
-      "op_id": 141,
+      "op_id": 489,
       "occurrence": 4609,
       "bit": 5,
       "reasons": [
@@ -2404,7 +3502,7 @@
       "trial": 117,
       "seed": 927860,
       "classification": "CORRECTED",
-      "op_id": 92,
+      "op_id": 122,
       "occurrence": 2735,
       "bit": 59,
       "reasons": [
@@ -2418,7 +3516,7 @@
       "trial": 118,
       "seed": 935779,
       "classification": "CORRECTED",
-      "op_id": 43,
+      "op_id": 325,
       "occurrence": 3464,
       "bit": 50,
       "reasons": [
@@ -2432,8 +3530,8 @@
       "trial": 119,
       "seed": 943698,
       "classification": "CORRECTED",
-      "op_id": 288,
-      "occurrence": 1590,
+      "op_id": 528,
+      "occurrence": 1652,
       "bit": 41,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2446,8 +3544,8 @@
       "trial": 120,
       "seed": 951617,
       "classification": "CORRECTED",
-      "op_id": 239,
-      "occurrence": 2319,
+      "op_id": 161,
+      "occurrence": 3150,
       "bit": 31,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2460,8 +3558,8 @@
       "trial": 121,
       "seed": 959536,
       "classification": "CORRECTED",
-      "op_id": 190,
-      "occurrence": 3048,
+      "op_id": 364,
+      "occurrence": 784,
       "bit": 22,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2474,8 +3572,8 @@
       "trial": 122,
       "seed": 967455,
       "classification": "CORRECTED",
-      "op_id": 141,
-      "occurrence": 1174,
+      "op_id": 567,
+      "occurrence": 612,
       "bit": 13,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2488,7 +3586,7 @@
       "trial": 123,
       "seed": 975374,
       "classification": "CORRECTED",
-      "op_id": 92,
+      "op_id": 200,
       "occurrence": 1903,
       "bit": 3,
       "reasons": [
@@ -2502,7 +3600,7 @@
       "trial": 124,
       "seed": 983293,
       "classification": "CORRECTED",
-      "op_id": 43,
+      "op_id": 403,
       "occurrence": 2632,
       "bit": 58,
       "reasons": [
@@ -2515,13 +3613,13 @@
     {
       "trial": 125,
       "seed": 991212,
-      "classification": "CORRECTED",
-      "op_id": 288,
+      "classification": "MASKED",
+      "op_id": 36,
       "occurrence": 758,
       "bit": 49,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2531,7 +3629,7 @@
       "seed": 999131,
       "classification": "CORRECTED",
       "op_id": 239,
-      "occurrence": 1487,
+      "occurrence": 4363,
       "bit": 39,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2544,8 +3642,8 @@
       "trial": 127,
       "seed": 1007050,
       "classification": "CORRECTED",
-      "op_id": 190,
-      "occurrence": 2216,
+      "op_id": 442,
+      "occurrence": 1494,
       "bit": 30,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2558,8 +3656,8 @@
       "trial": 128,
       "seed": 1014969,
       "classification": "CORRECTED",
-      "op_id": 141,
-      "occurrence": 342,
+      "op_id": 75,
+      "occurrence": 600,
       "bit": 20,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2571,13 +3669,13 @@
     {
       "trial": 129,
       "seed": 1022888,
-      "classification": "CORRECTED",
-      "op_id": 49,
-      "occurrence": 1071,
+      "classification": "MASKED",
+      "op_id": 181,
+      "occurrence": 683,
       "bit": 11,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2586,7 +3684,7 @@
       "trial": 130,
       "seed": 1030807,
       "classification": "CORRECTED",
-      "op_id": 294,
+      "op_id": 384,
       "occurrence": 1800,
       "bit": 2,
       "reasons": [
@@ -2600,7 +3698,7 @@
       "trial": 131,
       "seed": 1038726,
       "classification": "CORRECTED",
-      "op_id": 245,
+      "op_id": 17,
       "occurrence": 5204,
       "bit": 56,
       "reasons": [
@@ -2614,7 +3712,7 @@
       "trial": 132,
       "seed": 1046645,
       "classification": "CORRECTED",
-      "op_id": 196,
+      "op_id": 220,
       "occurrence": 655,
       "bit": 47,
       "reasons": [
@@ -2628,7 +3726,7 @@
       "trial": 133,
       "seed": 1054564,
       "classification": "CORRECTED",
-      "op_id": 147,
+      "op_id": 423,
       "occurrence": 1384,
       "bit": 38,
       "reasons": [
@@ -2642,8 +3740,8 @@
       "trial": 134,
       "seed": 1062483,
       "classification": "CORRECTED",
-      "op_id": 98,
-      "occurrence": 4788,
+      "op_id": 56,
+      "occurrence": 2501,
       "bit": 28,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2656,8 +3754,8 @@
       "trial": 135,
       "seed": 1070402,
       "classification": "CORRECTED",
-      "op_id": 49,
-      "occurrence": 239,
+      "op_id": 259,
+      "occurrence": 3999,
       "bit": 19,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2670,8 +3768,8 @@
       "trial": 136,
       "seed": 1078321,
       "classification": "CORRECTED",
-      "op_id": 294,
-      "occurrence": 3643,
+      "op_id": 462,
+      "occurrence": 499,
       "bit": 10,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2684,8 +3782,8 @@
       "trial": 137,
       "seed": 1086240,
       "classification": "CORRECTED",
-      "op_id": 245,
-      "occurrence": 4372,
+      "op_id": 95,
+      "occurrence": 582,
       "bit": 0,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2698,7 +3796,7 @@
       "trial": 138,
       "seed": 1094159,
       "classification": "CORRECTED",
-      "op_id": 196,
+      "op_id": 298,
       "occurrence": 5101,
       "bit": 55,
       "reasons": [
@@ -2712,7 +3810,7 @@
       "trial": 139,
       "seed": 1102078,
       "classification": "CORRECTED",
-      "op_id": 147,
+      "op_id": 501,
       "occurrence": 3227,
       "bit": 46,
       "reasons": [
@@ -2726,7 +3824,7 @@
       "trial": 140,
       "seed": 1109997,
       "classification": "CORRECTED",
-      "op_id": 98,
+      "op_id": 134,
       "occurrence": 3956,
       "bit": 36,
       "reasons": [
@@ -2740,8 +3838,8 @@
       "trial": 141,
       "seed": 1117916,
       "classification": "CORRECTED",
-      "op_id": 49,
-      "occurrence": 4685,
+      "op_id": 337,
+      "occurrence": 845,
       "bit": 27,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2754,8 +3852,8 @@
       "trial": 142,
       "seed": 1125835,
       "classification": "CORRECTED",
-      "op_id": 294,
-      "occurrence": 2811,
+      "op_id": 540,
+      "occurrence": 639,
       "bit": 17,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2768,8 +3866,8 @@
       "trial": 143,
       "seed": 1133754,
       "classification": "CORRECTED",
-      "op_id": 245,
-      "occurrence": 3540,
+      "op_id": 173,
+      "occurrence": 570,
       "bit": 8,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2781,13 +3879,13 @@
     {
       "trial": 144,
       "seed": 1141673,
-      "classification": "CORRECTED",
-      "op_id": 196,
-      "occurrence": 4269,
+      "classification": "MASKED",
+      "op_id": 376,
+      "occurrence": 653,
       "bit": 63,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2796,7 +3894,7 @@
       "trial": 145,
       "seed": 1149592,
       "classification": "CORRECTED",
-      "op_id": 147,
+      "op_id": 9,
       "occurrence": 2395,
       "bit": 53,
       "reasons": [
@@ -2810,8 +3908,8 @@
       "trial": 146,
       "seed": 1157511,
       "classification": "CORRECTED",
-      "op_id": 55,
-      "occurrence": 560,
+      "op_id": 115,
+      "occurrence": 3124,
       "bit": 44,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2824,8 +3922,8 @@
       "trial": 147,
       "seed": 1165430,
       "classification": "CORRECTED",
-      "op_id": 6,
-      "occurrence": 2058,
+      "op_id": 318,
+      "occurrence": 3853,
       "bit": 35,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2838,8 +3936,8 @@
       "trial": 148,
       "seed": 1173349,
       "classification": "CORRECTED",
-      "op_id": 251,
-      "occurrence": 1852,
+      "op_id": 521,
+      "occurrence": 1979,
       "bit": 25,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2852,7 +3950,7 @@
       "trial": 149,
       "seed": 1181268,
       "classification": "CORRECTED",
-      "op_id": 202,
+      "op_id": 154,
       "occurrence": 3350,
       "bit": 16,
       "reasons": [
@@ -2866,8 +3964,8 @@
       "trial": 150,
       "seed": 1189187,
       "classification": "CORRECTED",
-      "op_id": 153,
-      "occurrence": 481,
+      "op_id": 357,
+      "occurrence": 641,
       "bit": 7,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2879,13 +3977,13 @@
     {
       "trial": 151,
       "seed": 1197106,
-      "classification": "CORRECTED",
-      "op_id": 104,
-      "occurrence": 275,
+      "classification": "MASKED",
+      "op_id": 560,
+      "occurrence": 469,
       "bit": 61,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2894,8 +3992,8 @@
       "trial": 152,
       "seed": 1205025,
       "classification": "CORRECTED",
-      "op_id": 55,
-      "occurrence": 1773,
+      "op_id": 193,
+      "occurrence": 2292,
       "bit": 52,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2908,8 +4006,8 @@
       "trial": 153,
       "seed": 1212944,
       "classification": "CORRECTED",
-      "op_id": 6,
-      "occurrence": 1567,
+      "op_id": 396,
+      "occurrence": 418,
       "bit": 42,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2921,13 +4019,13 @@
     {
       "trial": 154,
       "seed": 1220863,
-      "classification": "CORRECTED",
-      "op_id": 251,
-      "occurrence": 3065,
+      "classification": "MASKED",
+      "op_id": 29,
+      "occurrence": 1147,
       "bit": 33,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -2936,8 +4034,8 @@
       "trial": 155,
       "seed": 1228782,
       "classification": "CORRECTED",
-      "op_id": 202,
-      "occurrence": 196,
+      "op_id": 232,
+      "occurrence": 1876,
       "bit": 24,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2950,7 +4048,7 @@
       "trial": 156,
       "seed": 1236701,
       "classification": "CORRECTED",
-      "op_id": 153,
+      "op_id": 435,
       "occurrence": 4357,
       "bit": 14,
       "reasons": [
@@ -2964,7 +4062,7 @@
       "trial": 157,
       "seed": 1244620,
       "classification": "CORRECTED",
-      "op_id": 104,
+      "op_id": 68,
       "occurrence": 1488,
       "bit": 5,
       "reasons": [
@@ -2978,8 +4076,8 @@
       "trial": 158,
       "seed": 1252539,
       "classification": "CORRECTED",
-      "op_id": 55,
-      "occurrence": 2986,
+      "op_id": 271,
+      "occurrence": 540,
       "bit": 60,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -2992,8 +4090,8 @@
       "trial": 159,
       "seed": 1260458,
       "classification": "CORRECTED",
-      "op_id": 6,
-      "occurrence": 2780,
+      "op_id": 474,
+      "occurrence": 368,
       "bit": 50,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3006,8 +4104,8 @@
       "trial": 160,
       "seed": 1268377,
       "classification": "CORRECTED",
-      "op_id": 251,
-      "occurrence": 4278,
+      "op_id": 107,
+      "occurrence": 315,
       "bit": 41,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3019,13 +4117,13 @@
     {
       "trial": 161,
       "seed": 1276296,
-      "classification": "CORRECTED",
-      "op_id": 202,
-      "occurrence": 1409,
+      "classification": "MASKED",
+      "op_id": 310,
+      "occurrence": 1044,
       "bit": 32,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3033,13 +4131,13 @@
     {
       "trial": 162,
       "seed": 1284215,
-      "classification": "CORRECTED",
-      "op_id": 110,
-      "occurrence": 1203,
+      "classification": "MASKED",
+      "op_id": 416,
+      "occurrence": 4448,
       "bit": 22,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3048,7 +4146,7 @@
       "trial": 163,
       "seed": 1292134,
       "classification": "CORRECTED",
-      "op_id": 61,
+      "op_id": 49,
       "occurrence": 2701,
       "bit": 13,
       "reasons": [
@@ -3062,7 +4160,7 @@
       "trial": 164,
       "seed": 1300053,
       "classification": "CORRECTED",
-      "op_id": 12,
+      "op_id": 252,
       "occurrence": 4199,
       "bit": 3,
       "reasons": [
@@ -3076,8 +4174,8 @@
       "trial": 165,
       "seed": 1307972,
       "classification": "CORRECTED",
-      "op_id": 257,
-      "occurrence": 3993,
+      "op_id": 455,
+      "occurrence": 356,
       "bit": 58,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3090,8 +4188,8 @@
       "trial": 166,
       "seed": 1315891,
       "classification": "CORRECTED",
-      "op_id": 208,
-      "occurrence": 1124,
+      "op_id": 88,
+      "occurrence": 439,
       "bit": 49,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3104,8 +4202,8 @@
       "trial": 167,
       "seed": 1323810,
       "classification": "CORRECTED",
-      "op_id": 159,
-      "occurrence": 2622,
+      "op_id": 291,
+      "occurrence": 212,
       "bit": 39,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3118,8 +4216,8 @@
       "trial": 168,
       "seed": 1331729,
       "classification": "CORRECTED",
-      "op_id": 110,
-      "occurrence": 2416,
+      "op_id": 494,
+      "occurrence": 3616,
       "bit": 30,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3131,13 +4229,13 @@
     {
       "trial": 169,
       "seed": 1339648,
-      "classification": "CORRECTED",
-      "op_id": 61,
-      "occurrence": 3914,
+      "classification": "MASKED",
+      "op_id": 127,
+      "occurrence": 4345,
       "bit": 21,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3146,8 +4244,8 @@
       "trial": 170,
       "seed": 1347567,
       "classification": "CORRECTED",
-      "op_id": 12,
-      "occurrence": 3708,
+      "op_id": 330,
+      "occurrence": 2471,
       "bit": 11,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3160,7 +4258,7 @@
       "trial": 171,
       "seed": 1355486,
       "classification": "CORRECTED",
-      "op_id": 257,
+      "op_id": 533,
       "occurrence": 839,
       "bit": 2,
       "reasons": [
@@ -3174,8 +4272,8 @@
       "trial": 172,
       "seed": 1363405,
       "classification": "CORRECTED",
-      "op_id": 208,
-      "occurrence": 2337,
+      "op_id": 166,
+      "occurrence": 427,
       "bit": 57,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3187,13 +4285,13 @@
     {
       "trial": 173,
       "seed": 1371324,
-      "classification": "CORRECTED",
-      "op_id": 159,
-      "occurrence": 2131,
+      "classification": "MASKED",
+      "op_id": 369,
+      "occurrence": 255,
       "bit": 47,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3202,8 +4300,8 @@
       "trial": 174,
       "seed": 1379243,
       "classification": "CORRECTED",
-      "op_id": 110,
-      "occurrence": 3629,
+      "op_id": 2,
+      "occurrence": 2784,
       "bit": 38,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3215,13 +4313,13 @@
     {
       "trial": 175,
       "seed": 1387162,
-      "classification": "CORRECTED",
-      "op_id": 61,
-      "occurrence": 760,
+      "classification": "MASKED",
+      "op_id": 205,
+      "occurrence": 3513,
       "bit": 28,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3230,8 +4328,8 @@
       "trial": 176,
       "seed": 1395081,
       "classification": "CORRECTED",
-      "op_id": 12,
-      "occurrence": 554,
+      "op_id": 408,
+      "occurrence": 1639,
       "bit": 19,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3244,8 +4342,8 @@
       "trial": 177,
       "seed": 1403000,
       "classification": "CORRECTED",
-      "op_id": 257,
-      "occurrence": 2052,
+      "op_id": 41,
+      "occurrence": 2368,
       "bit": 10,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3258,7 +4356,7 @@
       "trial": 178,
       "seed": 1410919,
       "classification": "CORRECTED",
-      "op_id": 165,
+      "op_id": 147,
       "occurrence": 3550,
       "bit": 0,
       "reasons": [
@@ -3272,7 +4370,7 @@
       "trial": 179,
       "seed": 1418838,
       "classification": "CORRECTED",
-      "op_id": 116,
+      "op_id": 350,
       "occurrence": 3344,
       "bit": 55,
       "reasons": [
@@ -3286,8 +4384,8 @@
       "trial": 180,
       "seed": 1426757,
       "classification": "CORRECTED",
-      "op_id": 67,
-      "occurrence": 475,
+      "op_id": 553,
+      "occurrence": 326,
       "bit": 46,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3299,13 +4397,13 @@
     {
       "trial": 181,
       "seed": 1434676,
-      "classification": "CORRECTED",
-      "op_id": 18,
-      "occurrence": 1973,
+      "classification": "MASKED",
+      "op_id": 186,
+      "occurrence": 409,
       "bit": 36,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3314,8 +4412,8 @@
       "trial": 182,
       "seed": 1442595,
       "classification": "CORRECTED",
-      "op_id": 263,
-      "occurrence": 1767,
+      "op_id": 389,
+      "occurrence": 807,
       "bit": 27,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3328,8 +4426,8 @@
       "trial": 183,
       "seed": 1450514,
       "classification": "CORRECTED",
-      "op_id": 214,
-      "occurrence": 3265,
+      "op_id": 22,
+      "occurrence": 1536,
       "bit": 18,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3342,8 +4440,8 @@
       "trial": 184,
       "seed": 1458433,
       "classification": "CORRECTED",
-      "op_id": 165,
-      "occurrence": 396,
+      "op_id": 225,
+      "occurrence": 2265,
       "bit": 8,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3356,7 +4454,7 @@
       "trial": 185,
       "seed": 1466352,
       "classification": "CORRECTED",
-      "op_id": 116,
+      "op_id": 428,
       "occurrence": 190,
       "bit": 63,
       "reasons": [
@@ -3370,7 +4468,7 @@
       "trial": 186,
       "seed": 1474271,
       "classification": "CORRECTED",
-      "op_id": 67,
+      "op_id": 61,
       "occurrence": 1688,
       "bit": 54,
       "reasons": [
@@ -3384,8 +4482,8 @@
       "trial": 187,
       "seed": 1482190,
       "classification": "CORRECTED",
-      "op_id": 18,
-      "occurrence": 1482,
+      "op_id": 264,
+      "occurrence": 142,
       "bit": 44,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3397,13 +4495,13 @@
     {
       "trial": 188,
       "seed": 1490109,
-      "classification": "CORRECTED",
-      "op_id": 263,
-      "occurrence": 2980,
+      "classification": "MASKED",
+      "op_id": 467,
+      "occurrence": 225,
       "bit": 35,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3412,8 +4510,8 @@
       "trial": 189,
       "seed": 1498028,
       "classification": "CORRECTED",
-      "op_id": 214,
-      "occurrence": 111,
+      "op_id": 100,
+      "occurrence": 704,
       "bit": 25,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3426,8 +4524,8 @@
       "trial": 190,
       "seed": 1505947,
       "classification": "CORRECTED",
-      "op_id": 165,
-      "occurrence": 4272,
+      "op_id": 303,
+      "occurrence": 4108,
       "bit": 16,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3439,13 +4537,13 @@
     {
       "trial": 191,
       "seed": 1513866,
-      "classification": "CORRECTED",
-      "op_id": 116,
-      "occurrence": 1403,
+      "classification": "MASKED",
+      "op_id": 506,
+      "occurrence": 4837,
       "bit": 7,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3454,8 +4552,8 @@
       "trial": 192,
       "seed": 1521785,
       "classification": "CORRECTED",
-      "op_id": 67,
-      "occurrence": 2901,
+      "op_id": 139,
+      "occurrence": 288,
       "bit": 61,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3468,7 +4566,7 @@
       "trial": 193,
       "seed": 1529704,
       "classification": "CORRECTED",
-      "op_id": 18,
+      "op_id": 342,
       "occurrence": 2695,
       "bit": 52,
       "reasons": [
@@ -3482,8 +4580,8 @@
       "trial": 194,
       "seed": 1537623,
       "classification": "CORRECTED",
-      "op_id": 220,
-      "occurrence": 213,
+      "op_id": 448,
+      "occurrence": 4193,
       "bit": 43,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3496,7 +4594,7 @@
       "trial": 195,
       "seed": 1545542,
       "classification": "CORRECTED",
-      "op_id": 171,
+      "op_id": 81,
       "occurrence": 296,
       "bit": 33,
       "reasons": [
@@ -3510,7 +4608,7 @@
       "trial": 196,
       "seed": 1553461,
       "classification": "CORRECTED",
-      "op_id": 122,
+      "op_id": 284,
       "occurrence": 124,
       "bit": 24,
       "reasons": [
@@ -3524,8 +4622,8 @@
       "trial": 197,
       "seed": 1561380,
       "classification": "CORRECTED",
-      "op_id": 73,
-      "occurrence": 207,
+      "op_id": 487,
+      "occurrence": 4005,
       "bit": 15,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",
@@ -3537,13 +4635,13 @@
     {
       "trial": 198,
       "seed": 1569299,
-      "classification": "CORRECTED",
-      "op_id": 24,
-      "occurrence": 290,
+      "classification": "MASKED",
+      "op_id": 120,
+      "occurrence": 4734,
       "bit": 5,
       "reasons": [
-        "a redundancy mechanism repaired the fault and the final result is within tolerance",
-        "the corrupted intermediate was observed in the trace before repair"
+        "the final result stayed inside the acceptance criterion",
+        "a divergence occurred but was absorbed before the final result"
       ],
       "diverged": true,
       "final_result_outside_tolerance": false
@@ -3552,8 +4650,8 @@
       "trial": 199,
       "seed": 1577218,
       "classification": "CORRECTED",
-      "op_id": 269,
-      "occurrence": 118,
+      "op_id": 323,
+      "occurrence": 2860,
       "bit": 60,
       "reasons": [
         "a redundancy mechanism repaired the fault and the final result is within tolerance",

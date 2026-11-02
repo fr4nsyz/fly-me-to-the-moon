@@ -1,7 +1,7 @@
 {
   "workload": "moon",
-  "build_id": "a24dbf0a5b1fd532",
-  "compiler_flags": "-O0 -gline-tables-only -ffp-contract=off",
+  "build_id": "0d9644643b9e30ef",
+  "compiler_flags": "-O2 -gline-tables-only -ffp-contract=off -fno-vectorize -fno-slp-vectorize",
   "seed": 1337,
   "persistent": false,
   "workload_args": [],
@@ -61,7 +61,43 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "2": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "3": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "4": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "5": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     },
     "6": {
@@ -70,7 +106,7 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 3,
       "INCONCLUSIVE": 0
     },
     "7": {
@@ -79,7 +115,43 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 17,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "8": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "9": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "10": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "11": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     },
     "12": {
@@ -88,7 +160,7 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 3,
       "INCONCLUSIVE": 0
     },
     "13": {
@@ -97,7 +169,43 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "14": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "15": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "16": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "17": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     },
     "18": {
@@ -106,7 +214,7 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     },
     "19": {
@@ -115,7 +223,43 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "20": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "21": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "22": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "23": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     },
     "24": {
@@ -124,7 +268,7 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 6,
+      "MASKED": 1,
       "INCONCLUSIVE": 0
     },
     "25": {
@@ -133,7 +277,52 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "26": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "27": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "28": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "29": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "30": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     },
     "31": {
@@ -142,7 +331,52 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "32": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "33": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "34": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "35": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "36": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
       "INCONCLUSIVE": 0
     },
     "37": {
@@ -151,7 +385,52 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "38": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "39": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "40": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "41": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "42": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     },
     "43": {
@@ -160,7 +439,52 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 16,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "44": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "45": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "46": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "47": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "48": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
       "INCONCLUSIVE": 0
     },
     "49": {
@@ -169,7 +493,421 @@
       "CORRECTED": 0,
       "DETECTED": 0,
       "SDC": 0,
-      "MASKED": 17,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "50": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "51": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "52": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "53": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "54": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "55": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "56": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "57": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "58": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "59": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "60": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "61": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "62": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "63": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "64": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "65": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "66": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "67": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "68": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "69": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "70": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "71": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "72": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "73": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "74": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "75": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "76": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "77": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "78": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "79": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "80": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "81": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "82": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "83": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "84": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "85": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "86": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "87": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "88": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "89": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 1,
+      "INCONCLUSIVE": 0
+    },
+    "90": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "91": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "92": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "93": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
+      "INCONCLUSIVE": 0
+    },
+    "94": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 3,
+      "INCONCLUSIVE": 0
+    },
+    "95": {
+      "CRASH": 0,
+      "HANG": 0,
+      "CORRECTED": 0,
+      "DETECTED": 0,
+      "SDC": 0,
+      "MASKED": 2,
       "INCONCLUSIVE": 0
     }
   },
@@ -178,7 +916,7 @@
       "trial": 0,
       "seed": 1337,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 40,
       "occurrence": 3053,
       "bit": 3,
       "reasons": [
@@ -192,8 +930,8 @@
       "trial": 1,
       "seed": 9256,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 3782,
+      "op_id": 53,
+      "occurrence": 1264,
       "bit": 57,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -206,8 +944,8 @@
       "trial": 2,
       "seed": 17175,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 4511,
+      "op_id": 66,
+      "occurrence": 2762,
       "bit": 48,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -220,8 +958,8 @@
       "trial": 3,
       "seed": 25094,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 2637,
+      "op_id": 79,
+      "occurrence": 534,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -234,8 +972,8 @@
       "trial": 4,
       "seed": 33013,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 3366,
+      "op_id": 92,
+      "occurrence": 617,
       "bit": 29,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -248,7 +986,7 @@
       "trial": 5,
       "seed": 40932,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 10,
       "occurrence": 4095,
       "bit": 20,
       "reasons": [
@@ -262,7 +1000,7 @@
       "trial": 6,
       "seed": 48851,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 23,
       "occurrence": 2221,
       "bit": 11,
       "reasons": [
@@ -276,7 +1014,7 @@
       "trial": 7,
       "seed": 56770,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 36,
       "occurrence": 2950,
       "bit": 1,
       "reasons": [
@@ -290,8 +1028,8 @@
       "trial": 8,
       "seed": 64689,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 3679,
+      "op_id": 49,
+      "occurrence": 3975,
       "bit": 56,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -304,8 +1042,8 @@
       "trial": 9,
       "seed": 72608,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 1805,
+      "op_id": 62,
+      "occurrence": 3769,
       "bit": 46,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -318,8 +1056,8 @@
       "trial": 10,
       "seed": 80527,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 2534,
+      "op_id": 75,
+      "occurrence": 605,
       "bit": 37,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -332,8 +1070,8 @@
       "trial": 11,
       "seed": 88446,
       "classification": "MASKED",
-      "op_id": 1,
-      "occurrence": 660,
+      "op_id": 88,
+      "occurrence": 433,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -346,7 +1084,7 @@
       "trial": 12,
       "seed": 96365,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 6,
       "occurrence": 1389,
       "bit": 18,
       "reasons": [
@@ -360,7 +1098,7 @@
       "trial": 13,
       "seed": 104284,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 19,
       "occurrence": 2118,
       "bit": 9,
       "reasons": [
@@ -374,7 +1112,7 @@
       "trial": 14,
       "seed": 112203,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 32,
       "occurrence": 244,
       "bit": 0,
       "reasons": [
@@ -388,7 +1126,7 @@
       "trial": 15,
       "seed": 120122,
       "classification": "MASKED",
-      "op_id": 1,
+      "op_id": 45,
       "occurrence": 973,
       "bit": 54,
       "reasons": [
@@ -402,8 +1140,8 @@
       "trial": 16,
       "seed": 128041,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 1702,
+      "op_id": 56,
+      "occurrence": 2113,
       "bit": 45,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -416,8 +1154,8 @@
       "trial": 17,
       "seed": 135960,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 5106,
+      "op_id": 69,
+      "occurrence": 1907,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -430,8 +1168,8 @@
       "trial": 18,
       "seed": 143879,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 557,
+      "op_id": 82,
+      "occurrence": 504,
       "bit": 26,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -444,8 +1182,8 @@
       "trial": 19,
       "seed": 151798,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 1286,
+      "op_id": 95,
+      "occurrence": 587,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -458,7 +1196,7 @@
       "trial": 20,
       "seed": 159717,
       "classification": "MASKED",
-      "op_id": 7,
+      "op_id": 13,
       "occurrence": 4690,
       "bit": 8,
       "reasons": [
@@ -472,7 +1210,7 @@
       "trial": 21,
       "seed": 167636,
       "classification": "MASKED",
-      "op_id": 7,
+      "op_id": 26,
       "occurrence": 141,
       "bit": 62,
       "reasons": [
@@ -486,7 +1224,7 @@
       "trial": 22,
       "seed": 175555,
       "classification": "MASKED",
-      "op_id": 7,
+      "op_id": 39,
       "occurrence": 870,
       "bit": 53,
       "reasons": [
@@ -500,8 +1238,8 @@
       "trial": 23,
       "seed": 183474,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 4274,
+      "op_id": 52,
+      "occurrence": 3120,
       "bit": 43,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -514,8 +1252,8 @@
       "trial": 24,
       "seed": 191393,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 5003,
+      "op_id": 65,
+      "occurrence": 251,
       "bit": 34,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -528,8 +1266,8 @@
       "trial": 25,
       "seed": 199312,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 454,
+      "op_id": 78,
+      "occurrence": 575,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -542,8 +1280,8 @@
       "trial": 26,
       "seed": 207231,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 3858,
+      "op_id": 91,
+      "occurrence": 403,
       "bit": 15,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -556,7 +1294,7 @@
       "trial": 27,
       "seed": 215150,
       "classification": "MASKED",
-      "op_id": 7,
+      "op_id": 9,
       "occurrence": 4587,
       "bit": 6,
       "reasons": [
@@ -570,7 +1308,7 @@
       "trial": 28,
       "seed": 223069,
       "classification": "MASKED",
-      "op_id": 7,
+      "op_id": 22,
       "occurrence": 38,
       "bit": 61,
       "reasons": [
@@ -584,7 +1322,7 @@
       "trial": 29,
       "seed": 230988,
       "classification": "MASKED",
-      "op_id": 7,
+      "op_id": 35,
       "occurrence": 3442,
       "bit": 51,
       "reasons": [
@@ -598,8 +1336,8 @@
       "trial": 30,
       "seed": 238907,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 4171,
+      "op_id": 48,
+      "occurrence": 1464,
       "bit": 42,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -612,8 +1350,8 @@
       "trial": 31,
       "seed": 246826,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 2297,
+      "op_id": 61,
+      "occurrence": 1258,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -626,8 +1364,8 @@
       "trial": 32,
       "seed": 254745,
       "classification": "MASKED",
-      "op_id": 7,
-      "occurrence": 3026,
+      "op_id": 74,
+      "occurrence": 391,
       "bit": 23,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -640,8 +1378,8 @@
       "trial": 33,
       "seed": 262664,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 14311,
+      "op_id": 85,
+      "occurrence": 474,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -654,8 +1392,8 @@
       "trial": 34,
       "seed": 270583,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 7159,
+      "op_id": 3,
+      "occurrence": 1881,
       "bit": 4,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -668,8 +1406,8 @@
       "trial": 35,
       "seed": 278502,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 7888,
+      "op_id": 16,
+      "occurrence": 2610,
       "bit": 59,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -682,8 +1420,8 @@
       "trial": 36,
       "seed": 286421,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 8617,
+      "op_id": 29,
+      "occurrence": 3339,
       "bit": 50,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -696,7 +1434,7 @@
       "trial": 37,
       "seed": 294340,
       "classification": "MASKED",
-      "op_id": 13,
+      "op_id": 42,
       "occurrence": 1465,
       "bit": 40,
       "reasons": [
@@ -710,8 +1448,8 @@
       "trial": 38,
       "seed": 302259,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 2194,
+      "op_id": 55,
+      "occurrence": 3969,
       "bit": 31,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -724,8 +1462,8 @@
       "trial": 39,
       "seed": 310178,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 2923,
+      "op_id": 68,
+      "occurrence": 1100,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -738,8 +1476,8 @@
       "trial": 40,
       "seed": 318097,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 16883,
+      "op_id": 81,
+      "occurrence": 290,
       "bit": 12,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -752,8 +1490,8 @@
       "trial": 41,
       "seed": 326016,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 17612,
+      "op_id": 94,
+      "occurrence": 373,
       "bit": 3,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -766,8 +1504,8 @@
       "trial": 42,
       "seed": 333935,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 18341,
+      "op_id": 12,
+      "occurrence": 2507,
       "bit": 58,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -780,8 +1518,8 @@
       "trial": 43,
       "seed": 341854,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 11189,
+      "op_id": 25,
+      "occurrence": 633,
       "bit": 48,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -794,8 +1532,8 @@
       "trial": 44,
       "seed": 349773,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 11918,
+      "op_id": 38,
+      "occurrence": 1362,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -808,8 +1546,8 @@
       "trial": 45,
       "seed": 357692,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 12647,
+      "op_id": 51,
+      "occurrence": 2313,
       "bit": 29,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -822,8 +1560,8 @@
       "trial": 46,
       "seed": 365611,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 5495,
+      "op_id": 64,
+      "occurrence": 2107,
       "bit": 20,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -836,8 +1574,8 @@
       "trial": 47,
       "seed": 373530,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 6224,
+      "op_id": 77,
+      "occurrence": 361,
       "bit": 11,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -850,8 +1588,8 @@
       "trial": 48,
       "seed": 381449,
       "classification": "MASKED",
-      "op_id": 13,
-      "occurrence": 20184,
+      "op_id": 90,
+      "occurrence": 189,
       "bit": 1,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -864,8 +1602,8 @@
       "trial": 49,
       "seed": 389368,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 11761,
+      "op_id": 6,
+      "occurrence": 5079,
       "bit": 56,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -879,7 +1617,7 @@
       "seed": 397287,
       "classification": "MASKED",
       "op_id": 19,
-      "occurrence": 2082,
+      "occurrence": 530,
       "bit": 47,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -892,8 +1630,8 @@
       "trial": 51,
       "seed": 405206,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 12082,
+      "op_id": 32,
+      "occurrence": 3934,
       "bit": 37,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -906,8 +1644,8 @@
       "trial": 52,
       "seed": 413125,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 2403,
+      "op_id": 45,
+      "occurrence": 4663,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -920,8 +1658,8 @@
       "trial": 53,
       "seed": 421044,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 10380,
+      "op_id": 58,
+      "occurrence": 451,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -934,8 +1672,8 @@
       "trial": 54,
       "seed": 428963,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 2724,
+      "op_id": 71,
+      "occurrence": 177,
       "bit": 9,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -948,8 +1686,8 @@
       "trial": 55,
       "seed": 436882,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 10701,
+      "op_id": 84,
+      "occurrence": 260,
       "bit": 0,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -962,8 +1700,8 @@
       "trial": 56,
       "seed": 444801,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 1022,
+      "op_id": 2,
+      "occurrence": 4976,
       "bit": 55,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -976,8 +1714,8 @@
       "trial": 57,
       "seed": 452720,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 11022,
+      "op_id": 15,
+      "occurrence": 3102,
       "bit": 45,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -990,8 +1728,8 @@
       "trial": 58,
       "seed": 460639,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 1343,
+      "op_id": 28,
+      "occurrence": 3831,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1004,8 +1742,8 @@
       "trial": 59,
       "seed": 468558,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 9320,
+      "op_id": 41,
+      "occurrence": 4560,
       "bit": 26,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1018,8 +1756,8 @@
       "trial": 60,
       "seed": 476477,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 1664,
+      "op_id": 54,
+      "occurrence": 1458,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1032,8 +1770,8 @@
       "trial": 61,
       "seed": 484396,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 9641,
+      "op_id": 67,
+      "occurrence": 2956,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1046,8 +1784,8 @@
       "trial": 62,
       "seed": 492315,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 17618,
+      "op_id": 80,
+      "occurrence": 331,
       "bit": 62,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1060,8 +1798,8 @@
       "trial": 63,
       "seed": 500234,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 9962,
+      "op_id": 93,
+      "occurrence": 159,
       "bit": 53,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1074,8 +1812,8 @@
       "trial": 64,
       "seed": 508153,
       "classification": "MASKED",
-      "op_id": 19,
-      "occurrence": 283,
+      "op_id": 11,
+      "occurrence": 2999,
       "bit": 44,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1088,8 +1826,8 @@
       "trial": 65,
       "seed": 516072,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 6403,
+      "op_id": 22,
+      "occurrence": 1125,
       "bit": 34,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1102,8 +1840,8 @@
       "trial": 66,
       "seed": 523991,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 7132,
+      "op_id": 35,
+      "occurrence": 1854,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1116,8 +1854,8 @@
       "trial": 67,
       "seed": 531910,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 7861,
+      "op_id": 48,
+      "occurrence": 4169,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1130,8 +1868,8 @@
       "trial": 68,
       "seed": 539829,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 709,
+      "op_id": 61,
+      "occurrence": 3963,
       "bit": 6,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1144,8 +1882,8 @@
       "trial": 69,
       "seed": 547748,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 1438,
+      "op_id": 74,
+      "occurrence": 147,
       "bit": 61,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1158,8 +1896,8 @@
       "trial": 70,
       "seed": 555667,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 2167,
+      "op_id": 87,
+      "occurrence": 230,
       "bit": 51,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1172,8 +1910,8 @@
       "trial": 71,
       "seed": 563586,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 16127,
+      "op_id": 5,
+      "occurrence": 293,
       "bit": 42,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1186,8 +1924,8 @@
       "trial": 72,
       "seed": 571505,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 16856,
+      "op_id": 18,
+      "occurrence": 1022,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1200,8 +1938,8 @@
       "trial": 73,
       "seed": 579424,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 17585,
+      "op_id": 31,
+      "occurrence": 1751,
       "bit": 23,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1214,8 +1952,8 @@
       "trial": 74,
       "seed": 587343,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 10433,
+      "op_id": 44,
+      "occurrence": 5155,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1228,8 +1966,8 @@
       "trial": 75,
       "seed": 595262,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 11162,
+      "op_id": 57,
+      "occurrence": 2307,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1242,8 +1980,8 @@
       "trial": 76,
       "seed": 603181,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 11891,
+      "op_id": 70,
+      "occurrence": 3805,
       "bit": 59,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1256,8 +1994,8 @@
       "trial": 77,
       "seed": 611100,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 4739,
+      "op_id": 83,
+      "occurrence": 46,
       "bit": 50,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1270,8 +2008,8 @@
       "trial": 78,
       "seed": 619019,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 5468,
+      "op_id": 1,
+      "occurrence": 190,
       "bit": 41,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1284,8 +2022,8 @@
       "trial": 79,
       "seed": 626938,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 6197,
+      "op_id": 14,
+      "occurrence": 919,
       "bit": 31,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1298,8 +2036,8 @@
       "trial": 80,
       "seed": 634857,
       "classification": "MASKED",
-      "op_id": 25,
-      "occurrence": 20157,
+      "op_id": 27,
+      "occurrence": 4323,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1312,8 +2050,8 @@
       "trial": 81,
       "seed": 642776,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 3520,
+      "op_id": 38,
+      "occurrence": 5052,
       "bit": 12,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1326,7 +2064,7 @@
       "trial": 82,
       "seed": 650695,
       "classification": "MASKED",
-      "op_id": 31,
+      "op_id": 51,
       "occurrence": 3314,
       "bit": 3,
       "reasons": [
@@ -1340,7 +2078,7 @@
       "trial": 83,
       "seed": 658614,
       "classification": "MASKED",
-      "op_id": 31,
+      "op_id": 64,
       "occurrence": 445,
       "bit": 58,
       "reasons": [
@@ -1354,8 +2092,8 @@
       "trial": 84,
       "seed": 666533,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 1943,
+      "op_id": 77,
+      "occurrence": 117,
       "bit": 48,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1368,8 +2106,8 @@
       "trial": 85,
       "seed": 674452,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 1737,
+      "op_id": 90,
+      "occurrence": 856,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1382,8 +2120,8 @@
       "trial": 86,
       "seed": 682371,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 3235,
+      "op_id": 8,
+      "occurrence": 3491,
       "bit": 30,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1396,8 +2134,8 @@
       "trial": 87,
       "seed": 690290,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 366,
+      "op_id": 21,
+      "occurrence": 4220,
       "bit": 20,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1410,8 +2148,8 @@
       "trial": 88,
       "seed": 698209,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 160,
+      "op_id": 34,
+      "occurrence": 2346,
       "bit": 11,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1424,8 +2162,8 @@
       "trial": 89,
       "seed": 706128,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 1658,
+      "op_id": 47,
+      "occurrence": 3075,
       "bit": 2,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1438,7 +2176,7 @@
       "trial": 90,
       "seed": 714047,
       "classification": "MASKED",
-      "op_id": 31,
+      "op_id": 60,
       "occurrence": 3156,
       "bit": 56,
       "reasons": [
@@ -1452,8 +2190,8 @@
       "trial": 91,
       "seed": 721966,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 2950,
+      "op_id": 73,
+      "occurrence": 844,
       "bit": 47,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1466,8 +2204,8 @@
       "trial": 92,
       "seed": 729885,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 81,
+      "op_id": 86,
+      "occurrence": 16,
       "bit": 37,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1480,8 +2218,8 @@
       "trial": 93,
       "seed": 737804,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 1579,
+      "op_id": 4,
+      "occurrence": 3388,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1494,8 +2232,8 @@
       "trial": 94,
       "seed": 745723,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 1373,
+      "op_id": 17,
+      "occurrence": 1514,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1508,8 +2246,8 @@
       "trial": 95,
       "seed": 753642,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 2871,
+      "op_id": 30,
+      "occurrence": 2243,
       "bit": 9,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1522,8 +2260,8 @@
       "trial": 96,
       "seed": 761561,
       "classification": "MASKED",
-      "op_id": 31,
-      "occurrence": 2,
+      "op_id": 43,
+      "occurrence": 2972,
       "bit": 0,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1536,7 +2274,7 @@
       "trial": 97,
       "seed": 769480,
       "classification": "MASKED",
-      "op_id": 37,
+      "op_id": 54,
       "occurrence": 4163,
       "bit": 55,
       "reasons": [
@@ -1550,7 +2288,7 @@
       "trial": 98,
       "seed": 777399,
       "classification": "MASKED",
-      "op_id": 37,
+      "op_id": 67,
       "occurrence": 1294,
       "bit": 45,
       "reasons": [
@@ -1564,8 +2302,8 @@
       "trial": 99,
       "seed": 785318,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 1088,
+      "op_id": 80,
+      "occurrence": 743,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1578,8 +2316,8 @@
       "trial": 100,
       "seed": 793237,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 2586,
+      "op_id": 93,
+      "occurrence": 826,
       "bit": 27,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1592,8 +2330,8 @@
       "trial": 101,
       "seed": 801156,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 4084,
+      "op_id": 11,
+      "occurrence": 1411,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1606,8 +2344,8 @@
       "trial": 102,
       "seed": 809075,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 3878,
+      "op_id": 24,
+      "occurrence": 4815,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1621,7 +2359,7 @@
       "seed": 816994,
       "classification": "MASKED",
       "op_id": 37,
-      "occurrence": 1009,
+      "occurrence": 266,
       "bit": 63,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1634,7 +2372,7 @@
       "trial": 104,
       "seed": 824913,
       "classification": "MASKED",
-      "op_id": 37,
+      "op_id": 50,
       "occurrence": 2507,
       "bit": 53,
       "reasons": [
@@ -1648,7 +2386,7 @@
       "trial": 105,
       "seed": 832832,
       "classification": "MASKED",
-      "op_id": 37,
+      "op_id": 63,
       "occurrence": 2301,
       "bit": 44,
       "reasons": [
@@ -1662,8 +2400,8 @@
       "trial": 106,
       "seed": 840751,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 3799,
+      "op_id": 76,
+      "occurrence": 814,
       "bit": 34,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1676,8 +2414,8 @@
       "trial": 107,
       "seed": 848670,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 930,
+      "op_id": 89,
+      "occurrence": 897,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1690,8 +2428,8 @@
       "trial": 108,
       "seed": 856589,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 724,
+      "op_id": 7,
+      "occurrence": 3983,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1704,8 +2442,8 @@
       "trial": 109,
       "seed": 864508,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 2222,
+      "op_id": 20,
+      "occurrence": 4712,
       "bit": 6,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1718,8 +2456,8 @@
       "trial": 110,
       "seed": 872427,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 3720,
+      "op_id": 33,
+      "occurrence": 163,
       "bit": 61,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1732,8 +2470,8 @@
       "trial": 111,
       "seed": 880346,
       "classification": "MASKED",
-      "op_id": 37,
-      "occurrence": 3514,
+      "op_id": 46,
+      "occurrence": 3567,
       "bit": 52,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1746,7 +2484,7 @@
       "trial": 112,
       "seed": 888265,
       "classification": "MASKED",
-      "op_id": 37,
+      "op_id": 59,
       "occurrence": 645,
       "bit": 42,
       "reasons": [
@@ -1760,7 +2498,7 @@
       "trial": 113,
       "seed": 896184,
       "classification": "MASKED",
-      "op_id": 43,
+      "op_id": 70,
       "occurrence": 2143,
       "bit": 33,
       "reasons": [
@@ -1774,8 +2512,8 @@
       "trial": 114,
       "seed": 904103,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 1937,
+      "op_id": 83,
+      "occurrence": 713,
       "bit": 24,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1788,8 +2526,8 @@
       "trial": 115,
       "seed": 912022,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 3435,
+      "op_id": 1,
+      "occurrence": 3880,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1802,8 +2540,8 @@
       "trial": 116,
       "seed": 919941,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 566,
+      "op_id": 14,
+      "occurrence": 4609,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1816,8 +2554,8 @@
       "trial": 117,
       "seed": 927860,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 360,
+      "op_id": 27,
+      "occurrence": 2735,
       "bit": 59,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1830,8 +2568,8 @@
       "trial": 118,
       "seed": 935779,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 1858,
+      "op_id": 40,
+      "occurrence": 3464,
       "bit": 50,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1844,7 +2582,7 @@
       "trial": 119,
       "seed": 943698,
       "classification": "MASKED",
-      "op_id": 43,
+      "op_id": 53,
       "occurrence": 1652,
       "bit": 41,
       "reasons": [
@@ -1858,7 +2596,7 @@
       "trial": 120,
       "seed": 951617,
       "classification": "MASKED",
-      "op_id": 43,
+      "op_id": 66,
       "occurrence": 3150,
       "bit": 31,
       "reasons": [
@@ -1872,8 +2610,8 @@
       "trial": 121,
       "seed": 959536,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 281,
+      "op_id": 79,
+      "occurrence": 784,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1886,8 +2624,8 @@
       "trial": 122,
       "seed": 967455,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 75,
+      "op_id": 92,
+      "occurrence": 612,
       "bit": 13,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1900,8 +2638,8 @@
       "trial": 123,
       "seed": 975374,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 1573,
+      "op_id": 10,
+      "occurrence": 1903,
       "bit": 3,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1914,8 +2652,8 @@
       "trial": 124,
       "seed": 983293,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 3071,
+      "op_id": 23,
+      "occurrence": 2632,
       "bit": 58,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1928,8 +2666,8 @@
       "trial": 125,
       "seed": 991212,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 2865,
+      "op_id": 36,
+      "occurrence": 758,
       "bit": 49,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1942,7 +2680,7 @@
       "trial": 126,
       "seed": 999131,
       "classification": "MASKED",
-      "op_id": 43,
+      "op_id": 49,
       "occurrence": 4363,
       "bit": 39,
       "reasons": [
@@ -1956,7 +2694,7 @@
       "trial": 127,
       "seed": 1007050,
       "classification": "MASKED",
-      "op_id": 43,
+      "op_id": 62,
       "occurrence": 1494,
       "bit": 30,
       "reasons": [
@@ -1970,8 +2708,8 @@
       "trial": 128,
       "seed": 1014969,
       "classification": "MASKED",
-      "op_id": 43,
-      "occurrence": 1288,
+      "op_id": 75,
+      "occurrence": 600,
       "bit": 20,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -1984,7 +2722,7 @@
       "trial": 129,
       "seed": 1022888,
       "classification": "MASKED",
-      "op_id": 49,
+      "op_id": 86,
       "occurrence": 683,
       "bit": 11,
       "reasons": [
@@ -1998,8 +2736,8 @@
       "trial": 130,
       "seed": 1030807,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 766,
+      "op_id": 4,
+      "occurrence": 1800,
       "bit": 2,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2012,8 +2750,8 @@
       "trial": 131,
       "seed": 1038726,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 594,
+      "op_id": 17,
+      "occurrence": 5204,
       "bit": 56,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2026,8 +2764,8 @@
       "trial": 132,
       "seed": 1046645,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 677,
+      "op_id": 30,
+      "occurrence": 655,
       "bit": 47,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2040,8 +2778,8 @@
       "trial": 133,
       "seed": 1054564,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 760,
+      "op_id": 43,
+      "occurrence": 1384,
       "bit": 38,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2054,8 +2792,8 @@
       "trial": 134,
       "seed": 1062483,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 588,
+      "op_id": 56,
+      "occurrence": 2501,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2068,8 +2806,8 @@
       "trial": 135,
       "seed": 1070402,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 671,
+      "op_id": 69,
+      "occurrence": 3999,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2082,7 +2820,7 @@
       "trial": 136,
       "seed": 1078321,
       "classification": "MASKED",
-      "op_id": 49,
+      "op_id": 82,
       "occurrence": 499,
       "bit": 10,
       "reasons": [
@@ -2096,7 +2834,7 @@
       "trial": 137,
       "seed": 1086240,
       "classification": "MASKED",
-      "op_id": 49,
+      "op_id": 95,
       "occurrence": 582,
       "bit": 0,
       "reasons": [
@@ -2110,8 +2848,8 @@
       "trial": 138,
       "seed": 1094159,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 665,
+      "op_id": 13,
+      "occurrence": 5101,
       "bit": 55,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2124,8 +2862,8 @@
       "trial": 139,
       "seed": 1102078,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 493,
+      "op_id": 26,
+      "occurrence": 3227,
       "bit": 46,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2138,8 +2876,8 @@
       "trial": 140,
       "seed": 1109997,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 576,
+      "op_id": 39,
+      "occurrence": 3956,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2152,8 +2890,8 @@
       "trial": 141,
       "seed": 1117916,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 659,
+      "op_id": 52,
+      "occurrence": 845,
       "bit": 27,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2166,8 +2904,8 @@
       "trial": 142,
       "seed": 1125835,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 487,
+      "op_id": 65,
+      "occurrence": 639,
       "bit": 17,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2180,7 +2918,7 @@
       "trial": 143,
       "seed": 1133754,
       "classification": "MASKED",
-      "op_id": 49,
+      "op_id": 78,
       "occurrence": 570,
       "bit": 8,
       "reasons": [
@@ -2194,7 +2932,7 @@
       "trial": 144,
       "seed": 1141673,
       "classification": "MASKED",
-      "op_id": 49,
+      "op_id": 91,
       "occurrence": 653,
       "bit": 63,
       "reasons": [
@@ -2208,8 +2946,8 @@
       "trial": 145,
       "seed": 1149592,
       "classification": "MASKED",
-      "op_id": 49,
-      "occurrence": 481,
+      "op_id": 9,
+      "occurrence": 2395,
       "bit": 53,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2222,7 +2960,7 @@
       "trial": 146,
       "seed": 1157511,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 20,
       "occurrence": 3124,
       "bit": 44,
       "reasons": [
@@ -2236,7 +2974,7 @@
       "trial": 147,
       "seed": 1165430,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 33,
       "occurrence": 3853,
       "bit": 35,
       "reasons": [
@@ -2250,7 +2988,7 @@
       "trial": 148,
       "seed": 1173349,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 46,
       "occurrence": 1979,
       "bit": 25,
       "reasons": [
@@ -2264,8 +3002,8 @@
       "trial": 149,
       "seed": 1181268,
       "classification": "MASKED",
-      "op_id": 6,
-      "occurrence": 2708,
+      "op_id": 59,
+      "occurrence": 3350,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2278,8 +3016,8 @@
       "trial": 150,
       "seed": 1189187,
       "classification": "MASKED",
-      "op_id": 6,
-      "occurrence": 3437,
+      "op_id": 72,
+      "occurrence": 641,
       "bit": 7,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2292,8 +3030,8 @@
       "trial": 151,
       "seed": 1197106,
       "classification": "MASKED",
-      "op_id": 6,
-      "occurrence": 1563,
+      "op_id": 85,
+      "occurrence": 469,
       "bit": 61,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2306,7 +3044,7 @@
       "trial": 152,
       "seed": 1205025,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 3,
       "occurrence": 2292,
       "bit": 52,
       "reasons": [
@@ -2320,7 +3058,7 @@
       "trial": 153,
       "seed": 1212944,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 16,
       "occurrence": 418,
       "bit": 42,
       "reasons": [
@@ -2334,7 +3072,7 @@
       "trial": 154,
       "seed": 1220863,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 29,
       "occurrence": 1147,
       "bit": 33,
       "reasons": [
@@ -2348,7 +3086,7 @@
       "trial": 155,
       "seed": 1228782,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 42,
       "occurrence": 1876,
       "bit": 24,
       "reasons": [
@@ -2362,8 +3100,8 @@
       "trial": 156,
       "seed": 1236701,
       "classification": "MASKED",
-      "op_id": 6,
-      "occurrence": 2,
+      "op_id": 55,
+      "occurrence": 4357,
       "bit": 14,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2376,8 +3114,8 @@
       "trial": 157,
       "seed": 1244620,
       "classification": "MASKED",
-      "op_id": 6,
-      "occurrence": 731,
+      "op_id": 68,
+      "occurrence": 1488,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2390,8 +3128,8 @@
       "trial": 158,
       "seed": 1252539,
       "classification": "MASKED",
-      "op_id": 6,
-      "occurrence": 1460,
+      "op_id": 81,
+      "occurrence": 540,
       "bit": 60,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2404,8 +3142,8 @@
       "trial": 159,
       "seed": 1260458,
       "classification": "MASKED",
-      "op_id": 6,
-      "occurrence": 4864,
+      "op_id": 94,
+      "occurrence": 368,
       "bit": 50,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2418,7 +3156,7 @@
       "trial": 160,
       "seed": 1268377,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 12,
       "occurrence": 315,
       "bit": 41,
       "reasons": [
@@ -2432,7 +3170,7 @@
       "trial": 161,
       "seed": 1276296,
       "classification": "MASKED",
-      "op_id": 6,
+      "op_id": 25,
       "occurrence": 1044,
       "bit": 32,
       "reasons": [
@@ -2446,8 +3184,8 @@
       "trial": 162,
       "seed": 1284215,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 20282,
+      "op_id": 36,
+      "occurrence": 4448,
       "bit": 22,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2460,8 +3198,8 @@
       "trial": 163,
       "seed": 1292134,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 21011,
+      "op_id": 49,
+      "occurrence": 2701,
       "bit": 13,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2474,8 +3212,8 @@
       "trial": 164,
       "seed": 1300053,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 628,
+      "op_id": 62,
+      "occurrence": 4199,
       "bit": 3,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2488,8 +3226,8 @@
       "trial": 165,
       "seed": 1307972,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 14588,
+      "op_id": 75,
+      "occurrence": 356,
       "bit": 58,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2502,8 +3240,8 @@
       "trial": 166,
       "seed": 1315891,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 15317,
+      "op_id": 88,
+      "occurrence": 439,
       "bit": 49,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2516,8 +3254,8 @@
       "trial": 167,
       "seed": 1323810,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 16046,
+      "op_id": 6,
+      "occurrence": 212,
       "bit": 39,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2530,8 +3268,8 @@
       "trial": 168,
       "seed": 1331729,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 8894,
+      "op_id": 19,
+      "occurrence": 3616,
       "bit": 30,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2544,8 +3282,8 @@
       "trial": 169,
       "seed": 1339648,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 9623,
+      "op_id": 32,
+      "occurrence": 4345,
       "bit": 21,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2558,7 +3296,7 @@
       "trial": 170,
       "seed": 1347567,
       "classification": "MASKED",
-      "op_id": 12,
+      "op_id": 45,
       "occurrence": 2471,
       "bit": 11,
       "reasons": [
@@ -2572,8 +3310,8 @@
       "trial": 171,
       "seed": 1355486,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 3200,
+      "op_id": 58,
+      "occurrence": 839,
       "bit": 2,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2586,8 +3324,8 @@
       "trial": 172,
       "seed": 1363405,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 3929,
+      "op_id": 71,
+      "occurrence": 427,
       "bit": 57,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2600,8 +3338,8 @@
       "trial": 173,
       "seed": 1371324,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 17889,
+      "op_id": 84,
+      "occurrence": 255,
       "bit": 47,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2614,8 +3352,8 @@
       "trial": 174,
       "seed": 1379243,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 18618,
+      "op_id": 2,
+      "occurrence": 2784,
       "bit": 38,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2628,8 +3366,8 @@
       "trial": 175,
       "seed": 1387162,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 19347,
+      "op_id": 15,
+      "occurrence": 3513,
       "bit": 28,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2642,8 +3380,8 @@
       "trial": 176,
       "seed": 1395081,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 12195,
+      "op_id": 28,
+      "occurrence": 1639,
       "bit": 19,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2656,8 +3394,8 @@
       "trial": 177,
       "seed": 1403000,
       "classification": "MASKED",
-      "op_id": 12,
-      "occurrence": 12924,
+      "op_id": 41,
+      "occurrence": 2368,
       "bit": 10,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2670,8 +3408,8 @@
       "trial": 178,
       "seed": 1410919,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 1845,
+      "op_id": 52,
+      "occurrence": 3550,
       "bit": 0,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2684,8 +3422,8 @@
       "trial": 179,
       "seed": 1418838,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 11845,
+      "op_id": 65,
+      "occurrence": 3344,
       "bit": 55,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2698,8 +3436,8 @@
       "trial": 180,
       "seed": 1426757,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 2166,
+      "op_id": 78,
+      "occurrence": 326,
       "bit": 46,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2712,8 +3450,8 @@
       "trial": 181,
       "seed": 1434676,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 10143,
+      "op_id": 91,
+      "occurrence": 409,
       "bit": 36,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2726,8 +3464,8 @@
       "trial": 182,
       "seed": 1442595,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 2487,
+      "op_id": 9,
+      "occurrence": 807,
       "bit": 27,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2740,8 +3478,8 @@
       "trial": 183,
       "seed": 1450514,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 10464,
+      "op_id": 22,
+      "occurrence": 1536,
       "bit": 18,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2754,8 +3492,8 @@
       "trial": 184,
       "seed": 1458433,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 785,
+      "op_id": 35,
+      "occurrence": 2265,
       "bit": 8,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2768,8 +3506,8 @@
       "trial": 185,
       "seed": 1466352,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 10785,
+      "op_id": 48,
+      "occurrence": 190,
       "bit": 63,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2782,8 +3520,8 @@
       "trial": 186,
       "seed": 1474271,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 1106,
+      "op_id": 61,
+      "occurrence": 1688,
       "bit": 54,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2796,8 +3534,8 @@
       "trial": 187,
       "seed": 1482190,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 11106,
+      "op_id": 74,
+      "occurrence": 142,
       "bit": 44,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2810,8 +3548,8 @@
       "trial": 188,
       "seed": 1490109,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 1427,
+      "op_id": 87,
+      "occurrence": 225,
       "bit": 35,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2824,8 +3562,8 @@
       "trial": 189,
       "seed": 1498028,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 9404,
+      "op_id": 5,
+      "occurrence": 704,
       "bit": 25,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2839,7 +3577,7 @@
       "seed": 1505947,
       "classification": "MASKED",
       "op_id": 18,
-      "occurrence": 1748,
+      "occurrence": 4108,
       "bit": 16,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2852,8 +3590,8 @@
       "trial": 191,
       "seed": 1513866,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 9725,
+      "op_id": 31,
+      "occurrence": 4837,
       "bit": 7,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2866,8 +3604,8 @@
       "trial": 192,
       "seed": 1521785,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 46,
+      "op_id": 44,
+      "occurrence": 288,
       "bit": 61,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2880,8 +3618,8 @@
       "trial": 193,
       "seed": 1529704,
       "classification": "MASKED",
-      "op_id": 18,
-      "occurrence": 10046,
+      "op_id": 57,
+      "occurrence": 2695,
       "bit": 52,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2894,8 +3632,8 @@
       "trial": 194,
       "seed": 1537623,
       "classification": "MASKED",
-      "op_id": 24,
-      "occurrence": 20255,
+      "op_id": 68,
+      "occurrence": 4193,
       "bit": 43,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2908,8 +3646,8 @@
       "trial": 195,
       "seed": 1545542,
       "classification": "MASKED",
-      "op_id": 24,
-      "occurrence": 20984,
+      "op_id": 81,
+      "occurrence": 296,
       "bit": 33,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2922,8 +3660,8 @@
       "trial": 196,
       "seed": 1553461,
       "classification": "MASKED",
-      "op_id": 24,
-      "occurrence": 13832,
+      "op_id": 94,
+      "occurrence": 124,
       "bit": 24,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2936,8 +3674,8 @@
       "trial": 197,
       "seed": 1561380,
       "classification": "MASKED",
-      "op_id": 24,
-      "occurrence": 14561,
+      "op_id": 12,
+      "occurrence": 4005,
       "bit": 15,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2950,8 +3688,8 @@
       "trial": 198,
       "seed": 1569299,
       "classification": "MASKED",
-      "op_id": 24,
-      "occurrence": 15290,
+      "op_id": 25,
+      "occurrence": 4734,
       "bit": 5,
       "reasons": [
         "the final result stayed inside the acceptance criterion",
@@ -2964,8 +3702,8 @@
       "trial": 199,
       "seed": 1577218,
       "classification": "MASKED",
-      "op_id": 24,
-      "occurrence": 8138,
+      "op_id": 38,
+      "occurrence": 2860,
       "bit": 60,
       "reasons": [
         "the final result stayed inside the acceptance criterion",

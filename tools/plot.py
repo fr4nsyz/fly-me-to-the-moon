@@ -5,7 +5,7 @@ Re-flies one trial from each committed lunar sweep (runs are deterministic) and
 writes each figure as a light and a dark PNG.
 
 Usage:
-    .venv/bin/python tools/plot.py --binary build/moon/moon_instr --trial 1 --out docs/img
+    .venv/bin/python tools/plot.py --binary build/moon/moon_instr --trial 35 --out docs/img
 """
 
 import argparse
@@ -131,7 +131,7 @@ def profile_panel(ax, clean, faulty, faulty_name, title):
     t = first_divergence(clean, faulty)
     if t is not None:
         div = next(p for p, s in zip(downrange_km(faulty), faulty["samples"]) if s["t"] >= t)
-        ax.annotate(f"fault visible at t = {t:.0f} s", div, xytext=(div[0] - 260, div[1] + 5),
+        ax.annotate(f"fault visible at t = {t:.0f} s", div, xytext=(div[0] - 150, div[1] - 4),
                     color=MUTED, arrowprops={"arrowstyle": "-", "color": MUTED})
     ax.set_xlabel("downrange (km)")
     ax.set_ylim(bottom=0)
