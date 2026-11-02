@@ -75,10 +75,10 @@ if [[ -z "$WORKLOAD_NAME" ]]; then
   WORKLOAD_NAME="$(basename "${INSTRUMENT[0]}" .cpp)"
 fi
 
+mkdir -p "$(dirname "$OUT")"
 OUT_DIR="$(cd "$(dirname "$OUT")" && pwd)"
 OUT_ABS="$OUT_DIR/$(basename "$OUT")"
 BUILD_DIR="$OUT_DIR/.sdc-instrument"
-mkdir -p "$OUT_DIR"
 rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 
