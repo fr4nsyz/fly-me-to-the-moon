@@ -211,7 +211,7 @@ chosen command; any untrusted computer flags the tick CORRECTED.
 is set to the chosen computer's.
 
 \paragraph{Separate cores.} The build compiles the per-core sources once per core and
-internalizes each copy, so every core has its own operations: 6 copies of 49 operations.
+internalizes each copy, so every core has its own operations: 6 copies of 95 operations at -O2.
 The comparisons use integer bit patterns, outside the floating-point fault model, so the
 voter is assumed reliable.
 Code: \texttt{fsw/redundancy.cpp}, \texttt{fsw/fsw.cpp}, \texttt{fsw/core.cpp}.

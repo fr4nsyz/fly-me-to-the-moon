@@ -3,12 +3,12 @@
 #
 #   ./tools/instrument.sh workloads/reductions/sum.cpp -o build/sum_instr
 #
-#   ./tools/instrument.sh --profile o0 -o build/moon_instr --keep fsw_tick \
+#   ./tools/instrument.sh -o build/moon_instr --keep fsw_tick \
 #       -I workloads/moon/common --instrument workloads/moon/fsw/fsw.cpp \
 #       --plain workloads/moon/sim/main.cpp --plain build/workloads/moon/plant/libmoon_plant.a
 #
 # Files given with --instrument (or as a bare argument) are compiled to bitcode
-# with the profile's flag set, merged, and rewritten by the LLVM pass so every
+# with the pinned flag set, merged, and rewritten by the LLVM pass so every
 # double-precision FP op becomes a runtime hook. Files given with --plain are
 # compiled and linked normally. Files given with --replicated are compiled once
 # per copy (--replicate N): copy i renames the --replicate-entry function to
@@ -23,7 +23,7 @@ OPT="${LLVM_ROOT}/bin/opt"
 LLVM_LINK="${LLVM_ROOT}/bin/llvm-link"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-CANONICAL_FLAGS=(
+FLAGS=(
   -O2
   -gline-tables-only
   -ffp-contract=off
@@ -31,18 +31,10 @@ CANONICAL_FLAGS=(
   -fno-slp-vectorize
 )
 
-# ADR-0017: replicas and voters must survive, so this profile does not optimize.
-O0_FLAGS=(
-  -O0
-  -gline-tables-only
-  -ffp-contract=off
-)
-
-USAGE="usage: $0 [--profile canonical|o0] [--instrument <file>]... [--plain <file>]...
+USAGE="usage: $0 [--instrument <file>]... [--plain <file>]...
           [--replicate <n> --replicate-entry <name> --replicated <file>...]
           [--keep <symbol>]... [-I <dir>]... [--name <workload-name>] -o <output> [<file>]"
 
-PROFILE="canonical"
 OUT=""
 WORKLOAD_NAME=""
 INSTRUMENT=()
@@ -57,7 +49,6 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     -o) OUT="$2"; shift 2 ;;
     --name) WORKLOAD_NAME="$2"; shift 2 ;;
-    --profile) PROFILE="$2"; shift 2 ;;
     --instrument) INSTRUMENT+=("$2"); shift 2 ;;
     --plain) PLAIN+=("$2"); shift 2 ;;
     --keep) KEEP+=("$2"); shift 2 ;;
@@ -79,11 +70,6 @@ if [[ ${#REPLICATED[@]} -gt 0 && ( "$REPLICATE" -lt 1 || -z "$REPLICATE_ENTRY" )
   exit 2
 fi
 
-case "$PROFILE" in
-  canonical) FLAGS=("${CANONICAL_FLAGS[@]}") ;;
-  o0) FLAGS=("${O0_FLAGS[@]}") ;;
-  *) echo "instrument.sh: unknown profile '$PROFILE'" >&2; exit 2 ;;
-esac
 
 if [[ -z "$WORKLOAD_NAME" ]]; then
   WORKLOAD_NAME="$(basename "${INSTRUMENT[0]}" .cpp)"

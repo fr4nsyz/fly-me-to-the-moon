@@ -6,14 +6,14 @@ An LLVM IR pass rewrites every double-precision add, subtract, multiply, divide,
 
 ## The demo
 
-A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its flight software (navigation and guidance) is instrumented; the physics plant is not. Each fault-injection run is judged on the true touchdown state against the Lunar Module's landing-gear envelope.
+A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its flight software (navigation and guidance) is built at -O2 and instrumented; the physics plant is not. Each fault-injection run is judged on the true touchdown state against the Lunar Module's landing-gear envelope.
 
 | Experiment | Result |
 |---|---|
 | Clean landing | Touchdown at 527.8 s, 1.0 m/s down, 0.0 m/s sideways, 1,158 kg propellant left |
 | 200 transient faults, no defense | 200 MASKED: the control loop corrects one bad tick on the next |
-| 200 persistent faults, no defense | 31 SDC (15.5%), 169 MASKED: 169 safe landings |
-| 200 persistent faults, TMR and lockstep hybrid | 0 SDC, 199 CORRECTED, 1 MASKED: 200 safe landings |
+| 200 persistent faults, no defense | 28 SDC (14%), 172 MASKED: 172 safe landings |
+| 200 persistent faults, TMR and lockstep hybrid | 0 SDC, 170 CORRECTED, 30 MASKED: 200 safe landings |
 
 The defense is a hybrid of TMR and lockstep that mimics real rocket flight computers: three computers, each a lockstep pair of cores, with commands compared across computers.
 
@@ -24,34 +24,34 @@ The defense is a hybrid of TMR and lockstep that mimics real rocket flight compu
   <img alt="Defense outcomes" src="docs/img/defense_outcomes_light.png">
 </picture>
 
-With no defense, about one in six persistent single-bit faults silently crashes the lander. With the TMR and lockstep hybrid, all 200 land safely: in 199 the defense silenced or outvoted the broken core.
+With no defense, about one in seven persistent single-bit faults silently ruins the landing: 20 crash and 8 touch down softly but more than 1 km off target. With the TMR and lockstep hybrid, all 200 land safely: in 170 the defense silenced or outvoted the broken core, and in 30 the fault hit an operation whose result never reaches the engine command, such as a sign test.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/same_fault_dark.png">
   <img alt="The same fault without and with the defense" src="docs/img/same_fault_light.png">
 </picture>
 
-The same persistent exponent flip in navigation (trial 1), side by side. Without a defense (left) the trajectories match until t = 379 s, then the lander falls short and strikes the surface at 123.6 m/s. With the defense (right) the same fault lands on core 4 and the landing is identical to the clean one.
+The same persistent exponent flip in navigation (trial 35), side by side. Without a defense (left) the trajectories match until t = 261 s, then the lander falls short and strikes the surface at 113.5 m/s down and 355 m/s sideways, 16 km from the clean landing spot. With the defense (right) the same fault lands on core 5 and the landing is identical to the clean one.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/computers_dark.png">
   <img alt="Flight computer status in the defended run" src="docs/img/computers_light.png">
 </picture>
 
-What the defense did: core 4's two-core computer (computer 2) disagrees with itself from t = 379 s, so it is silenced and computers 0 and 1 fly the rest of the descent.
+What the defense did: core 5's two-core computer (computer 2) disagrees with itself from t = 261 s, so it is silenced and computers 0 and 1 fly the rest of the descent.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/descent_speeds_dark.png">
   <img alt="Vertical and horizontal speed without a defense" src="docs/img/descent_speeds_light.png">
 </picture>
 
-The undefended run's speeds: the fault takes over late in braking, where vertical speed should level off before the final descent.
+The undefended run's speeds: the fault takes over during braking at t = 261 s, and the descent rate runs away while the lander still has 355 m/s of horizontal speed.
 
 ### Viewer
 
-The interactive viewer (see [View a run](#view-a-run)) replaying three outcomes from t = 300 s: clean in blue, faulty in orange, rows flagged where the two runs differ.
+The interactive viewer (see [View a run](#view-a-run)) replaying three outcomes from t = 240 s: clean in blue, faulty in orange, rows flagged where the two runs differ.
 
-SDC, no defense (trial 1): the fault becomes visible at 379 s and the lander strikes the surface at 123.6 m/s.
+SDC, no defense (trial 35): the fault becomes visible at 261 s and the lander strikes the surface at 113.5 m/s.
 
 ![SDC replay](docs/img/viewer_sdc.gif)
 
@@ -59,7 +59,7 @@ MASKED, no defense (trial 0): the fault never changes the trajectory and the lan
 
 ![MASKED replay](docs/img/viewer_masked.gif)
 
-CORRECTED, TMR and lockstep (trial 1): computer 2 is silenced at 379 s and the landing matches the clean run.
+CORRECTED, TMR and lockstep (trial 35): computer 2 is silenced at 261 s and the landing matches the clean run.
 
 ![CORRECTED replay](docs/img/viewer_corrected.gif)
 
@@ -80,7 +80,7 @@ ctest --test-dir build
 ## Run the lander
 
 ```bash
-./tools/instrument.sh --profile o0 --name moon -I workloads/moon/common -I workloads/moon/plant \
+./tools/instrument.sh --name moon -I workloads/moon/common -I workloads/moon/plant \
   --replicate 6 --replicate-entry run_core --replicated workloads/moon/fsw/core.cpp \
   --replicated workloads/moon/fsw/navigation.cpp --replicated workloads/moon/fsw/guidance.cpp \
   --instrument workloads/moon/fsw/fsw.cpp --instrument workloads/moon/fsw/redundancy.cpp \
@@ -89,6 +89,8 @@ ctest --test-dir build
 
 /opt/homebrew/bin/python3.14 tools/study/sweep.py --binary build/moon/moon_instr --ops build/moon/ops.json \
   --trials 200 --seed 1337 --workload moon --persistent \
+  --build-id <id printed by instrument.sh> \
+  --compiler-flags "-O2 -gline-tables-only -ffp-contract=off -fno-vectorize -fno-slp-vectorize" \
   --analyzer-args "--reference-bits 0x0 --abs-tol 1" --forward-from-clean spot:--reference \
   --jobs 8 --out results/sweep_moon_persistent_none -- --defense none
 ```
@@ -103,13 +105,13 @@ Use `-- --defense tmr-lockstep` for the defended run.
 open view.html
 ```
 
-The generator reads the defense mode from the sweep, re-flies the clean landing and every SDC trial plus two of each other outcome (runs are deterministic), and writes one offline HTML file with a trial picker: the 3D descent with clean and faulty paths, live clean versus faulty telemetry (speeds, descent angle, thrust tilt, throttle, fuel) with diverged rows flagged, an attitude gauge, the flight computers that exist in that mode, clickable events, and altitude and speed charts on a shared timeline.
+The generator reads the defense mode from the sweep, re-flies the clean landing, every trial that is SDC in any of the given sweeps, and two of each other outcome (runs are deterministic), and writes one offline HTML file with a trial picker: the 3D descent with clean and faulty paths, live clean versus faulty telemetry (speeds, descent angle, thrust tilt, throttle, fuel) with diverged rows flagged, an attitude gauge, the flight computers that exist in that mode, clickable events, and altitude and speed charts on a shared timeline.
 
 ## Plot the figures
 
 ```bash
 /opt/homebrew/bin/python3.14 -m venv .venv && .venv/bin/pip install matplotlib==3.11.2
-.venv/bin/python tools/plot.py --binary build/moon/moon_instr --trial 1 --out docs/img
+.venv/bin/python tools/plot.py --binary build/moon/moon_instr --trial 35 --out docs/img
 ```
 
 ## Documents

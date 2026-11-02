@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build a self-contained HTML descent viewer for the notable trials of one or more sweeps.
 
-Re-flies the clean landing once per defense mode and every SDC trial plus a few
-trials of each other outcome with --trajectory, and inlines the trajectories,
+Re-flies the clean landing once per defense mode and, from each sweep, every trial
+that is SDC in any given sweep plus a few trials of each other outcome with --trajectory, and inlines the trajectories,
 the evidence summaries, and the vendored Three.js into viewer/template.html.
 
 Usage:
@@ -25,7 +25,7 @@ from concurrent.futures import ThreadPoolExecutor
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE = os.path.join(ROOT, "viewer", "template.html")
 THREE = os.path.join(ROOT, "viewer", "vendor", "three.min.js")
-OPS_PER_CORE = 49
+CORES = 6
 RUN_TIMEOUT = 600
 
 
@@ -64,6 +64,11 @@ def demangle(name):
     return base
 
 
+def load_ops(binary):
+    with open(os.path.join(os.path.dirname(os.path.abspath(binary)), "ops.json")) as handle:
+        return json.load(handle)
+
+
 def load_trial(args):
     """The trial's evidence file, or an equivalent built from summary.json and ops.json."""
     path = os.path.join(args.sweep, f"trial_{args.trial:04d}.json")
@@ -75,8 +80,7 @@ def load_trial(args):
     record = next((r for r in summary["records"] if r["trial"] == args.trial), None)
     if record is None:
         raise SystemExit(f"view: trial {args.trial} is not in {args.sweep}/summary.json")
-    with open(os.path.join(os.path.dirname(os.path.abspath(args.binary)), "ops.json")) as handle:
-        ops = json.load(handle)
+    ops = load_ops(args.binary)
     return {
         "classification": record["classification"],
         "reasons": record.get("reasons", []),
@@ -134,15 +138,25 @@ def refly(args):
     return evidence, clean, faulty
 
 
-def pick_trials(sweep, per_class):
-    """Every SDC trial plus the first per_class trials of each other outcome."""
+def sdc_trials(sweeps):
+    trials = set()
+    for sweep in sweeps:
+        with open(os.path.join(sweep, "summary.json")) as handle:
+            trials |= {r["trial"] for r in json.load(handle)["records"] if r["classification"] == "SDC"}
+    return trials
+
+
+def pick_trials(sweep, per_class, always=()):
+    """Every SDC trial, every trial in always, and the first per_class trials of each other outcome."""
     with open(os.path.join(sweep, "summary.json")) as handle:
         records = json.load(handle)["records"]
     taken = Counter()
     picked = []
     for record in records:
         cls = record["classification"]
-        if cls == "SDC" or taken[cls] < per_class:
+        if cls == "SDC" or record["trial"] in always:
+            picked.append(record["trial"])
+        elif taken[cls] < per_class:
             taken[cls] += 1
             picked.append(record["trial"])
     return picked
@@ -152,7 +166,9 @@ def summarize(evidence, args):
     inject = evidence.get("inject", {})
     source = (evidence.get("injected_event") or {}).get("source", {})
     op_id = inject.get("op_id", 0)
-    core = (op_id - 1) // OPS_PER_CORE if op_id > 0 else None
+    # The copies are the only instrumented code and are numbered in core order, so op ids form equal blocks.
+    ops_per_core = len(load_ops(args.binary)) // CORES
+    core = (op_id - 1) // ops_per_core if op_id > 0 else None
     return {
         "classification": evidence.get("classification", "UNKNOWN"),
         "reasons": evidence.get("reasons", []),
@@ -193,11 +209,13 @@ def main():
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
+    # Same seed, same trial number: the same fault site, so a fault that broke one sweep is shown in every sweep.
+    always = sdc_trials(args.sweep)
     jobs = []
     for sweep in args.sweep:
         mode = sweep_defense(argparse.Namespace(sweep=sweep, defense=None))
         jobs += [argparse.Namespace(binary=args.binary, sweep=sweep, defense=mode, trial=t)
-                 for t in pick_trials(sweep, args.per_class)]
+                 for t in pick_trials(sweep, args.per_class, always)]
 
     with tempfile.TemporaryDirectory() as tmp:
         cleans = {mode: fly_clean(args.binary, mode, tmp) for mode in {job.defense for job in jobs}}

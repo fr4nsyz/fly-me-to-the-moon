@@ -425,24 +425,29 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Follow-up.** None.
 
-### ADR-0017 — Moon flight software builds at -O0; the TMR and lockstep hybrid is written in the flight software source
+### ADR-0017 — Moon flight software builds with the canonical -O2 flags; build replication survives optimization
 
-**Date:** 2026-10-31
-**Status:** Accepted. Supersedes ADR-0002 for the moon workload only.
+**Date:** 2026-11-01
+**Status:** Accepted
 
-**Proposed.** ADR-0008 requires replicating the flight software and comparing the copies. At the canonical -O2, identical copies merge and the comparison is deleted before the pass runs.
+**Proposed.** ADR-0008 requires replicating the flight software and comparing the copies. When the replicas were calls to one function in one translation unit, -O2 merged the identical calls and deleted the comparison before the pass ran, so the moon flight software was built at -O0.
 
-**Decision.** The moon flight software uses its own pinned flag set, `-O0 -gline-tables-only -ffp-contract=off`, selected with `tools/instrument.sh --profile o0`. The TMR and lockstep hybrid (ADR-0008) is written as plain code in the flight software. All other workloads keep the ADR-0002 flags.
+**Decision.** The moon flight software builds with the ADR-0002 flag set, like every other workload. The build makes the replicas (`tools/instrument.sh --replicate`, ADR-0008); the TMR and lockstep comparison is plain code in the flight software. `tools/instrument.sh` has one flag set and no profiles.
 
-**Why.** At -O0 each copy stays a separate call, so a fault inside one copy spreads through its operations before the comparison. The comparisons are integer comparisons, which the fault model does not cover, so the campaign never faults them; ADR-0008 assumes a reliable voter. The flag string is in the trace header, so the analyzer still rejects a pair built with different flags. Run time is not a reason to keep -O2 here: instrumentation turns every FP op into a runtime hook call, which already dominates run time (3.9x median overhead on `sum_plain` at -O2), so fighting the optimizer would buy little speed. ADR-0002 rejected -O0 for fidelity to production code, not speed, and that cost is recorded under Limitations.
+**Why.** The merge needed identical calls on identical inputs inside one function. Build replication gives six differently named functions, each reading its own state, called through a table, so -O2 has nothing to merge. -O2 is the closer model of production flight software (ADR-0002), and it removes a workload-specific flag set.
 
-**Evidence.** Three `guidance()` replicas plus `vote()`, built with Homebrew clang 23.1.4. At -O2: one copy of the arithmetic (`fmul`, `fmul`, `fmul`, `fsub`, `ret`) and no voter. At -O0: three `call @guidance` and one `call @vote`.
+**Evidence.** Homebrew clang 23.1.4.
+- Source-level replicas, three `guidance()` calls plus `vote()` in one TU: at -O2, one copy of the arithmetic (`fmul`, `fmul`, `fmul`, `fsub`, `ret`) and no voter; at -O0, three `call @guidance` and one `call @vote`.
+- Build replication at -O2: `ops.json` holds 570 operations in six equal blocks of 95, one `navigate` and one `guide` per core (at -O0, six blocks of 49). The extra operations are vector helpers inlined at each call site.
+- The clean landing is the same at -O0 and -O2 to printed precision: touchdown at 527.77 s, 1.000 m/s down, 0.000 m/s sideways, 1157.6 kg propellant, score 0.3279.
+- 200 persistent faults, seed 1337. `none`: 28 SDC, 172 MASKED (-O0: 31 SDC, 169 MASKED). `tmr-lockstep`: 0 SDC, 170 CORRECTED, 30 MASKED (-O0: 0 SDC, 199 CORRECTED, 1 MASKED).
+- Why MASKED rose under the defense: at -O0 each core had one shared `dot`, so a persistent fault in it corrupted every dot product in that core, including those that reach the engine command, and lockstep caught it. At -O2 each call site has its own operations. 21 of the 30 MASKED trials hit a site whose result cannot change the command: the dot product in the sign test at `guidance.cpp:46` (10), or the z term of a dot product (11), which is always 0.0 on the equatorial trajectory and is lost to rounding. Every trial at those sites was MASKED in both modes.
 
-**Rejected.** Keeping -O2 with compiler barriers (volatile, opaque calls, separate TUs, optnone): out of scope for now. Per-operation TMR inside the runtime: it survives -O2 but votes before a fault can spread and corrects everything by construction.
+**Rejected.** Staying at -O0: describes unoptimized code and needs its own flag set. Compiler barriers (volatile, opaque calls, `optnone`) on source-level replicas: each distorts the code it protects; build replication needs none. Per-operation TMR in the runtime: votes before a fault can spread and corrects everything by construction.
 
-**Limitations.** Results describe unoptimized flight software. -O0 keeps operations an optimized build would remove, so the set of fault sites differs from an optimized binary.
+**Limitations.** Injection is at LLVM IR, so register allocation and spills are not modeled. Op ids at -O2 follow inlining decisions, so -O0 and -O2 campaigns compare by outcome rates, not trial by trial. On the equatorial trajectory every z component is exactly 0.0, so 41 of the 200 persistent-fault sites inject into a zero.
 
-**Impact.** `tools/instrument.sh`. `docs/architecture.md` sections 7.1, 9, 12, 16. `workloads/moon/fsw/`.
+**Impact.** `tools/instrument.sh`, `tools/view.py`, `results/sweep_moon_*`, `docs/img/`, `README.md`, `docs/architecture.md` sections 7.6, 9, 12, 14, 15, 16, `docs/math/moon-mission-math.tex`.
 
 **Follow-up.** None.
 
@@ -459,7 +464,7 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 - Vehicle: generic engine with Apollo Lunar Module descent-class numbers (about 15,100 kg at start, about 6,900 kg dry, about 45 kN, Isp about 311 s), verified against a source before coding.
 - Sensors: perfect. The flight software's navigation stage derives altitude, ground-relative velocity, and vertical and horizontal speed from the Moon-centered state. In the TMR and lockstep hybrid, every core runs its own navigation (ADR-0008).
 - Landing score, computed by the plant at touchdown: max(vertical speed / 3 m/s, horizontal speed / 1.2 m/s, distance from the clean run's touchdown point / 1000 m). Speeds are relative to the rotating lunar surface; the Moon is tidally locked, so it rotates at its orbital rate. No touchdown within the time limit scores infinity. The plant reports the score with `sdc_report_result`. The analyzer runs with reference 0.0 and `--abs-tol 1`: a score up to 1 passes; above 1, or NaN, is SDC. A hard landing is SDC, not CRASH; CRASH means the process died.
-- Build: `workloads/moon/fsw/` is instrumented with the moon profile (ADR-0017). `workloads/moon/sim/` and the plant are compiled normally. `tools/instrument.sh --profile moon` merges the flight software TUs with `llvm-link`, runs the pass, then internalizes every flight software symbol except `fsw_tick`.
+- Build: `workloads/moon/fsw/` is instrumented with the canonical flags (ADR-0002, ADR-0017). `workloads/moon/sim/` and the plant are compiled normally. `tools/instrument.sh` merges the flight software TUs with `llvm-link`, runs the pass, then internalizes every flight software symbol except `fsw_tick` and `fsw_configure`.
 
 **Why.** Two-phase descent is about 30-40 lines and stable (estimated), and fits a demo that should stay out of the weeds. Lunar Module numbers are proven to cover this descent. Perfect sensors still give a navigation stage with real arithmetic ahead of guidance. Scoring in the plant keeps the judge on ground truth. One scalar score fits the analyzer's existing tolerance check, so the analyzer and the trace format stay unchanged. Internalizing is required because shared headers compile to `linkonce_odr` functions, and the linker would otherwise keep one copy for both sides: either the plant gets hooks, or the flight software loses them, with no build error.
 
@@ -486,7 +491,7 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Why.** A square root is one hardware instruction, as exposed to a fault as an add. Leaving it out would exclude every distance and altitude computation in the guidance from the campaign.
 
-**Evidence.** At -O0, `std::sqrt(x)` is `call double @llvm.sqrt.f64` in IR and `fsqrt d0, d0` on arm64. `src/instrumentation/SDCInstrument.cpp` selects only `BinaryOperator`.
+**Evidence.** At -O0, `std::sqrt(x)` is `call double @llvm.sqrt.f64` in IR and `fsqrt d0, d0` on arm64; the -O2 moon build's `ops.json` lists `sqrt` operations. `src/instrumentation/SDCInstrument.cpp` selects only `BinaryOperator`.
 
 **Rejected.** Leaving the gap: biases results for guidance math. Instrumenting math library calls now: the descent rule does not use them.
 
@@ -523,20 +528,20 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 
 **Follow-up.** None.
 
-### ADR-0021 — Multi-file build profile is workload-generic
+### ADR-0021 — The multi-file build is workload-generic
 
 **Date:** 2026-10-31
-**Status:** Accepted. Supersedes the `--profile moon` naming in ADR-0018.
+**Status:** Accepted
 
-**Proposed.** ADR-0018 named the moon build `tools/instrument.sh --profile moon`, which risked tying the SDC platform to one workload.
+**Proposed.** The moon build instruments several files, replicates some, and links others plain. Moon-specific options in `tools/instrument.sh` would tie the SDC platform to one workload.
 
-**Decision.** The build profile is named for what it does, `--profile o0`, and takes the list of files to instrument as arguments; any multi-file workload can use it.
+**Decision.** `tools/instrument.sh` takes the files to instrument (`--instrument`), replicate (`--replicated`), and link plain (`--plain`) as arguments, with one flag set (ADR-0002) and no workload profiles. Any multi-file workload can use it.
 
 **Why.** The SDC platform (`src/`, `include/`, `tools/`) contains no workload-specific code, and `sum_plain` runs through it unchanged. Keeping it that way keeps the platform usable for other workloads.
 
-**Evidence.** `grep -rliE 'moon|lander|landing|plant' src include tools` finds no files.
+**Evidence.** `grep -rliE 'moon|lander|landing|plant' src include` finds no files. In `tools/`, only the usage example in `instrument.sh` names moon files; `view.py` and `plot.py` are the lunar demo's viewer and figures, not platform code.
 
-**Rejected.** Moon-named options in platform tools.
+**Rejected.** Moon-named options or per-workload flag profiles in platform tools.
 
 **Impact.** `tools/instrument.sh`.
 
@@ -576,8 +581,8 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Why.** A unit that keeps computing one operation wrong is a real failure mode: the defective "mercurial cores" reported in data-center SDC studies compute wrong results repeatably. It also gives redundancy something to outvote or detect on every tick.
 
 **Evidence.**
-- With op 1 (`navigate`, `fsub`), occurrence 1000, bit 20: the persistent trace has op 1 clean for occurrences 1 to 999 and flipped on all 4,279 later executions, with no other corrupted event; the transient trace has exactly one flipped execution.
-- No defenses, seed 1337, 200 trials: transient faults gave 200 MASKED (`results/sweep_moon_none/`); persistent faults gave 34 SDC and 166 MASKED (`results/sweep_moon_persistent_none/`). SDC came from 22 of 35 exponent flips, 3 of 3 sign flips, 9 of 34 high-mantissa flips, and 0 of 128 low-mantissa flips.
+- On the single-core -O0 build of the time, with op 1 (`navigate`, `fsub`), occurrence 1000, bit 20: the persistent trace has op 1 clean for occurrences 1 to 999 and flipped on all 4,279 later executions, with no other corrupted event; the transient trace has exactly one flipped execution.
+- No defenses, replicated -O2 build (ADR-0017), seed 1337, 200 trials: transient faults gave 200 MASKED (`results/sweep_moon_none/`); persistent faults gave 28 SDC and 172 MASKED (`results/sweep_moon_persistent_none/`). SDC came from 22 of 35 exponent flips, 2 of 3 sign flips, 4 of 34 high-mantissa flips, and 0 of 128 low-mantissa flips.
 - The 200-trial seed-1337 `sum_plain` sweep without `--persistent` matches the stored results in totals, per bit region, and per operation.
 
 **Rejected.** Stuck-at faults (a bit forced to 0 or 1): a different hardware failure, listed as future work. A fault that persists for a fixed number of ticks: an extra parameter with no clear physical model.

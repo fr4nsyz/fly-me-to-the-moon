@@ -111,7 +111,7 @@ fly-me-to-the-moon/
 │   ├── core/                     # Trace I/O, op kinds, JSON
 │   └── analyzer/                 # sdc-analyze: align, audit, classify, evidence, ops_map
 ├── tools/
-│   ├── instrument.sh             # Build an instrumented binary (canonical or o0 profile)
+│   ├── instrument.sh             # Build an instrumented binary (one pinned flag set)
 │   ├── trace_dump.py             # Pretty-print a binary trace
 │   ├── sdctrace.py               # Python trace reader
 │   └── study/                    # Experiment drivers: sweep.py, report.py, overhead.py
@@ -313,7 +313,7 @@ Keep them plain C++. Suggested starter set:
 
 1. Simple reduction (sum / product of an array) — easy to reason about masking.
 2. Iterative linear solver (Jacobi or CG) — interesting propagation.
-3. Hardened moon flight software (ADR-0008, ADR-0017): a TMR and lockstep hybrid modeled on real flight computers. This is where the defense table is generated.
+3. Hardened moon flight software (ADR-0008): a TMR and lockstep hybrid modeled on real flight computers. This is where the defense table is generated.
 4. Lunar descent (ADR-0007, ADR-0016) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the Three.js HUD.
 
 ---
@@ -386,7 +386,7 @@ The same seed always produces the same campaign. See ADR-0012 for how the inject
 
 ### Phase 6 — Hardened Workload & Defense Study (1–2 weeks)
 
-- Implement the moon plant and flight software per ADR-0016, built with the -O0 profile (ADR-0017). Plant is separate and not instrumented.
+- Implement the moon plant and flight software per ADR-0016, built with the canonical flags (ADR-0002, ADR-0017). Plant is separate and not instrumented.
 - Add the TMR and lockstep hybrid (ADR-0008): three computers, each a lockstep pair of cores, with commands compared across computers.
 - Compare `none` against `tmr-lockstep` under the same persistent faults, using the settled taxonomy (CORRECTED when a computer is silenced or outvoted).
 
@@ -468,7 +468,6 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 - Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening
 - Visualization of value propagation (data-flow graph extracted from the two traces)
 - Support for integer arithmetic or mixed-precision codes; faulting integer and compare instructions would also make the voter faultable
-- Replication that survives -O2 (compiler barriers, separate TUs, or `optnone` replicas); see ADR-0017
 - Attitude dynamics in the moon plant
 - Full Earth-to-Moon mission (ascent, translunar injection, coast, lunar orbit insertion) in an Earth-centered frame with a Moon ephemeris
 - Noisy sensors with a navigation filter in the moon flight software (ADR-0018)
@@ -505,11 +504,11 @@ Settled in this revision:
 | ADR-0014 | Alignment is a prefix scan on key and payload; no resynchronization |
 | ADR-0015 | Unit tests use GoogleTest 1.18 from Homebrew |
 | ADR-0016 | Descent model: Moon-centered frame, point-mass physics, uniform fault campaigns |
-| ADR-0017 | Moon FSW builds at -O0; the TMR and lockstep hybrid is written in FSW source |
+| ADR-0017 | Moon FSW builds with the canonical -O2 flags; build replication survives optimization |
 | ADR-0018 | Powered descent: 15 km start, two-phase guidance, LM-class vehicle, plant-computed landing score |
 | ADR-0019 | The pass instruments `llvm.sqrt` |
 | ADR-0020 | Verified lander numbers; trapezoid Lunar Module touchdown envelope |
-| ADR-0021 | Multi-file build profile is workload-generic |
+| ADR-0021 | The multi-file build is workload-generic; one flag set, no profiles |
 | ADR-0022 | Per-trial timeout and HANG outcome |
 | ADR-0023 | Persistent fault model |
 | ADR-0024 | Sweep trials run concurrently; cores stay sequential |
@@ -538,11 +537,11 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0014 | 2026-10-31 | Alignment is a prefix scan on key and payload | Accepted |
 | ADR-0015 | 2026-10-31 | Unit tests use GoogleTest | Accepted |
 | ADR-0016 | 2026-10-31 | Descent model: Moon-centered frame, point-mass physics, uniform fault campaigns | Accepted |
-| ADR-0017 | 2026-10-31 | Moon FSW builds at -O0; the TMR and lockstep hybrid is written in FSW source | Accepted |
+| ADR-0017 | 2026-11-01 | Moon FSW builds with the canonical -O2 flags; build replication survives optimization | Accepted |
 | ADR-0018 | 2026-10-31 | Powered descent design and moon build plumbing | Accepted |
 | ADR-0019 | 2026-10-31 | The pass instruments llvm.sqrt | Accepted |
 | ADR-0020 | 2026-10-31 | Verified lander numbers and the Lunar Module touchdown envelope | Accepted |
-| ADR-0021 | 2026-10-31 | Multi-file build profile is workload-generic | Accepted |
+| ADR-0021 | 2026-10-31 | The multi-file build is workload-generic | Accepted |
 | ADR-0022 | 2026-10-31 | Per-trial timeout and HANG outcome | Accepted |
 | ADR-0023 | 2026-10-31 | Persistent fault model | Accepted |
 | ADR-0024 | 2026-10-31 | Sweep trials run concurrently; cores stay sequential | Accepted |
@@ -557,7 +556,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 
 **Plant (not instrumented):** Hand-rolled C++ (MIT). 3D point mass: position, velocity, propellant mass. Moon-centered inertial frame, z along the spin axis; the Moon does not move and spins at a constant sidereal rate. Moon gravity only; no attitude dynamics. Fixed-step RK4. Deterministic.
 
-**FSW (instrumented, -O0 per ADR-0017):** Navigation derives altitude and ground-relative velocity; guidance brakes at full throttle against the ground-relative velocity, then flies a final descent that cancels gravity, tracks a target descent rate, and opposes horizontal drift (ADR-0018). Ticks at 10 Hz.
+**FSW (instrumented, canonical -O2 flags per ADR-0017):** Navigation derives altitude and ground-relative velocity; guidance brakes at full throttle against the ground-relative velocity, then flies a final descent that cancels gravity, tracks a target descent rate, and opposes horizontal drift (ADR-0018). Ticks at 10 Hz.
 
 **Vehicle:** Lunar Module descent class: 45.04 kN, Isp 311 s, 15,200 kg at start, 7,000 kg dry (ADR-0020).
 
@@ -576,7 +575,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 - **Resync:** after each tick, every computer's phase memory is set to the chosen computer's.
 - **Separate cores:** the build makes each core a separate, internalized copy of the same flight software (`instrument.sh --replicate`), so each has its own operations and a persistent fault breaks one core. The source stays plain C++.
 - **Cores run in sequence:** the six cores run one after another in a single thread each tick. Threads would not change any result and are not how hardware lockstep works (ADR-0008); the campaign runs trials concurrently instead (ADR-0024).
-- **Voter assumed reliable:** it compares integer bit patterns, which the floating-point fault model does not cover, so the campaign never faults it. It is a single point of failure the campaign does not measure. The flight software is built at -O0 so the copies and comparisons survive (ADR-0017).
+- **Voter assumed reliable:** it compares integer bit patterns, which the floating-point fault model does not cover, so the campaign never faults it. It is a single point of failure the campaign does not measure. Build replication keeps the copies and comparisons intact at -O2 (ADR-0017).
 - **Reporting:** the flight software returns a status flag; the simulation reports a silenced or outvoted computer as CORRECTED.
 
 ## 17. Instrumentation Scope (ADR-0009)
