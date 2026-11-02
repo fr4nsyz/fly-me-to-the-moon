@@ -84,7 +84,8 @@ mkdir -p "$BUILD_DIR"
 
 BC="$BUILD_DIR/workload.bc"
 INST_BC="$BUILD_DIR/workload.instrumented.bc"
-PLUGIN="$HERE/build/src/instrumentation/SDCInstrument.dylib"
+case "$(uname)" in Darwin) PLUGIN_EXT=dylib ;; *) PLUGIN_EXT=so ;; esac
+PLUGIN="$HERE/build/src/instrumentation/SDCInstrument.$PLUGIN_EXT"
 
 BCS=()
 for i in "${!INSTRUMENT[@]}"; do

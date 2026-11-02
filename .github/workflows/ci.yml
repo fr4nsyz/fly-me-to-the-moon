@@ -1,0 +1,68 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    env:
+      LLVM_ROOT: /usr/lib/llvm-23
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install LLVM 23
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 23
+          sudo apt-get install -y llvm-23-dev libzstd-dev zlib1g-dev libedit-dev ninja-build
+
+      - name: Install GoogleTest 1.18
+        run: |
+          git clone -q --depth 1 --branch v1.18.0 https://github.com/google/googletest.git /tmp/googletest
+          cmake -S /tmp/googletest -B /tmp/googletest/build -G Ninja -DCMAKE_INSTALL_PREFIX=/opt/googletest
+          sudo cmake --build /tmp/googletest/build --target install
+
+      - name: Build and unit tests
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_C_COMPILER=clang-23 -DCMAKE_CXX_COMPILER=clang++-23 \
+            -DLLVM_DIR=$LLVM_ROOT/lib/cmake/llvm -DCMAKE_PREFIX_PATH=/opt/googletest
+          ninja -C build
+          ctest --test-dir build --output-on-failure
+
+      - name: Instrument the lander
+        run: |
+          ./tools/instrument.sh --name moon -I workloads/moon/common -I workloads/moon/plant -I workloads/moon/fsw \
+            --replicate 6 --replicate-entry run_core --replicated workloads/moon/fsw/core.cpp \
+            --replicated workloads/moon/fsw/navigation.cpp --replicated workloads/moon/fsw/guidance.cpp \
+            --instrument workloads/moon/fsw/fsw.cpp --instrument workloads/moon/fsw/redundancy.cpp \
+            --plain workloads/moon/sim/main.cpp --plain build/workloads/moon/plant/libmoon_plant.a \
+            --keep fsw_tick --keep fsw_configure -o build/moon/moon_instr
+
+      - name: Clean landings pass and are deterministic
+        run: |
+          for mode in none tmr-lockstep; do
+            for i in 1 2; do
+              SDC_WORKLOAD=moon SDC_TRACE=clean_${mode}_$i.sdct ./build/moon/moon_instr --defense $mode | tee out_${mode}_$i.txt
+            done
+            cmp clean_${mode}_1.sdct clean_${mode}_2.sdct
+            python -c "import re,sys; s=float(re.search(r'score=(\S+)', open('out_${mode}_1.txt').read()).group(1)); sys.exit(s > 1)"
+          done
+
+      - name: Short persistent-fault sweeps
+        run: |
+          for mode in none tmr-lockstep; do
+            python tools/study/sweep.py --binary build/moon/moon_instr --ops build/moon/ops.json \
+              --trials 8 --seed 1337 --workload moon --persistent \
+              --analyzer-args "--reference-bits 0x0 --abs-tol 1" --forward-from-clean spot:--reference \
+              --jobs 4 --out sweep_$mode -- --defense $mode
+          done
+          python -c "import json,sys; r=json.load(open('sweep_tmr-lockstep/summary.json'))['classifications']; print(r); sys.exit(r['SDC'] != 0)"
