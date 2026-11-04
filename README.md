@@ -4,7 +4,7 @@ Flip one bit in one floating-point result inside a compiled C++ program, then tr
 
 ![A single persistent bit flip silently crashes the lander](docs/img/viewer_sdc.gif)
 
-On a lunar landing computer, one persistent bit flip in the flight software silently ruins the landing in 28 of 200 trials. A TMR and lockstep flight-computer design, modeled on real rocket avionics, brings that to 0 of 200.
+On a lunar landing computer, one persistent bit flip in the flight software silently ruins the landing in 28 of 200 trials. A TMR and lockstep flight-computer design, modeled on real rocket avionics, brings that to 0 of 200 when the fault is confined to one core. Faults that hit several computers at once are not measured yet.
 
 An LLVM IR pass rewrites every double-precision add, subtract, multiply, divide, and square root into a runtime hook. The runtime records each operation in a bit-exact binary trace and can flip one bit of one result, either once (transient) or on every later execution of that operation (persistent, like a defective core). The analyzer compares a clean run against an injected run and classifies the outcome as MASKED, SDC, DETECTED, CORRECTED, CRASH, HANG, or INCONCLUSIVE, with an evidence package that cites the events behind the verdict.
 
