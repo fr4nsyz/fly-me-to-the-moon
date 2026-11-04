@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SDC Investigator</title>
+  </head>
+  <body>
+    <div id="app">
+      <aside id="left">
+        <h1>SDC Investigator</h1>
+        <section>
+          <h2>Experiment</h2>
+          <label>
+            Flight computer
+            <select id="defense">
+              <option value="none">Single computer</option>
+              <option value="tmr-lockstep">TMR + lockstep</option>
+            </select>
+          </label>
+          <p class="note">Clean landing from the native instrumented build. Fault injection is not connected yet.</p>
+        </section>
+        <section>
+          <h2>Camera</h2>
+          <div class="buttons">
+            <button data-camera="orbital" class="on">Orbital</button>
+            <button data-camera="chase">Chase</button>
+            <button data-camera="overview">Overview</button>
+          </div>
+        </section>
+      </aside>
+      <main id="scene"></main>
+      <aside id="right">
+        <h2>Flight computer</h2>
+        <dl id="status"></dl>
+        <h2>Telemetry</h2>
+        <dl id="telemetry"></dl>
+      </aside>
+      <footer id="timeline">
+        <div class="controls">
+          <button id="play">Play</button>
+          <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Mission time" />
+          <span id="clock">T+000.0 s</span>
+          <select id="speed" aria-label="Playback speed">
+            <option value="1">1x</option>
+            <option value="2">2x</option>
+            <option value="4">4x</option>
+            <option value="8">8x</option>
+            <option value="16" selected>16x</option>
+            <option value="32">32x</option>
+            <option value="64">64x</option>
+          </select>
+        </div>
+        <p class="note">
+          Solid line: flown so far. Dashed line: the rest of this deterministic run. The simulated Moon is a sphere of
+          radius 1,737.4 km; displayed terrain is not simulated, and close-up craters are generated for display. The lander points along the commanded thrust; attitude
+          is not simulated. Earth and Sun positions are not simulated.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
