@@ -44,13 +44,13 @@ Notes that will save time later:
 - `sum_plain` bit regions: low mantissa masked 30/128, exponent masked 1/35.
 - Clean lunar landing: touchdown at 527.8 s, 1.000 m/s descent, 0.000 m/s horizontal, 1,157.6 kg propellant left, score 0.328. 95 flight software ops executed with `--defense none`, 371,282 events, 14.9 MB trace, 1.1 s per instrumented run. Two clean runs give byte-identical traces.
 - Lunar descent, no defenses, transient faults: 200/200 MASKED (`results/sweep_moon_none/`). The closed loop re-measures the true state every tick, so one bad tick is corrected on the next.
-- Lunar descent, persistent faults, replicated build at -O2, seed 1337: `none` 28 SDC, 172 MASKED, 172/200 safe landings (`results/sweep_moon_persistent_none/`); `tmr-lockstep` 0 SDC, 170 CORRECTED, 30 MASKED, 200/200 safe (`results/sweep_moon_persistent_tmr_lockstep/`). The 30 MASKED are explained in ADR-0017.
+- Lunar descent, persistent faults, replicated build at -O2, seed 1337: `none` 28 SDC, 172 MASKED, 172/200 safe landings (`results/sweep_moon_persistent_none/`); `tmr-lockstep` 0 SDC, 170 CORRECTED, 30 MASKED, 200/200 safe (`results/sweep_moon_persistent_tmr_lockstep/`). The 30 MASKED are explained in ADR-0017. Every campaign injects one site, so the `tmr-lockstep` result covers faults in one core only.
 - Sweep wall time with `--jobs 8`: transient 3.5 min, persistent `none` 3.6 min, persistent `tmr-lockstep` 20.7 min. Trial traces are deleted after analysis unless `--keep-traces` is passed.
 
 ## Next move
 The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
-1. README pitch, Linux CI, and a comparison with LLFI and REFINE (approved in direction; the comparison is to be discussed before writing).
-2. Navigation filter, to give the flight software state so a single transient flip can linger.
+1. Web simulator (plan approved 2026-11-03): M0 scope the TMR claim, M1 Three.js scene from native trajectory.json, M2 native multi-site injection + splitmix64, M3 WASM build with a bit-exact gate against native, M4 live injection, M5 TMR/rewind, M6 README media.
+2. Deferred: comparison with LLFI and REFINE; navigation filter.
 
 Open: math library calls (`sin`, `cos`, `atan2`) are not faulted.
 
