@@ -2,6 +2,8 @@
 #include "trace_writer.hpp"
 #include "sdc/event.hpp"
 #include "sdc/exit_record.hpp"
+#include <charconv>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -17,11 +19,17 @@ namespace sdc {
 static TraceWriter g_writer;
 static std::unordered_map<OpId, Occurrence> g_count;
 static bool g_inited = false;
-static OpId g_inj_op = 0;
-static Occurrence g_inj_occ = 0;
-static BitPos g_inj_bit = 0;
-static bool g_inj_enabled = false;
 static bool g_inj_persistent = false;
+
+// Sites are validated where they are created: occurrence >= 1 and bit < 64.
+struct InjectSite {
+    OpId      op_id;
+    Occurrence occurrence;
+    BitPos     bit;
+    bool       persistent;
+};
+
+static std::vector<InjectSite> g_sites;
 
 // Random injection mode. The driver supplies a plan of candidate operations
 // with the number of times each one actually executes, and the runtime picks
@@ -89,10 +97,46 @@ static void resolve_random_injection() {
     const std::size_t plan_index = static_cast<std::size_t>(std::rand()) % g_inj_plan.size();
     const InjectPlanEntry& entry = g_inj_plan[plan_index];
 
-    g_inj_op = entry.op_id;
-    g_inj_occ = 1 + static_cast<Occurrence>(std::rand()) % entry.max_occurrence;
-    g_inj_bit = static_cast<BitPos>(g_inj_bit_lo + std::rand() % (g_inj_bit_hi - g_inj_bit_lo + 1));
-    g_inj_enabled = true;
+    const Occurrence occ = 1 + static_cast<Occurrence>(std::rand()) % entry.max_occurrence;
+    const BitPos bit = static_cast<BitPos>(g_inj_bit_lo + std::rand() % (g_inj_bit_hi - g_inj_bit_lo + 1));
+    g_sites.push_back({entry.op_id, occ, bit, g_inj_persistent});
+}
+
+template <typename T>
+static bool parse_number(const std::string& text, T& out) {
+    const char* end = text.data() + text.size();
+    const auto [ptr, ec] = std::from_chars(text.data(), end, out);
+    return !text.empty() && ec == std::errc() && ptr == end;
+}
+
+// One site: "op=17,occ=3,bit=42", optionally ",persist=0|1".
+static bool parse_site(const std::string& text, InjectSite& site) {
+    bool has_op = false, has_occ = false, has_bit = false;
+    site.persistent = false;
+    std::stringstream ss(text);
+    std::string part;
+    while (std::getline(ss, part, ',')) {
+        const std::size_t eq = part.find('=');
+        if (eq == std::string::npos) return false;
+        const std::string key = part.substr(0, eq);
+        const std::string value = part.substr(eq + 1);
+        if (key == "op") has_op = parse_number(value, site.op_id);
+        else if (key == "occ") has_occ = parse_number(value, site.occurrence);
+        else if (key == "bit") has_bit = parse_number(value, site.bit);
+        else if (key == "persist" && (value == "0" || value == "1")) site.persistent = value == "1";
+        else return false;
+    }
+    return has_op && has_occ && has_bit && site.occurrence > 0 && site.bit < 64;
+}
+
+static void add_site(const std::string& text) {
+    InjectSite site;
+    if (!parse_site(text, site)) {
+        std::fprintf(stderr, "sdc runtime: invalid injection site \"%s\"\n", text.c_str());
+        std::exit(2);
+    }
+    site.persistent = site.persistent || g_inj_persistent;
+    g_sites.push_back(site);
 }
 
 void runtime_init() {
@@ -105,43 +149,25 @@ void runtime_init() {
     if (path.empty()) path = get_env("SDC_TRACE_PATH");
     if (path.empty()) path = "trace.sdct";
 
-    // The injection configuration. SDC_INJECT is the documented interface and
-    // carries all three fields in one value: "op=17,occ=3,bit=42".
+    // The injection configuration. SDC_INJECT is the documented interface: one or
+    // more sites separated by ';', each "op=17,occ=3,bit=42" with optional ",persist=1".
     // SDC_INJECT=random switches to random selection.
-    // The individual variables are accepted as an alternative.
+    // The individual variables are accepted as an alternative for one site.
+    g_inj_persistent = get_env("SDC_INJECT_PERSIST") == "1";
     const std::string inj = get_env("SDC_INJECT");
 
     if (inj == "random" || inj == "rand") {
         g_inj_mode = InjectMode::Random;
+    } else if (!inj.empty()) {
+        std::stringstream ss(inj);
+        std::string text;
+        while (std::getline(ss, text, ';')) add_site(text);
     } else {
-        std::string op, occ, bit;
-        if (!inj.empty()) {
-            std::stringstream ss(inj);
-            std::string part;
-            while (std::getline(ss, part, ',')) {
-                const std::size_t eq = part.find('=');
-                if (eq == std::string::npos) continue;
-                const std::string key = part.substr(0, eq);
-                const std::string value = part.substr(eq + 1);
-                if (key == "op") op = value;
-                else if (key == "occ") occ = value;
-                else if (key == "bit") bit = value;
-            }
-        } else {
-            op = get_env("SDC_INJECT_OP_ID");
-            occ = get_env("SDC_INJECT_OCC");
-            bit = get_env("SDC_INJECT_BIT");
-        }
-
-        if (!op.empty() && !occ.empty() && !bit.empty()) {
-            g_inj_op = static_cast<OpId>(std::stoul(op));
-            g_inj_occ = static_cast<Occurrence>(std::stoull(occ));
-            g_inj_bit = static_cast<BitPos>(std::stoul(bit));
-            g_inj_enabled = true;
-        }
+        const std::string op = get_env("SDC_INJECT_OP_ID");
+        const std::string occ = get_env("SDC_INJECT_OCC");
+        const std::string bit = get_env("SDC_INJECT_BIT");
+        if (!op.empty() || !occ.empty() || !bit.empty()) add_site("op=" + op + ",occ=" + occ + ",bit=" + bit);
     }
-
-    g_inj_persistent = get_env("SDC_INJECT_PERSIST") == "1";
 
     if (g_inj_mode == InjectMode::Random) {
         const std::string seed_text = get_env("SDC_SEED");
@@ -172,15 +198,27 @@ void runtime_init() {
 
     std::string meta = "{\"workload\":\"" + workload + "\",\"build_id\":\"" + build_id +
                        "\",\"compiler_flags\":\"" + flags + "\",\"schema\":1,\"inject\":{";
-    if (g_inj_enabled) {
-        meta += "\"enabled\":true,\"op_id\":" + std::to_string(g_inj_op) +
-                ",\"occurrence\":" + std::to_string(g_inj_occ) +
-                ",\"bit\":" + std::to_string(static_cast<unsigned>(g_inj_bit));
+    if (!g_sites.empty()) {
+        const InjectSite& first = g_sites.front();
+        meta += "\"enabled\":true,\"op_id\":" + std::to_string(first.op_id) +
+                ",\"occurrence\":" + std::to_string(first.occurrence) +
+                ",\"bit\":" + std::to_string(static_cast<unsigned>(first.bit));
         if (g_inj_mode == InjectMode::Random) {
             meta += ",\"mode\":\"random\",\"seed\":" + std::to_string(g_inj_seed);
         }
-        if (g_inj_persistent) {
+        if (first.persistent) {
             meta += ",\"persistent\":true";
+        }
+        if (g_sites.size() > 1) {
+            meta += ",\"sites\":[";
+            for (std::size_t i = 0; i < g_sites.size(); ++i) {
+                const InjectSite& s = g_sites[i];
+                meta += std::string(i ? "," : "") + "{\"op_id\":" + std::to_string(s.op_id) +
+                        ",\"occurrence\":" + std::to_string(s.occurrence) +
+                        ",\"bit\":" + std::to_string(static_cast<unsigned>(s.bit)) +
+                        ",\"persistent\":" + (s.persistent ? "true" : "false") + "}";
+            }
+            meta += "]";
         }
     } else {
         meta += "\"enabled\":false";
@@ -212,12 +250,11 @@ static double apply_binary(OpId op_id, double lhs, double rhs, double computed) 
     std::uint64_t rb = std::bit_cast<std::uint64_t>(rhs);
     std::uint64_t rbits = std::bit_cast<std::uint64_t>(computed);
 
-    if (g_inj_enabled && op_id == g_inj_op && (occ == g_inj_occ || (g_inj_persistent && occ > g_inj_occ))) {
-        if (g_inj_bit < 64) {
-            rbits ^= (std::uint64_t)1ULL << g_inj_bit;
-            computed = std::bit_cast<double>(rbits);
-        }
+    std::uint64_t mask = 0;
+    for (const InjectSite& s : g_sites) {
+        if (s.op_id == op_id && (occ == s.occurrence || (s.persistent && occ > s.occurrence))) mask |= 1ULL << s.bit;
     }
+    if (mask) computed = std::bit_cast<double>(rbits ^ mask);
 
     const std::uint64_t delivered = std::bit_cast<std::uint64_t>(computed);
 
