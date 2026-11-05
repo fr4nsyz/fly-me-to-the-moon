@@ -122,6 +122,7 @@ fly-me-to-the-moon/
 │       ├── plant/                # Dynamics, RK4, landing judge (not instrumented)
 │       ├── fsw/                  # Navigation and guidance (instrumented)
 │       └── sim/                  # Simulation loop: main.cpp (not instrumented)
+├── web/                          # Browser mission scene: Vite + TypeScript + three.js, NASA assets (ADR-0025)
 ├── results/                      # Committed sweep reports, summaries, and evidence
 ├── docs/
 │   ├── architecture.md           # This document (living spec)

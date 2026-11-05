@@ -1,0 +1,20 @@
+{
+  "name": "sdc-investigator-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare-data": "bash scripts/prepare.sh",
+    "dev": "vite",
+    "typecheck": "tsc",
+    "build": "tsc && vite build"
+  },
+  "dependencies": {
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@types/three": "0.186.0",
+    "typescript": "6.0.3",
+    "vite": "8.3.4"
+  }
+}

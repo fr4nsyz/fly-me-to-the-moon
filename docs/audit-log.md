@@ -609,3 +609,35 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `tools/study/sweep.py`.
 
 **Follow-up.** None.
+
+### ADR-0025 — Web scene: `web/` app, NASA assets, display fit of the Moon mesh
+
+**Date:** 2026-11-04
+**Status:** Accepted
+
+**Proposed.** An interactive browser simulator in which the instrumented flight software runs in WebAssembly and the 3D scene only shows what execution produced. The first step is the scene itself, with NASA 3D models.
+
+**Decision.**
+- A new `web/` app: Vite 8.3.4, TypeScript 6.0.3, three.js 0.186.1, all pinned exactly. `viewer/` stays for the README replays until the web app replaces them.
+- NASA's `moon_small.glb`, `Apollo Lunar Module.glb`, and a Blue Marble Earth texture are committed under `web/public/assets/`, with sources, credits, sizes, and SHA-256 in `CREDITS.md`.
+- Until the WebAssembly build exists, the scene plays `trajectory.json` files written by the native instrumented binary (`web/scripts/prepare.sh`). No motion is computed in JavaScript.
+- The Moon mesh is rotated 70 degrees about the spin axis, then scaled at load so its surface along the clean touchdown direction lies at `kMoonRadius`. The simulated Moon stays a sphere.
+- The plant has no attitude, so the lander's body axis is drawn along the commanded thrust direction, rebuilt from `thrust_tilt` and the direction of travel.
+- The page states that terrain, attitude, Earth, and Sun are not simulated.
+
+**Why.** The scene must not contradict the simulation. A mesh with real topography cannot match a spherical plant everywhere, so it is fitted where the clean landing touches down, and the remaining mismatch is disclosed.
+
+**Evidence.**
+- Mesh vertex radii span 1.27186 to 1.28223 model units (46,464 vertices), about 14 km of relief at the plant's scale.
+- At mean-radius scale and the file's own orientation, the terrain under the clean ground track (400.9 km of arc) lies 7.2 to 8.4 km below the plant's surface, so the clean touchdown would float 7.2 km above the mesh.
+- Searching rotations about the spin axis (nearest-vertex sampling): the best keeps the track within 2.26 km of the plant's surface; with the touchdown fit, 70 degrees keeps the clean descent above the mesh at every 1 s trajectory sample, checked by raycast at load.
+- Sizes: 13,799,876, 716,840, and 2,566,770 bytes, under GitHub's 50 MiB warning; the repository pack was 1.59 MiB before. The Lunar Module's three textures were extracted and viewed: a "UNITED STATES" label, a US flag, and a grey grating; no NASA insignia.
+- NASA media guidelines: NASA content is generally not subject to US copyright; the insignia and logotype are not public domain; no use may imply endorsement.
+
+**Rejected.** A smooth textured sphere: exact, but loses the relief the models were chosen for. Snapping the lander to the terrain: the displayed altitude would no longer be the simulated one. Git LFS: the assets are small enough for plain git, and LFS would be needed on every clone and in CI. Animating a reference path in JavaScript before the WebAssembly build: it would show motion the simulation did not produce.
+
+**Limitations.** A faulty run that lands or strikes away from the clean spot can appear up to about 2 km above or below the displayed terrain. The Moon texture is about 2.7 km per pixel at the equator, so close views use procedural craters and grain in the shader (`web/src/detail.ts`): they change shading only, not geometry, fade out below one pixel, and are not real lunar terrain at that spot.
+
+**Impact.** `web/`, `.gitignore`, `docs/architecture.md` section 5.
+
+**Follow-up.** The WebAssembly build replaces `prepare.sh`'s native trajectories, and ADR-0010 is rewritten for the web viewer then.

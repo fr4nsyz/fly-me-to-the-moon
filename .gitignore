@@ -37,3 +37,9 @@ results/*/trial_*.json
 
 # Generated descent viewer pages
 /view*.html
+
+# Web app: dependencies, build output, and files written by web/scripts/prepare.sh
+node_modules/
+web/dist/
+web/public/data/
+web/public/draco/
