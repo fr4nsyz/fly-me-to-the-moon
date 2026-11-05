@@ -32,6 +32,16 @@ target_link_libraries(test_redundancy PRIVATE moon_fsw GTest::gtest_main)
 add_executable(test_judge test_judge.cpp)
 target_link_libraries(test_judge PRIVATE moon_plant GTest::gtest_main)
 
+add_executable(runtime_probe runtime_probe.cpp)
+target_link_libraries(runtime_probe PRIVATE sdc_runtime)
+
+add_executable(test_runtime test_runtime.cpp)
+target_include_directories(test_runtime PRIVATE ${CMAKE_SOURCE_DIR}/src/core)
+target_compile_definitions(test_runtime PRIVATE RUNTIME_PROBE_PATH="$<TARGET_FILE:runtime_probe>")
+target_link_libraries(test_runtime PRIVATE sdc_core GTest::gtest_main)
+add_dependencies(test_runtime runtime_probe)
+
+gtest_discover_tests(test_runtime)
 gtest_discover_tests(test_trace_io)
 gtest_discover_tests(test_analyzer)
 gtest_discover_tests(test_vec3)
