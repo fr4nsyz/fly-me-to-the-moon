@@ -165,7 +165,8 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
         }
 
         errs() << "sdc-instrument: instrumented " << ops.size() << " operation(s)\n";
-        return PreservedAnalyses::all();
+        // The pass rewrote IR and erased instructions, so no analysis survives.
+        return PreservedAnalyses::none();
     }
 };
 
