@@ -28,7 +28,7 @@ The defense is a hybrid of TMR and lockstep that mimics real rocket flight compu
   <img alt="Defense outcomes" src="docs/img/defense_outcomes_light.png">
 </picture>
 
-With no defense, about one in seven persistent single-bit faults silently ruins the landing: 20 crash and 8 touch down softly but more than 1 km off target. With the TMR and lockstep hybrid, all 200 land safely: in 170 the defense silenced or outvoted the broken core, and in 30 the fault hit an operation whose result never reaches the engine command, such as a sign test.
+With no defense, about one in seven persistent single-bit faults silently ruins the landing: 20 crash and 8 touch down softly but more than 1 km off target. With the TMR and lockstep hybrid, all 200 land safely: in 170 the defense silenced or outvoted the broken core, and in 30 the fault was absorbed before it could change the engine command — 21 hit an operation whose result structurally cannot change the command (10 the sign-test dot product, 11 an always-zero z term), and 9 diverged but cancelled before the command.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/same_fault_dark.png">

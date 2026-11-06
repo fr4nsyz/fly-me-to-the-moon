@@ -85,7 +85,7 @@ Four reasons, in order of weight.
 
 **Proposed.** The blueprint said "same sources + flags gives identical operation numbering" but never fixed the flags. Nothing stopped a workload being built with `-O2 -ffast-math` on one day and `-O0` on another.
 
-**Decision.** Every instrumented workload is compiled with one flag set. The pass refuses to instrument an instruction carrying any fast-math flag, and fails loudly rather than silently changing the arithmetic.
+**Decision.** Every instrumented workload is compiled with one flag set. The pass refuses to instrument an instruction carrying a value-changing fast-math flag (`reassoc`, `noinf`, `nsz`, `contract`, `approxFunc`, `reciprocal`), and fails loudly rather than silently changing the arithmetic. It allows `nnan`, which clang emits from its own value tracking in an ordinary `-O2` build and which does not change the arithmetic for finite operands.
 
 ```
 -O2 -gline-tables-only
@@ -93,14 +93,14 @@ Four reasons, in order of weight.
 -fno-vectorize -fno-slp-vectorize
 ```
 
-The flag string is recorded in the trace header, so the analyzer can reject a clean and injected pair that came from different builds.
+The flag string is recorded in the trace header and in the sweep report. The analyzer does not currently compare the clean and injected flag strings.
 
 **Why.** Each flag earns its place, and the reasons are mechanical rather than stylistic.
 
 - `-ffp-contract=off`. Without it, `a*b+c` becomes a single `llvm.fmuladd` and the two operations fuse into one rounding. The pass matches `fmul` and `fadd`, so it never sees the fused operation at all, and the most common numerical pattern in the codebase becomes invisible and un-injectable.
 - `-fno-vectorize -fno-slp-vectorize`. Without them, a reduction loop becomes calls to `llvm.vector.reduce.fadd` and the additions happen inside the intrinsic, below the IR, where the pass cannot rewrite them. There is not a single vector `fadd` instruction in the IR to hook.
 - `-gline-tables-only`. Column numbers are needed for the op-id key, and line tables alone carry them on this target, so full debug info buys nothing.
-- No fast-math. `reassoc` permits reordering `a+b+c`, changing both the structure and the results. `nnan` and its relatives let the compiler delete NaN and Inf checks, including the workload's own detection logic.
+- No value-changing fast-math. `reassoc` permits reordering `a+b+c`, changing both the structure and the results. `noinf`, `nsz`, `contract`, `approxFunc`, and `reciprocal` similarly change what the operation computes. `nnan` is allowed because clang emits it for ordinary finite code, and it does not change the arithmetic for finite operands.
 
 **Evidence.** Commands and outputs, Homebrew LLVM 23.1.4.
 
@@ -123,7 +123,7 @@ The flag string is recorded in the trace header, so the analyzer can reject a cl
 
 **Proposed.** Revision 1 of the blueprint derives the `OpId` from "source location (file + line + column + function + opcode)".
 
-**Decision.** Not yet made. Two candidates are on the table: derive the id from module order, or walk the `inlinedAt` chain and use the whole chain as the key.
+**Decision.** Op ids are assigned in deterministic module order: the pass walks functions and instructions in module order and assigns `++opId` to each instrumented instruction. Debug locations are stored in `ops.json` for readability; they are not the identity key.
 
 **Why.** The proposed key is not unique. Inlining turns one source multiply into several IR instructions, and the inlined copies carry identical innermost `DebugLoc` values. They differ only in their `inlinedAt` chain, which the innermost location does not expose.
 
@@ -134,13 +134,13 @@ The flag string is recorded in the trace header, so the analyzer can reject a cl
 !38 = !DILocation(line: 1, column: 46, scope: helper, inlinedAt: !DILocation(line: 4, column: 16, scope: caller))
 ```
 
-Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `atomRank` are identical on both (1 and 2), so LLVM's newer same-line tracking does not separate them, and there are no discriminators in this build.
+Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `atomRank` are identical on both (1 and 2), so LLVM's newer same-line tracking does not separate them, and there are no discriminators in this build. Module order avoids the collision without a chain walk. `src/instrumentation/SDCInstrument.cpp` assigns `++opId` in module iteration order; ADR-0013 ratifies this.
 
 **Rejected.** Using the innermost location alone, rejected because it collides. Using a per-instruction ordinal within the function as the tiebreaker, rejected as a primary key because the ordinal shifts when unrelated code in that function is edited, so ids are not stable across edits.
 
 **Impact.** `docs/architecture.md` sections 6 and 7.1. The `ops.json` schema.
 
-**Follow-up.** Blocks Phase 3. Needs a decision on whether op ids are source-anchored or module-anchored. Module order is simpler and is collision-free, and it costs the ability to say "the multiply on line 12" in an evidence package without also carrying the location.
+**Follow-up.** Resolved by ADR-0013. Module order is simpler and collision-free; `ops.json` restores the source location, so an evidence package can still say "the multiply on line 12".
 
 ### ADR-0004 — Trace alignment when corruption changes control flow
 
@@ -149,17 +149,17 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 **Proposed.** Revision 1 says the two streams "should be identical up to the injection point" and the analyzer locates the first divergence.
 
-**Decision.** Not yet made.
+**Decision.** The first divergence is the first index where either the `(op_id, occurrence)` key or the payload differs. The aligner stops there. There is no resynchronization.
 
-**Why.** The assumption holds only when the corrupted value does not change control flow. If the corrupted value feeds a comparison, the injected run executes a different sequence of operations, and a prefix comparison stops telling you anything after the first difference.
+**Why.** The assumption holds only when the corrupted value does not change control flow. If the corrupted value feeds a comparison, the injected run executes a different sequence of operations, and a prefix comparison stops telling you anything after the first difference. The runtime records the delivered, flipped result, so the injection event itself mismatches on payload before any branch it feeds can execute.
 
-**Evidence.** No direct measurement yet. The consequence follows from the instrumentation design: the runtime records every arithmetic event, and a branch that takes a different path skips or repeats arithmetic events, so the two event streams have different lengths and different contents from that point on.
+**Evidence.** The runtime writes `result_bits` after the bit flip, so a single-fault run always mismatches on payload at the injected event. ADR-0014 records the probe and `tests/unit/test_analyzer.cpp` pins the behavior.
 
-**Rejected.** Nothing rejected yet, this is an open question.
+**Rejected.** Bounded-lookahead resynchronization, rejected because it only runs in cases where it gives a wrong answer. Full sequence alignment over keys, rejected because the first divergence is always the injection event, so analysis of what happens after it belongs in evidence windowing, not in the aligner. See ADR-0014.
 
 **Impact.** `docs/architecture.md` section 7.4. The `align.cpp` component.
 
-**Follow-up.** Blocks Phase 4. Worth deciding alongside whether any workload deliberately produces a branch-affecting corruption, since without such a workload the harder alignment path is never exercised.
+**Follow-up.** Resolved by ADR-0014. A structural divergence ahead of any payload mismatch is reported at its true index and reaches the classifier.
 
 ### ADR-0005 — The outcome taxonomy needs a CORRECTED class
 
@@ -168,17 +168,17 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 **Proposed.** Revision 1 fixes five classes: CRASH, DETECTED, SDC, MASKED, INCONCLUSIVE. The same document's Phase 6 expects a defense table with a "vote → all corrected" row.
 
-**Decision.** Not yet made. The leaning is to add a CORRECTED class.
+**Decision.** Add a CORRECTED class, distinct from MASKED. The classifier applies one fixed order: INCONCLUSIVE, HANG (ADR-0022), CRASH, CORRECTED when a mechanism repaired the fault and the final result is inside the acceptance criterion, SDC when a repair was attempted but the result is outside, DETECTED, SDC when the result is outside and nothing noticed, and MASKED otherwise.
 
-**Why.** A corrected run fits none of the five classes. It is not CRASH, not DETECTED, and not SDC. It is arguably MASKED, since the final result ends up back inside the acceptance criterion, but MASKED means the corruption was absorbed numerically rather than repaired by a redundancy mechanism. The two have different implications and the defense study is the entire point of Phase 6, so conflating them loses the result that phase exists to produce.
+**Why.** A corrected run fits none of the five original classes. It is not CRASH, not DETECTED, and not SDC. It is arguably MASKED, since the final result ends up back inside the acceptance criterion, but MASKED means the corruption was absorbed numerically rather than repaired by a redundancy mechanism. The two have different implications and the defense study is the entire point of Phase 6, so conflating them loses the result that phase exists to produce.
 
-**Evidence.** The blueprint's own Phase 6 table. The classifier must also decide precedence: a run that is corrected but whose correction is itself wrong belongs to SDC, not CORRECTED.
+**Evidence.** The blueprint's own Phase 6 table. `src/analyzer/classify.cpp` checks the conditions in the order above. The TMR and lockstep campaign (`results/sweep_moon_persistent_tmr_lockstep/`) produces 170 CORRECTED and 30 MASKED, so the distinction is load-bearing rather than cosmetic.
 
-**Rejected.** Nothing rejected yet.
+**Rejected.** Folding corrected runs into MASKED, rejected because the defense study exists to separate them. Treating the correction flag alone as CORRECTED, rejected because a repair that still lands outside tolerance is SDC; the final result decides.
 
 **Impact.** `docs/architecture.md` section 7.4. The `classify.cpp` component. The evidence package schema, which carries the classification.
 
-**Follow-up.** Blocks Phase 6's headline table and the classifier in Phase 4. The taxonomy is described as a stable public interface, so the change should land before anything downstream depends on it.
+**Follow-up.** None. The taxonomy is a stable public interface.
 
 ### ADR-0006 — Bit position convention
 
@@ -443,6 +443,8 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 - 200 persistent faults, seed 1337. `none`: 28 SDC, 172 MASKED (-O0: 31 SDC, 169 MASKED). `tmr-lockstep`: 0 SDC, 170 CORRECTED, 30 MASKED (-O0: 0 SDC, 199 CORRECTED, 1 MASKED).
 - Why MASKED rose under the defense: at -O0 each core had one shared `dot`, so a persistent fault in it corrupted every dot product in that core, including those that reach the engine command, and lockstep caught it. At -O2 each call site has its own operations. 21 of the 30 MASKED trials hit a site whose result cannot change the command: the dot product in the sign test at `guidance.cpp:46` (10), or the z term of a dot product (11), which is always 0.0 on the equatorial trajectory and is lost to rounding. Every trial at those sites was MASKED in both modes.
 
+All 30 MASKED trials diverged (`diverged=true`); the classifier reason is "a divergence occurred but was absorbed before the final result". The 21 sites above are the ones that structurally cannot change the command. The other 9 diverged but the difference was absorbed before the engine command, so no lockstep pair disagreed and no computer was silenced. `DETECTED` cannot occur in this campaign: it requires all three lockstep pairs to disagree, and one fault lands in exactly one replica.
+
 **Rejected.** Staying at -O0: describes unoptimized code and needs its own flag set. Compiler barriers (volatile, opaque calls, `optnone`) on source-level replicas: each distorts the code it protects; build replication needs none. Per-operation TMR in the runtime: votes before a fault can spread and corrects everything by construction.
 
 **Limitations.** Injection is at LLVM IR, so register allocation and spills are not modeled. Op ids at -O2 follow inlining decisions, so -O0 and -O2 campaigns compare by outcome rates, not trial by trial. On the equatorial trajectory every z component is exactly 0.0, so 41 of the 200 persistent-fault sites inject into a zero.
@@ -641,3 +643,35 @@ The measured distribution shows the expected structure. 83.0 percent of the tria
 **Impact.** `web/`, `.gitignore`, `docs/architecture.md` section 5.
 
 **Follow-up.** The WebAssembly build replaces `prepare.sh`'s native trajectories, and ADR-0010 is rewritten for the web viewer then.
+
+### ADR-0026 — Trace format v1: the spec describes the implemented reader
+
+**Date:** 2026-11-06
+**Status:** Accepted
+
+**Proposed.** `docs/trace-format.md` promised behavior the version-1 code does not have: the writer opens with `O_APPEND`; the core reader parses the metadata as JSON and validates every `EVENT` `op_id` against `ops.json`; records after `EXIT` are an error; a nonzero exit code is written; `float` values are encodable with the type carried by `ops.json`; `build_id` changes when any part of the binary changes.
+
+**Decision.** Narrow the specification to the implementation instead of expanding the code.
+- The writer opens with `O_WRONLY | O_CREAT | O_TRUNC` and writes one record per `write(2)` call. There is one writer per file. `O_APPEND` is not used. The return value of a record write is not checked; a short write leaves a torn tail, which the reader discards.
+- The writer writes host byte order and sets `LITTLE_ENDIAN`; version 1 supports little-endian hosts only, and the reader does not byte-swap.
+- The core reader validates the magic, version, record size, and undefined flag bits. It reads `meta_len` bytes as opaque metadata. It does not parse the metadata, does not require `flags` bit 0, does not check `reserved`, and does not cap `meta_len`. It rejects unknown record types and non-monotonic occurrences, discards a torn final record, and stops at `EXIT`; records after `EXIT` are ignored.
+- The core reader does not consult `ops.json`. The analyzer looks up the first diverging event and omits `source` and `audit` when the id is absent; an unknown id is not an error in either component.
+- Version 1 is `double` only. The `float` encoding is reserved. `ops.json` records `kind` and source location, not a value type.
+- The runtime writes `exit_code = 0`. A nonzero exit code is reserved for a future signal handler or for a workload that writes its own `EXIT` record. In v1, CRASH is the absence of an `EXIT` record.
+- `build_id` is the first 16 hex characters of the SHA-256 of the instrumented bitcode (`tools/instrument.sh`). It does not cover the runtime or the plain translation units.
+
+**Why.** The implementation is the artifact the campaigns and tests depend on, and the specification should not promise checks no component performs. The core reader's job is structural integrity: magic, version, record size, framing, record type, and occurrence monotonicity. Semantic checks need `ops.json`, which the analyzer has and the reader does not. One writer per trace makes append atomicity unnecessary. The trace records `double` everywhere, so a float encoding has no producer. The runtime has no signal handler and the workloads always exit zero.
+
+**Evidence.**
+- `src/core/trace_writer.cpp:26` opens `O_WRONLY | O_CREAT | O_TRUNC`; `:66` and `:89` ignore the `write` return.
+- `src/core/trace_reader.cpp:44-63` validates magic, version, record size, and flags; `:65-73` reads metadata as bytes; `:84-110` rejects unknown types and non-monotonic occurrences and stops at `EXIT`.
+- `src/analyzer/evidence.cpp:26-44` omits `source` and `audit` for an `op_id` absent from `ops.json`; `:119` parses the injected metadata only to copy the injection configuration into the evidence.
+- `src/runtime/runtime.cpp:232-242` writes `exit_code = 0`; `:199-226` writes the metadata shapes described above.
+- `tools/instrument.sh:143` computes `BUILD_ID` from `INST_BC`.
+- `tests/unit/test_trace_io.cpp` and `tests/unit/test_analyzer.cpp` pin the accepted and rejected shapes.
+
+**Rejected.** Hardening the code to match the old document: adding `O_APPEND` for a single writer, parsing metadata twice, giving the reader `ops.json` and an analyzer's job, adding a float path no producer emits, and hashing the whole binary when the bitcode is what changes. Each adds a failure mode without changing a campaign result.
+
+**Impact.** `docs/trace-format.md` sections 2.2, 2.3, 2.4, 3, 4, 5, 6. `docs/architecture.md` sections 7.1, 7.2, 7.4, 11, 16. `docs/audit-log.md` ADR-0002.
+
+**Follow-up.** If a second writer or a signal handler is added, revisit `O_APPEND` and the exit-code path. If a float workload is added, version the encoding rather than overloading the double fields.

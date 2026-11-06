@@ -144,7 +144,7 @@ Keep these header-only and minimal. They are the only types that cross component
 // types.hpp
 using OpId = uint32_t;
 using Occurrence = uint64_t;
-using BitPos = uint8_t;          // 0–63 for double, 0–31 for float
+using BitPos = uint8_t;          // 0–63; version 1 instruments double only
 
 // ADR-0006 (accepted): bit 0 is the LSB of the uint64 IEEE-754 pattern.
 // bit 63 is the sign bit, bits 62..52 are the exponent. This is fixed.
@@ -159,6 +159,8 @@ struct Event {
 };
 
 // injection.hpp
+// Planned multi-site configuration (schema 2, STATE.md). The runtime does not
+// use this struct yet; it keeps an internal std::vector<InjectSite>.
 struct InjectionConfig {
     OpId        target_op;
     Occurrence  target_occurrence;
@@ -200,7 +202,7 @@ struct ExitRecord {
 
 **Compiler flags**
 
-The workload is compiled with one canonical flag set, and the pass refuses to instrument an instruction carrying a fast-math flag.
+The workload is compiled with one canonical flag set, and the pass refuses to instrument an instruction carrying a value-changing fast-math flag (`reassoc`, `noinf`, `nsz`, `contract`, `approxFunc`, `reciprocal`). It allows `nnan`: clang emits it from its own value tracking in an ordinary `-O2` build, and it does not change the arithmetic for finite operands.
 
 ```
 -O2 -gline-tables-only
@@ -210,7 +212,7 @@ The workload is compiled with one canonical flag set, and the pass refuses to in
 
 Each flag earns its place. Without `-ffp-contract=off`, `a*b+c` becomes a single `llvm.fmuladd` and the two operations are fused into one rounding. Without `-fno-vectorize`, a reduction loop becomes calls to `llvm.vector.reduce.fadd` and the additions happen below the IR, where the pass cannot see them. Without `-gline-tables-only`, column numbers may be absent.
 
-Record the flag string in the trace header, so the analyzer can reject a clean and injected pair that came from different builds.
+Record the flag string in the trace header. The sweep driver records it in its report; the analyzer does not currently compare the clean and injected flag strings.
 
 **Learning focus**: LLVM PassManager, IRBuilder, DebugInfo, ModulePass / FunctionPass.
 
@@ -226,7 +228,7 @@ Record the flag string in the trace header, so the analyzer can reject a clean a
 **Critical requirements**
 
 - The injection must be deterministic: exactly once under the transient model, on every occurrence from the chosen one under the persistent model.
-- Recording must be crash-safe. The writer appends whole records to an `O_APPEND` file descriptor with one `write` per record. A torn final record shows up as a short read, and the reader treats it as the process having died during recording.
+- Recording must be crash-safe. The writer owns the file and writes whole records with one `write` per record. A torn final record shows up as a short read, and the reader treats it as the process having died during recording.
 - Overhead should be measurable (the experiment driver will quantify it).
 
 **Learning focus**: low-overhead instrumentation, signal-safe I/O, IEEE-754 bit manipulation (`std::bit_cast` or unions).
@@ -236,7 +238,7 @@ Record the flag string in the trace header, so the analyzer can reject a clean a
 **Responsibility**
 
 - Binary writer for the `SDCTRACE` format.
-- Strict reader that validates the header, the record type field, and the per-op occurrence monotonicity invariant, and produces a sequence of `Event` plus the final `ExitRecord`.
+- Strict reader that validates the header magic, version, record size, and flags, the record type field, and the per-op occurrence monotonicity invariant, and produces a sequence of `Event` plus the final `ExitRecord`.
 
 **Format**
 
@@ -281,17 +283,22 @@ Revision 1 assumed the two streams are identical up to the injection point, and 
 
 **Outcome taxonomy (fixed precedence)**
 
-| Class        | Meaning                                                       |
-| ------------ | ------------------------------------------------------------- |
-| CRASH        | Process died; a readable trace was still produced             |
-| HANG         | Process exceeded the per-trial time limit and was killed (ADR-0022) |
-| DETECTED     | Workload’s own check raised a flag                            |
-| CORRECTED    | A redundancy mechanism (e.g. TMR vote) corrected the corruption before producing the final result; outcome is within acceptance criterion |
-| SDC          | Final result outside acceptance criterion and nothing noticed |
-| MASKED       | Final result stayed inside the acceptance criterion with no correction mechanism applied |
-| INCONCLUSIVE | Evidence is insufficient for a verdict                        |
+The classifier applies these checks in order and stops at the first match.
 
-**ADR-0005 (accepted): add CORRECTED.** The taxonomy distinguishes correction by mechanism (CORRECTED) from absorption (MASKED). Precedence: if a correction mechanism was applied and the corrected output is valid, classify CORRECTED (not MASKED); if correction was attempted but failed, classify SDC or DETECTED as appropriate.
+| Class | Meaning |
+| --- | --- |
+| INCONCLUSIVE | Evidence is insufficient for a verdict |
+| HANG | Process exceeded the per-trial time limit and was killed (ADR-0022) |
+| CRASH | Process died or exited nonzero; a readable trace was still produced |
+| CORRECTED | A redundancy mechanism repaired the corruption and the final result is within the acceptance criterion |
+| SDC (repair attempted) | A redundancy mechanism attempted a repair but the final result is outside the acceptance criterion |
+| DETECTED | The workload’s own check raised a flag |
+| SDC (unnoticed) | The final result is outside the acceptance criterion and nothing noticed the fault |
+| MASKED | The final result stayed inside the acceptance criterion with no correction applied |
+
+**ADR-0005 (accepted): add CORRECTED.** The taxonomy distinguishes correction by mechanism (CORRECTED) from absorption (MASKED). The correction flag alone is not enough: a mechanism that repairs but still lands outside the acceptance criterion is SDC, and a mechanism that is never triggered leaves the trial MASKED. The final result decides.
+
+**MASKED under `tmr-lockstep` (ADR-0017).** MASKED does not mean a defense masked the fault. It means the injected trace diverged, but the faulty core's engine command never changed. In the hybrid, each computer is a lockstep pair; if the fault changes the faulty core's command, the pair disagrees, the computer is silenced or outvoted, `CORRECTED` is set, and the trial is CORRECTED when the result is inside tolerance or SDC when it is outside. If the fault is absorbed inside the faulty core before the command, the pair always agrees, no computer is silenced, and `CORRECTED` is never set, so the trial is MASKED. The 200-trial seed-1337 campaign produced exactly 170 CORRECTED and 30 MASKED. All 30 diverged. 21 could never change the command: the sign-test dot product at `guidance.cpp:46` (10) or the z term of a dot product (11), which is always 0.0 on the equatorial trajectory and is lost to rounding. The other 9 diverged but the difference was absorbed before the command. `DETECTED` cannot occur in a single-site campaign: it requires all three lockstep pairs to disagree, and one fault lands in exactly one replica.
 
 **Acceptance criterion** is supplied by the experiment (absolute or relative tolerance, or a custom predicate).
 
@@ -301,8 +308,7 @@ Revision 1 assumed the two streams are identical up to the injection point, and 
 
 Start in Python for speed of iteration:
 
-- `sweep.py` — iterate over a set of `(op_id, occurrence, bit)` triples, run clean + injected, collect evidence packages.
-- `defenses.py` — drive the hardened flight-computer workload under different redundancy modes.
+- `sweep.py` — iterate over a set of `(op_id, occurrence, bit)` triples, run clean + injected, collect evidence packages. `-- --defense none|tmr-lockstep` selects the defense mode.
 - `overhead.py` — measure runtime and binary-size cost of instrumentation.
 - `report.py` — aggregate evidence packages into tables and plots (the classic 14 masked / 50 SDC table lives here).
 
@@ -442,13 +448,13 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 | Variable | Meaning |
 | --- | --- |
 | `SDC_TRACE` | Path of the trace file to write. Defaults to `trace.sdct`. |
-| `SDC_INJECT` | Injection configuration as `op=<id>,occ=<n>,bit=<b>`. The literal `random` selects a site at random. Absent means no injection. |
+| `SDC_INJECT` | Injection configuration as `op=<id>,occ=<n>,bit=<b>`. Multiple sites may be separated by `;`; each accepts an optional `,persist=1`. The literal `random` selects a site at random. Absent means no injection. |
 | `SDC_SEED` | Seed for random injection. The same seed always resolves the same site. |
 | `SDC_INJECT_PLAN` | Path to the injection plan for random mode. One `op_id max_occurrence` pair per line. |
 | `SDC_INJECT_BIT_RANGE` | Inclusive bit range for random mode, `lo-hi`. Defaults to `0-63`. |
 | `SDC_INJECT_PERSIST` | `1` selects the persistent fault model: the bit is flipped on every occurrence of the op from the chosen one on (ADR-0023). Absent means transient. |
 | `SDC_WORKLOAD` | Workload name, recorded in the trace metadata. |
-| `SDC_BUILD_ID` | Build identifier, recorded in the trace metadata. The analyzer rejects a clean/injected pair whose build ids differ. |
+| `SDC_BUILD_ID` | Build identifier, recorded in the trace metadata and in the sweep report. The analyzer does not currently compare the clean and injected ids. |
 | `SDC_COMPILER_FLAGS` | The exact flag string the workload was compiled with, recorded in the trace metadata. |
 
 `SDC_TRACE_PATH`, `SDC_INJECT_OP_ID`, `SDC_INJECT_OCC`, and `SDC_INJECT_BIT` are accepted as alternatives to `SDC_TRACE` and `SDC_INJECT`.
@@ -513,6 +519,8 @@ Settled in this revision:
 | ADR-0022 | Per-trial timeout and HANG outcome |
 | ADR-0023 | Persistent fault model |
 | ADR-0024 | Sweep trials run concurrently; cores stay sequential |
+| ADR-0025 | Web scene: `web/` app, NASA assets, display fit of the Moon mesh |
+| ADR-0026 | Trace format v1: the spec describes the implemented reader |
 
 ---
 
@@ -546,6 +554,8 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0022 | 2026-10-31 | Per-trial timeout and HANG outcome | Accepted |
 | ADR-0023 | 2026-10-31 | Persistent fault model | Accepted |
 | ADR-0024 | 2026-10-31 | Sweep trials run concurrently; cores stay sequential | Accepted |
+| ADR-0025 | 2026-11-04 | Web scene: `web/` app, NASA assets, display fit of the Moon mesh | Accepted |
+| ADR-0026 | 2026-11-06 | Trace format v1: the spec is narrowed to the implemented reader | Accepted |
 
 ---
 
@@ -577,7 +587,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 - **Separate cores:** the build makes each core a separate, internalized copy of the same flight software (`instrument.sh --replicate`), so each has its own operations and a persistent fault breaks one core. The source stays plain C++.
 - **Cores run in sequence:** the six cores run one after another in a single thread each tick. Threads would not change any result and are not how hardware lockstep works (ADR-0008); the campaign runs trials concurrently instead (ADR-0024).
 - **Voter assumed reliable:** it compares integer bit patterns, which the floating-point fault model does not cover, so the campaign never faults it. It is a single point of failure the campaign does not measure. Build replication keeps the copies and comparisons intact at -O2 (ADR-0017).
-- **Reporting:** the flight software returns a status flag; the simulation reports a silenced or outvoted computer as CORRECTED.
+- **Reporting:** the flight software returns a status flag. A silenced or outvoted computer sets the `CORRECTED` exit flag; the class is still decided by the final result, so the trial is CORRECTED when it is inside the acceptance criterion and SDC when the attempted repair is outside. A fault absorbed inside the faulty core never sets the flag, so the trial is MASKED.
 
 ## 17. Instrumentation Scope (ADR-0009)
 

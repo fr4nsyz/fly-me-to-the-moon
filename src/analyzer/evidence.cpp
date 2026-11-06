@@ -92,7 +92,7 @@ std::string build_evidence(const EvidenceInput& input) {
     }
     root.set("clean_event", std::move(clean_event));
 
-    // A bounded window around the divergence from both streams.
+    // A bounded window around the divergence from the injected stream.
     Json window = Json::array();
     if (input.alignment.diverged) {
         const std::size_t w = input.window;

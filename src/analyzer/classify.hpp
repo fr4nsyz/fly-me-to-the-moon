@@ -6,7 +6,8 @@
 namespace sdc {
 
 // ADR-0005: the taxonomy includes CORRECTED, which is distinct from MASKED.
-// Precedence: CRASH > CORRECTED > DETECTED > SDC > MASKED > INCONCLUSIVE.
+// Precedence: INCONCLUSIVE > HANG > CRASH > CORRECTED > SDC (failed repair) >
+// DETECTED > SDC (unnoticed) > MASKED.
 enum class Classification {
     CRASH,
     HANG,
