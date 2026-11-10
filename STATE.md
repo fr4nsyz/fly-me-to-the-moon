@@ -8,7 +8,8 @@ Current as of 2026-11-05. Read this before doing anything in the repository. Dec
 |---|---|
 | `/Users/fransys/Documents/fly-me-to-the-moon/` | This repository. Remote `fr4nsyz/fly-me-to-the-moon`. |
 | `/Users/fransys/Documents/fly-me-to-the-moon-videos/` | Private notes repository for videos and interviews (`notes/`). |
-| `/Users/fransys/.claude/plans/i-want-to-work-transient-pnueli.md` | Approved web simulator plan, milestones M0 to M6 and decisions D1 to D21. Outside the repo. |
+| `/Users/fransys/.claude/plans/i-want-to-work-transient-pnueli.md` | Web simulator plan, milestones M0 to M6 and decisions D1 to D21. M3 to M6 superseded; M2 still applies. Outside the repo. |
+| `/Users/fransys/.claude/plans/i-would-like-for-snuggly-perlis.md` | Approved vector display plan, milestones B0 to B4 and decisions V1 to V9. Outside the repo. |
 
 ## Toolchain on this machine
 
@@ -18,7 +19,7 @@ Current as of 2026-11-05. Read this before doing anything in the repository. Dec
 | CMake / Ninja | 4.4.3 / 1.13.2 |
 | GoogleTest | 1.18.0 via Homebrew, `/opt/homebrew/lib/cmake/GTest` |
 | Python | System `python3` is 3.10.5. Use `/opt/homebrew/bin/python3.14`; `tools/study/sweep.py` reproduces the stored seed-1337 sweep with it. |
-| Node / npm | 22.23.1 / 10.9.8. `web/` pins three 0.186.1, vite 8.3.4, typescript 6.0.3; run `npm run prepare-data` before `npm run dev`. |
+| Node / npm | 22.23.1 / 10.9.8. `web/` pins three 0.186.1, vite 8.3.4, typescript 6.0.3; `npm ci && npm run dev` plays committed data; `npm run prepare-data` regenerates it. |
 | Target | arm64-apple-darwin24.6.0 (current machine). The compiler findings below were measured on darwin25.6.0. |
 
 Notes that will save time later:
@@ -34,15 +35,14 @@ Notes that will save time later:
 - Injection sites: `SDC_INJECT` takes one or more `;`-separated sites, each `op=,occ=,bit=` with optional `persist=0|1`. Sites hitting the same bit flip it once. Any invalid site exits 2 at init, before the trace opens. The multi-site ADR is not written yet.
 - Workload: powered lunar descent in a Moon-centered frame (ADR-0007, ADR-0016), Lunar Module class vehicle and touchdown envelope (ADR-0020), flight software instrumented with the canonical -O2 flags, replicas made by the build (ADR-0017), plant not instrumented (ADR-0009).
 - Defenses: `none` and `tmr-lockstep`, a TMR and lockstep hybrid that mimics real rocket flight computers (ADR-0008): three computers, each a lockstep pair of cores, commands compared across computers. Each core is a separate copy of the same flight software made by the build (`instrument.sh --replicate`, per-copy internalize), so each has its own operations. The voter is assumed reliable (integer comparisons are outside the fault model).
-- Viewer: Three.js HUD, vendored offline, reads `trajectory.json` and `evidence.json` (ADR-0010). Kept for the current README GIFs until M6 replaces them.
-- Web scene: `web/` Vite + TypeScript app with NASA Moon and LM models, the Moon mesh rotated and scaled at load so the clean touchdown sits on the surface (ADR-0025).
+- Viewer: `web/` vector wireframe display on committed featured-trial data written by `tools/scene_data.py` (ADR-0010, ADR-0025). Static site, to be hosted on GitHub Pages.
 - Audit-log entries are rewritten when a decision changes; a new entry is added only for a new decision.
 
 ## Phase status
 - Phases 0 to 5 (skeleton, trace I/O, runtime, LLVM pass, analyzer, drivers): done. `results/sweep_sum_plain/`: 83.0% SDC, 17.0% MASKED.
 - Phase 6 lunar descent and defenses: done. Plant, navigation, guidance, landing judge, hang timeout, persistent faults, the TMR and lockstep hybrid, and the defense comparison.
-- Phase 7 viewer: built (`viewer/`, `tools/view.py`): one offline page with a trial picker, live telemetry, and README replay GIFs.
-- Phase 8 web simulator: M0 TMR claim scoped (PR 14), M1 web scene from native `trajectory.json` (PR 15), M2 multi-site runtime (PR 16) merged. Rest of M2 and M3 to M6 not started.
+- Phase 7 viewer: built (`viewer/`, `tools/view.py`): one offline page with a trial picker, live telemetry, and README replay GIFs. Replaced by the web display; the README GIFs stay until B4.
+- Phase 8 web simulator: M0 TMR claim scoped (PR 14), M1 web scene from native `trajectory.json` (PR 15), M2 multi-site runtime (PR 16) merged. Rest of M2 not started. M3 to M6 dropped for the vector display plan; B0 (teardown + committed data) done.
 
 ## Measured results
 - Instrumentation overhead on `sum_plain`: 3.9x median wall time, 40.0 bytes per event.
@@ -55,16 +55,16 @@ Notes that will save time later:
 
 ## Next move
 The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
-1. Finish M2:
+1. Vector display B1 to B4: Moon and corridor scenes, computers and op/bit scenes, scripted timeline, then frame capture, GIFs, and GitHub Pages.
+2. Finish M2:
    - schema 2 for multi-site metadata (trace reader, `docs/trace-format.md`, multi-site ADR);
    - `InjectionConfig` as a site list;
    - the analyzer finds every injected site by audit inconsistency (`injected_events[]` in evidence);
    - `sweep.py --sites K --common-mode`;
    - find why the `tmr-lockstep` sweep slowed down, then swap `std::rand` for splitmix64 and re-run the 4 sweeps;
    - the common-mode TMR campaign with 2 and 3 computers.
-2. Then M3 (WASM build, needs `lld` and a pinned wasi-sdk installed by the user), M4 live injection, M5 TMR/rewind demo, M6 README media.
-3. Open: 7 low findings from the M1 audit (thrust-direction reconstruction, detail-shader precision, unmeasured shader cost, playback at end of run, dashed-line draw order, uncited LM height, stale binary in `prepare.sh`).
-4. Deferred: comparison with LLFI and REFINE; navigation filter.
+3. Open: 4 low findings from the M1 audit still apply (thrust-direction reconstruction, which returns with B1's lander glyph; playback at end of run; dashed-line draw order; stale binary in `prepare.sh`). The other 3 were in the removed shader and LM model.
+4. Deferred: a WebAssembly build so visitors can choose their own fault; comparison with LLFI and REFINE; navigation filter.
 
 Open: math library calls (`sin`, `cos`, `atan2`) are not faulted.
 

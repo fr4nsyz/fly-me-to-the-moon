@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
-"""Build a self-contained HTML descent viewer for the notable trials of one or more sweeps.
-
-Re-flies the clean landing once per defense mode and, from each sweep, every trial
-that is SDC in any given sweep plus a few trials of each other outcome with --trajectory, and inlines the trajectories,
-the evidence summaries, and the vendored Three.js into viewer/template.html.
+"""Write the web display's data: each defense's clean landing and the featured trials, re-flown from their sweeps.
 
 Usage:
-    tools/view.py --binary build/moon/moon_instr --sweep results/<sweep_dir> \\
-        [--sweep results/<other_sweep_dir>] --out view.html
+    tools/scene_data.py --binary build/moon/moon_instr \\
+        --feature results/sweep_moon_persistent_none:35 [--feature <sweep_dir>:<trial> ...] --out web/public/data
 """
 
 import argparse
@@ -17,14 +13,9 @@ import os
 import re
 import shutil
 import subprocess
-import sys
 import tempfile
-from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMPLATE = os.path.join(ROOT, "viewer", "template.html")
-THREE = os.path.join(ROOT, "viewer", "vendor", "three.min.js")
 CORES = 6
 RUN_TIMEOUT = 600
 
@@ -41,7 +32,7 @@ def fly(binary, env_extra, args, trajectory_path):
             env=env, capture_output=True, text=True, timeout=RUN_TIMEOUT,
         )
     except subprocess.TimeoutExpired:
-        raise SystemExit(f"view: {binary} did not finish within {RUN_TIMEOUT} s")
+        raise SystemExit(f"scene_data: {binary} did not finish within {RUN_TIMEOUT} s")
     finally:
         if os.path.exists(trace):
             os.remove(trace)
@@ -79,7 +70,7 @@ def load_trial(args):
         summary = json.load(handle)
     record = next((r for r in summary["records"] if r["trial"] == args.trial), None)
     if record is None:
-        raise SystemExit(f"view: trial {args.trial} is not in {args.sweep}/summary.json")
+        raise SystemExit(f"scene_data: trial {args.trial} is not in {args.sweep}/summary.json")
     ops = load_ops(args.binary)
     return {
         "classification": record["classification"],
@@ -100,14 +91,14 @@ def sweep_defense(args):
         workload_args = json.load(handle).get("workload_args", [])
     mode = workload_args[workload_args.index("--defense") + 1] if "--defense" in workload_args else "none"
     if args.defense is not None and args.defense != mode:
-        raise SystemExit(f"view: {args.sweep} was run with --defense {mode}, not {args.defense}")
+        raise SystemExit(f"scene_data: {args.sweep} was run with --defense {mode}, not {args.defense}")
     return mode
 
 
 def injection(evidence):
     inject = evidence.get("inject", {})
     if not inject.get("enabled", True) or inject.get("op_id") is None:
-        raise SystemExit("view: the evidence has no injection site")
+        raise SystemExit("scene_data: the evidence has no injection site")
     return inject
 
 
@@ -116,7 +107,7 @@ def fly_clean(binary, defense, tmp):
     stdout, clean = fly(binary, {}, ["--defense", defense], os.path.join(tmp, f"clean_{defense}.json"))
     match = re.search(r"spot=(\S+)", stdout)
     if not match:
-        raise SystemExit(f"view: the clean landing printed no spot: {stdout.strip()}")
+        raise SystemExit(f"scene_data: the clean landing printed no spot: {stdout.strip()}")
     return clean, match.group(1)
 
 
@@ -138,28 +129,10 @@ def refly(args):
     return evidence, clean, faulty
 
 
-def sdc_trials(sweeps):
-    trials = set()
-    for sweep in sweeps:
-        with open(os.path.join(sweep, "summary.json")) as handle:
-            trials |= {r["trial"] for r in json.load(handle)["records"] if r["classification"] == "SDC"}
-    return trials
-
-
-def pick_trials(sweep, per_class, always=()):
-    """Every SDC trial, every trial in always, and the first per_class trials of each other outcome."""
-    with open(os.path.join(sweep, "summary.json")) as handle:
-        records = json.load(handle)["records"]
-    taken = Counter()
-    picked = []
-    for record in records:
-        cls = record["classification"]
-        if cls == "SDC" or record["trial"] in always:
-            picked.append(record["trial"])
-        elif taken[cls] < per_class:
-            taken[cls] += 1
-            picked.append(record["trial"])
-    return picked
+def event_bits(event):
+    if not event or "result" not in event:
+        return None
+    return {key: event[key] for key in ("operand0", "operand1", "result")}
 
 
 def summarize(evidence, args):
@@ -183,6 +156,8 @@ def summarize(evidence, args):
         "function": demangle(source["function"]) if source.get("function") else None,
         "core": core,
         "computer": core // 2 if core is not None else None,
+        "injected_bits": event_bits(evidence.get("injected_event")),
+        "clean_bits": event_bits(evidence.get("clean_event")),
         "defense": args.defense,
         "sweep": os.path.basename(os.path.normpath(args.sweep)),
         "trial": args.trial,
@@ -200,51 +175,44 @@ def check_consistency(classification, touchdown):
     return None
 
 
+def write(path, data):
+    with open(path, "w") as handle:
+        json.dump(data, handle, separators=(",", ":"))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--binary", required=True)
-    parser.add_argument("--sweep", action="append", required=True, help="repeatable")
-    parser.add_argument("--per-class", type=int, default=2, help="trials kept per non-SDC outcome")
-    parser.add_argument("--jobs", type=int, default=8)
+    parser.add_argument("--feature", action="append", required=True, metavar="SWEEP:TRIAL", help="repeatable")
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
-    # Same seed, same trial number: the same fault site, so a fault that broke one sweep is shown in every sweep.
-    always = sdc_trials(args.sweep)
     jobs = []
-    for sweep in args.sweep:
+    for feature in args.feature:
+        sweep, _, trial = feature.rpartition(":")
         mode = sweep_defense(argparse.Namespace(sweep=sweep, defense=None))
-        jobs += [argparse.Namespace(binary=args.binary, sweep=sweep, defense=mode, trial=t)
-                 for t in pick_trials(sweep, args.per_class, always)]
+        jobs.append(argparse.Namespace(binary=args.binary, sweep=sweep, defense=mode, trial=int(trial)))
 
+    os.makedirs(args.out, exist_ok=True)
+    index = []
     with tempfile.TemporaryDirectory() as tmp:
         cleans = {mode: fly_clean(args.binary, mode, tmp) for mode in {job.defense for job in jobs}}
-
-        def one(index, job):
+        for mode, (clean, _) in cleans.items():
+            write(os.path.join(args.out, f"clean_{mode}.json"), clean)
+        for job in jobs:
             evidence = load_trial(job)
             faulty = fly_faulty(args.binary, job.defense, cleans[job.defense][1], injection(evidence),
-                                os.path.join(tmp, f"faulty_{index}.json"))
+                                os.path.join(tmp, "faulty.json"))
             summary = summarize(evidence, job)
-            summary["warning"] = check_consistency(summary["classification"], faulty["touchdown"])
-            if summary["warning"]:
-                print(f"view: warning: trial {job.trial}: {summary['warning']}", file=sys.stderr)
-            return {"evidence": summary, "faulty": faulty}
-
-        with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            trials = list(pool.map(one, range(len(jobs)), jobs))
-
-    data = {"clean": {mode: clean for mode, (clean, _) in cleans.items()}, "trials": trials}
-    data = json.dumps(data, separators=(",", ":"))
-    # Keep inlined text from closing the <script> element early.
-    data = data.replace("</", "<\\/")
-    with open(THREE) as handle:
-        three = handle.read()
-    with open(TEMPLATE) as handle:
-        page = handle.read()
-    page = page.replace("/*@THREE@*/", three, 1).replace("/*@DATA@*/", data, 1)
-    with open(args.out, "w") as handle:
-        handle.write(page)
-    print(f"view: {len(trials)} trials -> {args.out}")
+            warning = check_consistency(summary["classification"], faulty["touchdown"])
+            if warning:
+                raise SystemExit(f"scene_data: trial {job.trial}: {warning}")
+            name = f"trial_{job.trial}_{job.defense}.json"
+            write(os.path.join(args.out, name), {"evidence": summary, "faulty": faulty})
+            index.append({"file": name, "trial": job.trial, "defense": job.defense,
+                          "classification": summary["classification"]})
+    write(os.path.join(args.out, "index.json"), index)
+    print(f"scene_data: {len(index)} trials -> {args.out}")
 
 
 if __name__ == "__main__":

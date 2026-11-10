@@ -32,9 +32,9 @@ export interface Trajectory {
 export type Positioned = Sample & { position: Vec3m };
 
 export async function loadTrajectory(defense: string): Promise<Trajectory> {
-  const response = await fetch(`data/trajectory_${defense}.json`);
+  const response = await fetch(`data/clean_${defense}.json`);
   if (!response.ok || !response.headers.get("content-type")?.includes("json")) {
-    throw new Error(`data/trajectory_${defense}.json: HTTP ${response.status}; run npm run prepare-data`);
+    throw new Error(`data/clean_${defense}.json: HTTP ${response.status}`);
   }
   return response.json();
 }

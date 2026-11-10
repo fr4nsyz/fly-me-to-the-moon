@@ -22,9 +22,9 @@ import matplotlib.patheffects as patheffects
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import view  # noqa: E402
+import scene_data  # noqa: E402
 
-RESULTS = os.path.join(view.ROOT, "results")
+RESULTS = os.path.join(scene_data.ROOT, "results")
 SWEEPS = {
     "none": os.path.join(RESULTS, "sweep_moon_persistent_none"),
     "tmr-lockstep": os.path.join(RESULTS, "sweep_moon_persistent_tmr_lockstep"),
@@ -196,9 +196,9 @@ def main():
     runs = {}
     for mode, sweep in SWEEPS.items():
         trial = argparse.Namespace(binary=args.binary, sweep=sweep, trial=args.trial, defense=mode)
-        view.sweep_defense(trial)
-        evidence, clean, faulty = view.refly(trial)
-        runs[mode] = (view.summarize(evidence, trial), clean, faulty)
+        scene_data.sweep_defense(trial)
+        evidence, clean, faulty = scene_data.refly(trial)
+        runs[mode] = (scene_data.summarize(evidence, trial), clean, faulty)
     for theme in THEMES:
         apply_theme(theme)
         out = lambda name: os.path.join(args.out, f"{name}_{theme}.png")
