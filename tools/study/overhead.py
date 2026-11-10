@@ -8,8 +8,8 @@ Three numbers matter:
 - The number of events recorded, which is what drives the trace size.
 
 Usage:
-    ./tools/study/overhead.py --plain build/sum --instrumented build/sum_instr \\
-        --binary build/sum_plain_instr --repeats 5 --args 1024
+    ./tools/study/overhead.py --plain build/sum_plain --instrumented build/sum_plain_instr \\
+        --repeats 5 1024
 """
 
 import argparse

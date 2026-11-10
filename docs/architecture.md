@@ -112,11 +112,10 @@ fly-me-to-the-moon/
 │   └── analyzer/                 # sdc-analyze: align, audit, classify, evidence, ops_map
 ├── tools/
 │   ├── instrument.sh             # Build an instrumented binary (one pinned flag set)
-│   ├── trace_dump.py             # Pretty-print a binary trace
 │   ├── sdctrace.py               # Python trace reader
 │   └── study/                    # Experiment drivers: sweep.py, report.py, overhead.py
 ├── workloads/
-│   ├── reductions/               # sum.cpp, sum_plain.cpp
+│   ├── reductions/               # sum_plain.cpp
 │   └── moon/
 │       ├── common/               # Shared headers: vec3, constants, lander, interface
 │       ├── plant/                # Dynamics, RK4, landing judge (not instrumented)

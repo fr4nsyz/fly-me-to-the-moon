@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds an instrumented binary.
 #
-#   ./tools/instrument.sh workloads/reductions/sum.cpp -o build/sum_instr
+#   ./tools/instrument.sh workloads/reductions/sum_plain.cpp -o build/sum_plain_instr
 #
 #   ./tools/instrument.sh -o build/moon_instr --keep fsw_tick \
 #       -I workloads/moon/common --instrument workloads/moon/fsw/fsw.cpp \
