@@ -76,7 +76,7 @@ Four reasons, in order of weight.
 
 **Impact.** `docs/architecture.md` sections 3, 4, 5, 7.2, 7.3, 8, 9, 10, 11. New file `docs/trace-format.md`. New tool `tools/trace_dump.py`. Future source files `src/core/trace_writer.cpp` and `src/core/trace_reader.cpp`.
 
-**Follow-up.** Decide whether `tools/trace_dump.py` or a C++ dumper is the better first cut. The human-inspection loss is real but bounded, since the evidence package embeds a window of surrounding events as JSON.
+**Follow-up.** Settled: no dedicated dumper. `tools/trace_dump.py` was removed because it duplicated the parser in `tools/sdctrace.py`; the readers are `src/core/trace_reader.cpp` and `tools/sdctrace.py`. The human-inspection loss is bounded, since the evidence package embeds a window of surrounding events as JSON.
 
 ### ADR-0002 — One canonical compiler flag set, and the pass rejects fast-math IR
 

@@ -146,13 +146,3 @@ def read(path):
         offset += RECORD_SIZE
 
     return trace
-
-
-def hex64(value):
-    return f"0x{value:016x}"
-
-
-def bits_to_double(value):
-    import struct as _struct
-
-    return _struct.unpack("<d", _struct.pack("<Q", value))[0]

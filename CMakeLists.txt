@@ -25,9 +25,6 @@ if(SDC_BUILD_TESTS)
   add_subdirectory(tests/unit)
 endif()
 
-add_executable(sum workloads/reductions/sum.cpp)
-target_link_libraries(sum PRIVATE sdc_runtime)
-
 if(LLVM_FOUND)
   include(AddLLVM)
 endif()
