@@ -1,4 +1,4 @@
-import { MOON_RADIUS_KM } from "./moon";
+import { MOON_RADIUS_KM } from "./wire";
 import type { Positioned, Sample, Trajectory } from "./trajectory";
 
 // Must equal moon::kLanderDryMass in workloads/moon/common/lander.hpp.

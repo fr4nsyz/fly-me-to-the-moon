@@ -53,7 +53,7 @@ The undefended run's speeds: the fault takes over during braking at t = 261 s, a
 
 ### Viewer
 
-The interactive viewer (see [View a run](#view-a-run)) replaying three outcomes from t = 240 s: clean in blue, faulty in orange, rows flagged where the two runs differ.
+The earlier HUD viewer replaying three outcomes from t = 240 s: clean in blue, faulty in orange, rows flagged where the two runs differ.
 
 SDC, no defense (trial 35), the replay at the top of this page: the fault becomes visible at 261 s and the lander strikes the surface at 113.5 m/s.
 
@@ -102,12 +102,10 @@ Use `-- --defense tmr-lockstep` for the defended run.
 ## View a run
 
 ```bash
-/opt/homebrew/bin/python3.14 tools/view.py --binary build/moon/moon_instr \
-  --sweep results/sweep_moon_persistent_none --sweep results/sweep_moon_persistent_tmr_lockstep --out view.html
-open view.html
+cd web && npm ci && npm run dev
 ```
 
-The generator reads the defense mode from the sweep, re-flies the clean landing, every trial that is SDC in any of the given sweeps, and two of each other outcome (runs are deterministic), and writes one offline HTML file with a trial picker: the 3D descent with clean and faulty paths, live clean versus faulty telemetry (speeds, descent angle, thrust tilt, throttle, fuel) with diverged rows flagged, an attitude gauge, the flight computers that exist in that mode, clickable events, and altitude and speed charts on a shared timeline.
+The display plays committed data for the featured trials, so it needs no native build. `npm run prepare-data` regenerates `web/public/data/` from `build/moon/moon_instr` and the stored sweeps.
 
 ## Plot the figures
 

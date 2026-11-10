@@ -36,11 +36,6 @@ docs/math/*.out
 # Per-trial evidence from sweeps; report.md and summary.json are kept
 results/*/trial_*.json
 
-# Generated descent viewer pages
-/view*.html
-
-# Web app: dependencies, build output, and files written by web/scripts/prepare.sh
+# Web app: dependencies and build output
 node_modules/
 web/dist/
-web/public/data/
-web/public/draco/

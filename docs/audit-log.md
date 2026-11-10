@@ -263,24 +263,28 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 **Follow-up.** Enforce in CMake/build scripts.
 
-### ADR-0010 — Trajectory log + Three.js HUD
+### ADR-0010 — Trajectory log + web display on committed data
 
-**Date:** 2026-10-31
+**Date:** 2026-10-31, rewritten 2026-11-10
 **Status:** Accepted (ADR-0013)
 
-**Proposed.** How to visualize mission.
+**Proposed.** How to visualize a mission so that people can try it without the native toolchain.
 
-**Decision.** Separate `trajectory.json` from `SDCTRACE`. Three.js HUD vendored offline, reads only trajectory + evidence. No CDN/network.
+**Decision.**
+- `trajectory.json` stays separate from `SDCTRACE`.
+- The display is the `web/` static site (ADR-0025). Vite bundles three.js; there is no CDN.
+- `tools/scene_data.py` re-flies each defense's clean landing and the featured trials natively and writes `web/public/data/`: `clean_<defense>.json`, `trial_<n>_<defense>.json` (faulty trajectory + evidence summary with the injected and clean operand and result bits), and `index.json`. The output is committed, so `npm ci && npm run dev` needs no LLVM build.
+- `viewer/` and `tools/view.py` are removed.
 
-**Why.** Keeps normative trace format unchanged; viewer is read-only consumer; offline/portable.
+**Why.** The trace format stays unchanged and the display is a read-only consumer. Committed data removes LLVM 23 and the instrumented build from the path of anyone who only wants to look.
 
-**Evidence.** Design principle: fully offline.
+**Evidence.** The featured set (trial 35 under `none` and `tmr-lockstep`, trial 0 under `none`, both clean landings, the index) is 515,220 bytes, about 109 KB per trajectory.
 
-**Rejected.** Embedding trajectory in SDCTRACE or fetching assets from CDN.
+**Rejected.** Embedding the trajectory in `SDCTRACE`. Fetching from a CDN. Committing every sweep trial: about 44 MB at 109 KB each (estimated). Keeping the single-file HTML viewer next to `web/`: two viewers to maintain.
 
-**Impact.** `docs/architecture.md` sections 3,4,9.7,18. `viewer/` with vendored Three.js.
+**Impact.** `docs/architecture.md` sections 3, 4, 9.7, 18. `web/`, `tools/scene_data.py`, `tools/plot.py`.
 
-**Follow-up.** Define trajectory log schema.
+**Follow-up.** Choosing a fault in the browser needs a WebAssembly build of the instrumented flight software; the data files keep the shape such a build would write.
 
 ### ADR-0011 — The exit record's detection word becomes a flag set
 
@@ -612,37 +616,26 @@ All 30 MASKED trials diverged (`diverged=true`); the classifier reason is "a div
 
 **Follow-up.** None.
 
-### ADR-0025 — Web scene: `web/` app, NASA assets, display fit of the Moon mesh
+### ADR-0025 — Web scene: `web/` app, vector wireframe display
 
-**Date:** 2026-11-04
+**Date:** 2026-11-04, rewritten 2026-11-10
 **Status:** Accepted
 
-**Proposed.** An interactive browser simulator in which the instrumented flight software runs in WebAssembly and the 3D scene only shows what execution produced. The first step is the scene itself, with NASA 3D models.
+**Proposed.** A browser display of the lunar descent that shows what the simulation models and nothing more.
 
 **Decision.**
-- A new `web/` app: Vite 8.3.4, TypeScript 6.0.3, three.js 0.186.1, all pinned exactly. `viewer/` stays for the README replays until the web app replaces them.
-- NASA's `moon_small.glb`, `Apollo Lunar Module.glb`, and a Blue Marble Earth texture are committed under `web/public/assets/`, with sources, credits, sizes, and SHA-256 in `CREDITS.md`.
-- Until the WebAssembly build exists, the scene plays `trajectory.json` files written by the native instrumented binary (`web/scripts/prepare.sh`). No motion is computed in JavaScript.
-- The Moon mesh is rotated 70 degrees about the spin axis, then scaled at load so its surface along the clean touchdown direction lies at `kMoonRadius`. The simulated Moon stays a sphere.
-- The plant has no attitude, so the lander's body axis is drawn along the commanded thrust direction, rebuilt from `thrust_tilt` and the direction of travel.
-- The page states that terrain, attitude, Earth, and Sun are not simulated.
+- `web/` app: Vite 8.3.4, TypeScript 6.0.3, three.js 0.186.1, all pinned exactly.
+- Lines only: the Moon is a 15-degree lat/long grid at `kMoonRadius`, and trajectories are polylines. No meshes, textures, or lit surfaces.
+- The scene plays `trajectory.json` files written by the native instrumented binary. No motion is computed in JavaScript.
+- The page states that lander attitude is not simulated.
 
-**Why.** The scene must not contradict the simulation. A mesh with real topography cannot match a spherical plant everywhere, so it is fitted where the clean landing touches down, and the remaining mismatch is disclosed.
+**Why.** The simulated Moon is a sphere with no terrain (ADR-0016), and the lander has no attitude. The previous version of this decision used NASA's Moon and Lunar Module models. The Moon mesh had to be rotated 70 degrees and scaled at load, and even then a faulty run could sit up to about 2 km above or below the displayed terrain (measured). A wireframe sphere matches the model exactly. The realistic scene also presented the project as frontend work rather than the systems work it is.
 
-**Evidence.**
-- Mesh vertex radii span 1.27186 to 1.28223 model units (46,464 vertices), about 14 km of relief at the plant's scale.
-- At mean-radius scale and the file's own orientation, the terrain under the clean ground track (400.9 km of arc) lies 7.2 to 8.4 km below the plant's surface, so the clean touchdown would float 7.2 km above the mesh.
-- Searching rotations about the spin axis (nearest-vertex sampling): the best keeps the track within 2.26 km of the plant's surface; with the touchdown fit, 70 degrees keeps the clean descent above the mesh at every 1 s trajectory sample, checked by raycast at load.
-- Sizes: 13,799,876, 716,840, and 2,566,770 bytes, under GitHub's 50 MiB warning; the repository pack was 1.59 MiB before. The Lunar Module's three textures were extracted and viewed: a "UNITED STATES" label, a US flag, and a grey grating; no NASA insignia.
-- NASA media guidelines: NASA content is generally not subject to US copyright; the insignia and logotype are not public domain; no use may imply endorsement.
+**Evidence.** Removing the assets takes 17,083,486 bytes out of the tree (13,799,876 + 716,840 + 2,566,770, measured earlier); git history keeps them.
 
-**Rejected.** A smooth textured sphere: exact, but loses the relief the models were chosen for. Snapping the lander to the terrain: the displayed altitude would no longer be the simulated one. Git LFS: the assets are small enough for plain git, and LFS would be needed on every clone and in CI. Animating a reference path in JavaScript before the WebAssembly build: it would show motion the simulation did not produce.
-
-**Limitations.** A faulty run that lands or strikes away from the clean spot can appear up to about 2 km above or below the displayed terrain. The Moon texture is about 2.7 km per pixel at the equator, so close views use procedural craters and grain in the shader (`web/src/detail.ts`): they change shading only, not geometry, fade out below one pixel, and are not real lunar terrain at that spot.
+**Rejected.** NASA models with a display fit (the previous decision), for the mismatch above. A native C++ renderer (raylib): visitors would have to build it.
 
 **Impact.** `web/`, `.gitignore`, `docs/architecture.md` section 5.
-
-**Follow-up.** The WebAssembly build replaces `prepare.sh`'s native trajectories, and ADR-0010 is rewritten for the web viewer then.
 
 ### ADR-0026 — Trace format v1: the spec describes the implemented reader
 
