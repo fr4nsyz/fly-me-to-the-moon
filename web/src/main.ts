@@ -1,18 +1,15 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { createEnvironment } from "./environment";
-import { loadLander, orient, thrustDirection } from "./lander";
-import { loadMoon } from "./moon";
 import { createPath, type Path } from "./paths";
 import { renderStatus, renderTelemetry } from "./telemetry";
 import { hasPosition, lastIndexAtOrBefore, loadTrajectory, positionAt, type Positioned, type Trajectory } from "./trajectory";
+import { createWireMoon } from "./wire";
 import "./style.css";
 
 type CameraMode = "orbital" | "chase" | "overview";
 
 const NOMINAL_COLOR = 0x5aa9ff;
+const GRID_COLOR = 0x3fbf8f;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const container = $<HTMLElement>("scene");
@@ -32,7 +29,6 @@ container.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, 1, 0.001, 2e6);
 let controls = makeControls(new THREE.Vector3(0, 1, 0));
-createEnvironment(scene);
 
 // OrbitControls reads camera.up only when constructed, so a new local vertical needs new controls.
 function makeControls(up: THREE.Vector3): OrbitControls {
@@ -51,7 +47,6 @@ scene.add(marker);
 let trajectory: Trajectory;
 let track: Positioned[] = [];
 let path: Path | null = null;
-let lander: THREE.Group;
 let t = 0;
 let playing = false;
 let mode: CameraMode = "orbital";
@@ -102,8 +97,6 @@ function update(): void {
     camera.position.add(here.clone().sub(controls.target));
     controls.target.copy(here);
   }
-  lander.position.copy(here);
-  orient(lander, thrustDirection(track, t));
   marker.position.copy(here);
   path?.setTime(t);
 
@@ -133,17 +126,8 @@ function resize(): void {
 }
 
 async function start(): Promise<void> {
-  const draco = new DRACOLoader().setDecoderPath("draco/");
-  const loader = new GLTFLoader().setDRACOLoader(draco);
-
   await useTrajectory("none");
-  const reference = trajectory.touchdown;
-  if (!reference) throw new Error("the clean landing has no touchdown; the Moon mesh cannot be fitted");
-  const fit = await loadMoon(loader, reference.spot, track);
-  console.info(`moon fit: clean descent clears the displayed terrain by at least ${fit.minClearanceM.toFixed(0)} m`);
-  scene.add(fit.moon);
-  lander = await loadLander(loader);
-  scene.add(lander);
+  scene.add(createWireMoon(GRID_COLOR));
 
   resize();
   setCamera("orbital");

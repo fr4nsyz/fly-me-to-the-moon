@@ -46,7 +46,7 @@ The platform never relies on real radiation. Instead it injects a **single deter
 | Evidence package         | Single JSON file                                       | Self-contained, easy to archive and diff                                                                          |
 | Experiment orchestration | Python 3.11+ (or Rust if you prefer systems languages) | Rapid iteration for sweeps, reporting, and plotting. Start with Python; rewrite hot parts in Rust later if needed |
 | Workloads                | Plain C++                                              | No special libraries required                                                                                     |
-| Visualization            | Three.js, vendored offline                             | The mission HUD is a browser artifact; vendoring preserves the offline guarantee                                  |
+| Visualization            | three.js in a Vite static site (`web/`)                | Lines only; the site reads committed JSON, so it runs without the native toolchain                                |
 
 **Explicit non-choices**
 
@@ -88,7 +88,7 @@ Experiment driver (Python/Rust) orchestrates:
 
 Two traces always feed the analyzer: the clean baseline and the single-fault run.
 
-The 3D viewer is a read-only consumer: it renders `trajectory.json` and annotates it with `evidence.json`. It never feeds back into the analyzer.
+The web display is a read-only consumer: it renders the `trajectory.json` files and evidence summaries that `tools/scene_data.py` writes. It never feeds back into the analyzer.
 
 ---
 
@@ -112,17 +112,16 @@ fly-me-to-the-moon/
 │   └── analyzer/                 # sdc-analyze: align, audit, classify, evidence, ops_map
 ├── tools/
 │   ├── instrument.sh             # Build an instrumented binary (one pinned flag set)
-│   ├── trace_dump.py             # Pretty-print a binary trace
 │   ├── sdctrace.py               # Python trace reader
 │   └── study/                    # Experiment drivers: sweep.py, report.py, overhead.py
 ├── workloads/
-│   ├── reductions/               # sum.cpp, sum_plain.cpp
+│   ├── reductions/               # sum_plain.cpp
 │   └── moon/
 │       ├── common/               # Shared headers: vec3, constants, lander, interface
 │       ├── plant/                # Dynamics, RK4, landing judge (not instrumented)
 │       ├── fsw/                  # Navigation and guidance (instrumented)
 │       └── sim/                  # Simulation loop: main.cpp (not instrumented)
-├── web/                          # Browser mission scene: Vite + TypeScript + three.js, NASA assets (ADR-0025)
+├── web/                          # Vector display: Vite + TypeScript + three.js, committed data (ADR-0010, ADR-0025)
 ├── results/                      # Committed sweep reports, summaries, and evidence
 ├── docs/
 │   ├── architecture.md           # This document (living spec)
@@ -321,7 +320,7 @@ Keep them plain C++. Suggested starter set:
 1. Simple reduction (sum / product of an array) — easy to reason about masking.
 2. Iterative linear solver (Jacobi or CG) — interesting propagation.
 3. Hardened moon flight software (ADR-0008): a TMR and lockstep hybrid modeled on real flight computers. This is where the defense table is generated.
-4. Lunar descent (ADR-0007, ADR-0016) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the Three.js HUD.
+4. Lunar descent (ADR-0007, ADR-0016) — plant + FSW; FSW TUs instrumented, plant untouched. Produces `trajectory.json` for the web display and `tools/plot.py`.
 
 ---
 
@@ -504,7 +503,7 @@ Settled in this revision:
 | ADR-0007 | Moon workload: powered lunar descent, hand-rolled plant |
 | ADR-0008 | Defense: TMR and lockstep hybrid modeled on real flight computers |
 | ADR-0009 | Only FSW translation units are instrumented |
-| ADR-0010 | Separate `trajectory.json`, offline Three.js HUD |
+| ADR-0010 | Separate `trajectory.json`, web display on committed data |
 | ADR-0011 | Exit record `operand1` is a flag set: bit 0 DETECTED, bit 1 CORRECTED |
 | ADR-0012 | Random injection: the runtime resolves the site from a plan, seeded by `SDC_SEED` |
 | ADR-0013 | Ratifies ADR-0003, ADR-0005, ADR-0007 to ADR-0010 |
@@ -519,7 +518,7 @@ Settled in this revision:
 | ADR-0022 | Per-trial timeout and HANG outcome |
 | ADR-0023 | Persistent fault model |
 | ADR-0024 | Sweep trials run concurrently; cores stay sequential |
-| ADR-0025 | Web scene: `web/` app, NASA assets, display fit of the Moon mesh |
+| ADR-0025 | Web scene: `web/` app, vector wireframe display |
 | ADR-0026 | Trace format v1: the spec describes the implemented reader |
 
 ---
@@ -539,7 +538,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0007 | 2026-10-31 | Moon workload: powered lunar descent, hand-rolled plant, FSW-only instrumentation | Accepted |
 | ADR-0008 | 2026-10-31 | Defense: TMR and lockstep hybrid modeled on real flight computers | Accepted |
 | ADR-0009 | 2026-10-31 | Instrumentation scope: FSW translation units only; plant untouched | Accepted |
-| ADR-0010 | 2026-10-31 | Trajectory log + Three.js HUD (vendored offline), separate from SDCTRACE | Accepted |
+| ADR-0010 | 2026-10-31 | Trajectory log + web display on committed data, separate from SDCTRACE | Accepted |
 | ADR-0011 | 2026-10-31 | Exit record detection word becomes a flag set (DETECTED, CORRECTED) | Accepted |
 | ADR-0012 | 2026-10-31 | Random injection resolves its site in the runtime from a driver-built plan | Accepted |
 | ADR-0013 | 2026-10-31 | Ratify ADR-0003, ADR-0005, ADR-0007 to ADR-0010 | Accepted |
@@ -554,7 +553,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 | ADR-0022 | 2026-10-31 | Per-trial timeout and HANG outcome | Accepted |
 | ADR-0023 | 2026-10-31 | Persistent fault model | Accepted |
 | ADR-0024 | 2026-10-31 | Sweep trials run concurrently; cores stay sequential | Accepted |
-| ADR-0025 | 2026-11-04 | Web scene: `web/` app, NASA assets, display fit of the Moon mesh | Accepted |
+| ADR-0025 | 2026-11-04 | Web scene: `web/` app, vector wireframe display | Accepted |
 | ADR-0026 | 2026-11-06 | Trace format v1: the spec is narrowed to the implemented reader | Accepted |
 
 ---
@@ -575,7 +574,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 
 **Success criterion:** The plant's true touchdown state inside the Lunar Module touchdown envelope and within 1 km of the clean run's touchdown point, combined into one score where up to 1 passes (ADR-0020).
 
-**Trajectory log:** `trajectory.json` written by the plant/driver, consumed only by the Three.js HUD. Separate from `SDCTRACE`.
+**Trajectory log:** `trajectory.json` written by the plant/driver, consumed by `tools/scene_data.py`, `tools/plot.py`, and the web display. Separate from `SDCTRACE`.
 
 ## 16. Defense (ADR-0008)
 
@@ -597,7 +596,7 @@ This document is the living spec. The frozen original is [`architecture-v1.md`](
 
 ## 18. Viewer (ADR-0010)
 
-- **Three.js HUD:** Vendored offline (no CDN). Reads `trajectory.json` + `evidence.json`.
+- **Web display:** `web/`, a static site on committed data from `tools/scene_data.py`. Lines only (ADR-0025).
 - **Display:** Clean vs injected trajectories, injection point, first divergence, outcome badge.
 - **Separation:** Never reads `SDCTRACE` directly; consumes only published artifacts.
 

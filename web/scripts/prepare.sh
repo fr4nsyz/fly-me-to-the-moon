@@ -1,25 +1,20 @@
 #!/usr/bin/env bash
-# Writes web/public/data from the native instrumented lander and copies the
-# Draco decoder from the pinned three package into web/public/draco.
+# Regenerates web/public/data from the native instrumented lander and the stored sweeps. The output is committed.
 set -euo pipefail
 
 WEB="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROOT="$(cd "$WEB/.." && pwd)"
 BINARY="$ROOT/build/moon/moon_instr"
-DRACO="$WEB/node_modules/three/examples/jsm/libs/draco/gltf"
+PYTHON="${PYTHON:-python3}"
 
 if [[ ! -x "$BINARY" ]]; then
   echo "prepare.sh: $BINARY not found; build it with tools/instrument.sh (see README)" >&2
   exit 1
 fi
 
-mkdir -p "$WEB/public/data" "$WEB/public/draco"
-TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
-
-for mode in none tmr-lockstep; do
-  SDC_WORKLOAD=moon SDC_TRACE="$TMP/$mode.sdct" "$BINARY" --defense "$mode" \
-    --trajectory "$WEB/public/data/trajectory_$mode.json"
-done
-
-cp "$DRACO/draco_decoder.wasm" "$DRACO/draco_wasm_wrapper.js" "$WEB/public/draco/"
+rm -rf "$WEB/public/data"
+"$PYTHON" "$ROOT/tools/scene_data.py" --binary "$BINARY" \
+  --feature "$ROOT/results/sweep_moon_persistent_none:35" \
+  --feature "$ROOT/results/sweep_moon_persistent_tmr_lockstep:35" \
+  --feature "$ROOT/results/sweep_moon_persistent_none:0" \
+  --out "$WEB/public/data"
