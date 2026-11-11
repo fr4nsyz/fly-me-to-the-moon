@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include "sdc/types.hpp"
+#include <cstdint>
 
 namespace sdc {
 
@@ -16,10 +16,14 @@ double runtime_f64_sqrt(OpId op_id, double x);
 
 } // namespace sdc
 
-extern "C" double sdc_runtime_f64_add_hook(std::uint32_t op_id, double lhs, double rhs);
-extern "C" double sdc_runtime_f64_sub_hook(std::uint32_t op_id, double lhs, double rhs);
-extern "C" double sdc_runtime_f64_mul_hook(std::uint32_t op_id, double lhs, double rhs);
-extern "C" double sdc_runtime_f64_div_hook(std::uint32_t op_id, double lhs, double rhs);
+extern "C" double sdc_runtime_f64_add_hook(std::uint32_t op_id, double lhs,
+                                           double rhs);
+extern "C" double sdc_runtime_f64_sub_hook(std::uint32_t op_id, double lhs,
+                                           double rhs);
+extern "C" double sdc_runtime_f64_mul_hook(std::uint32_t op_id, double lhs,
+                                           double rhs);
+extern "C" double sdc_runtime_f64_div_hook(std::uint32_t op_id, double lhs,
+                                           double rhs);
 extern "C" double sdc_runtime_f64_sqrt_hook(std::uint32_t op_id, double x);
 
 // Reporting API. A workload calls these to tell the runtime what its own

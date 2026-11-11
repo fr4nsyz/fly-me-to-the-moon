@@ -15,7 +15,7 @@ std::string hex64(std::uint64_t v) {
     return buf;
 }
 
-Json event_to_json(const Event& e, const std::map<OpId, OpInfo>& ops) {
+Json event_to_json(const Event &e, const std::map<OpId, OpInfo> &ops) {
     Json j = Json::object();
     j.set("op_id", Json(static_cast<double>(e.op_id)));
     j.set("occurrence", Json(static_cast<double>(e.occurrence)));
@@ -44,7 +44,7 @@ Json event_to_json(const Event& e, const std::map<OpId, OpInfo>& ops) {
     return j;
 }
 
-Json exit_to_json(const ExitRecord& e) {
+Json exit_to_json(const ExitRecord &e) {
     Json j = Json::object();
     j.set("exit_code", Json(static_cast<double>(e.exit_code)));
     j.set("detected_by_workload", Json(e.detected_by_workload));
@@ -55,40 +55,51 @@ Json exit_to_json(const ExitRecord& e) {
 
 } // namespace
 
-std::string build_evidence(const EvidenceInput& input) {
+std::string build_evidence(const EvidenceInput &input) {
     Json root = Json::object();
     root.set("schema", Json(1.0));
-    root.set("classification", Json(std::string(classification_name(input.verdict.classification))));
+    root.set(
+        "classification",
+        Json(std::string(classification_name(input.verdict.classification))));
 
     Json reasons = Json::array();
-    for (const auto& r : input.verdict.reasons) reasons.push_back(Json(r));
+    for (const auto &r : input.verdict.reasons)
+        reasons.push_back(Json(r));
     root.set("reasons", std::move(reasons));
 
-    root.set("final_result_outside_tolerance", Json(input.final_result_outside_tolerance));
+    root.set("final_result_outside_tolerance",
+             Json(input.final_result_outside_tolerance));
     root.set("corrected_by_mechanism", Json(input.corrected_by_mechanism));
 
     // Alignment summary.
     Json align = Json::object();
     align.set("diverged", Json(input.alignment.diverged));
-    align.set("matched_events", Json(static_cast<double>(input.alignment.matched)));
-    align.set("clean_event_count", Json(static_cast<double>(input.clean.events.size())));
-    align.set("injected_event_count", Json(static_cast<double>(input.injected.events.size())));
+    align.set("matched_events",
+              Json(static_cast<double>(input.alignment.matched)));
+    align.set("clean_event_count",
+              Json(static_cast<double>(input.clean.events.size())));
+    align.set("injected_event_count",
+              Json(static_cast<double>(input.injected.events.size())));
     root.set("alignment", std::move(align));
 
     // The injected event: the first place the two runs disagree.
     Json injected_event = Json::object();
-    if (input.alignment.diverged && input.alignment.injected_index < input.injected.events.size()) {
-        const Event& e = input.injected.events[input.alignment.injected_index];
+    if (input.alignment.diverged &&
+        input.alignment.injected_index < input.injected.events.size()) {
+        const Event &e = input.injected.events[input.alignment.injected_index];
         injected_event = event_to_json(e, input.ops);
-        injected_event.set("event_index", Json(static_cast<double>(input.alignment.injected_index)));
+        injected_event.set("event_index", Json(static_cast<double>(
+                                              input.alignment.injected_index)));
     }
     root.set("injected_event", std::move(injected_event));
 
     // The clean counterpart at the same index, for comparison.
     Json clean_event = Json::object();
     if (input.alignment.clean_index < input.clean.events.size()) {
-        clean_event = event_to_json(input.clean.events[input.alignment.clean_index], input.ops);
-        clean_event.set("event_index", Json(static_cast<double>(input.alignment.clean_index)));
+        clean_event = event_to_json(
+            input.clean.events[input.alignment.clean_index], input.ops);
+        clean_event.set("event_index",
+                        Json(static_cast<double>(input.alignment.clean_index)));
     }
     root.set("clean_event", std::move(clean_event));
 
@@ -96,13 +107,18 @@ std::string build_evidence(const EvidenceInput& input) {
     Json window = Json::array();
     if (input.alignment.diverged) {
         const std::size_t w = input.window;
-        const std::size_t inj_start = input.alignment.injected_index >= w ? input.alignment.injected_index - w : 0;
-        const std::size_t inj_end = std::min(input.injected.events.size(), input.alignment.injected_index + w + 1);
+        const std::size_t inj_start = input.alignment.injected_index >= w
+                                          ? input.alignment.injected_index - w
+                                          : 0;
+        const std::size_t inj_end =
+            std::min(input.injected.events.size(),
+                     input.alignment.injected_index + w + 1);
         for (std::size_t i = inj_start; i < inj_end; ++i) {
             Json entry = Json::object();
             entry.set("source", Json(std::string("injected")));
             entry.set("event_index", Json(static_cast<double>(i)));
-            entry.set("event", event_to_json(input.injected.events[i], input.ops));
+            entry.set("event",
+                      event_to_json(input.injected.events[i], input.ops));
             window.push_back(std::move(entry));
         }
     }
@@ -114,11 +130,13 @@ std::string build_evidence(const EvidenceInput& input) {
     // The injection configuration, as recorded by the runtime.
     Json inject = Json::object();
     {
-        Json meta;
+        Json        meta;
         std::string parse_error;
-        if (Json::parse(input.injected.metadata_json, meta, parse_error) && meta.is_object()) {
-            if (const Json* j = meta.find("inject")) {
-                if (j->is_object()) inject = *j;
+        if (Json::parse(input.injected.metadata_json, meta, parse_error) &&
+            meta.is_object()) {
+            if (const Json *j = meta.find("inject")) {
+                if (j->is_object())
+                    inject = *j;
             }
         }
     }

@@ -31,3 +31,19 @@ target_link_libraries(sum PRIVATE sdc_runtime)
 if(LLVM_FOUND)
   include(AddLLVM)
 endif()
+
+file(GLOB_RECURSE ALL_CXX_SOURCE_FILES
+    ${CMAKE_SOURCE_DIR}/src/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/*.hpp
+    ${CMAKE_SOURCE_DIR}/include/*.hpp
+    ${CMAKE_SOURCE_DIR}/include/*.h
+)
+
+find_program(CLANG_FORMAT "clang-format")
+if(CLANG_FORMAT)
+    add_custom_target(
+        format
+        COMMAND ${CLANG_FORMAT} -i -style=file ${ALL_CXX_SOURCE_FILES}
+        COMMENT "Running clang-format on all project files..."
+    )
+endif()

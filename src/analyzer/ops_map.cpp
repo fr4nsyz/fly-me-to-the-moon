@@ -5,7 +5,8 @@
 
 namespace sdc {
 
-bool load_ops_map(const std::string& path, std::map<OpId, OpInfo>& out, std::string& error) {
+bool load_ops_map(const std::string &path, std::map<OpId, OpInfo> &out,
+                  std::string &error) {
     std::ifstream in(path, std::ios::binary);
     if (!in) {
         error = "cannot open " + path;
@@ -25,9 +26,9 @@ bool load_ops_map(const std::string& path, std::map<OpId, OpInfo>& out, std::str
         return false;
     }
 
-    for (const auto& kv : root.fields()) {
-        const std::string& key = kv.first;
-        const Json& value = kv.second;
+    for (const auto &kv : root.fields()) {
+        const std::string &key = kv.first;
+        const Json        &value = kv.second;
         if (!value.is_object()) {
             error = path + ": entry \"" + key + "\" is not an object";
             return false;
@@ -41,11 +42,23 @@ bool load_ops_map(const std::string& path, std::map<OpId, OpInfo>& out, std::str
             return false;
         }
 
-        if (const Json* f = value.find("file")) { if (f->is_string()) info.file = f->as_string(); }
-        if (const Json* l = value.find("line")) { if (l->is_number()) info.line = static_cast<unsigned>(l->as_number()); }
-        if (const Json* c = value.find("column")) { if (c->is_number()) info.column = static_cast<unsigned>(c->as_number()); }
-        if (const Json* fn = value.find("function")) { if (fn->is_string()) info.function = fn->as_string(); }
-        if (const Json* k = value.find("kind")) {
+        if (const Json *f = value.find("file")) {
+            if (f->is_string())
+                info.file = f->as_string();
+        }
+        if (const Json *l = value.find("line")) {
+            if (l->is_number())
+                info.line = static_cast<unsigned>(l->as_number());
+        }
+        if (const Json *c = value.find("column")) {
+            if (c->is_number())
+                info.column = static_cast<unsigned>(c->as_number());
+        }
+        if (const Json *fn = value.find("function")) {
+            if (fn->is_string())
+                info.function = fn->as_string();
+        }
+        if (const Json *k = value.find("kind")) {
             if (k->is_string()) {
                 info.kind = k->as_string();
                 op_kind_from_name(info.kind.c_str(), info.op_kind);

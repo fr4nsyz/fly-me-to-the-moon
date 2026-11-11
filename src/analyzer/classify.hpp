@@ -18,7 +18,7 @@ enum class Classification {
     INCONCLUSIVE,
 };
 
-const char* classification_name(Classification c);
+const char *classification_name(Classification c);
 
 struct VerdictInput {
     bool clean_has_exit = false;
@@ -34,10 +34,10 @@ struct VerdictInput {
 };
 
 struct Verdict {
-    Classification classification = Classification::INCONCLUSIVE;
+    Classification           classification = Classification::INCONCLUSIVE;
     std::vector<std::string> reasons;
 };
 
-Verdict classify(const VerdictInput& input);
+Verdict classify(const VerdictInput &input);
 
 } // namespace sdc

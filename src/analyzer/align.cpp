@@ -4,11 +4,11 @@ namespace sdc {
 
 namespace {
 
-bool same_key(const Event& a, const Event& b) {
+bool same_key(const Event &a, const Event &b) {
     return a.op_id == b.op_id && a.occurrence == b.occurrence;
 }
 
-bool same_payload(const Event& a, const Event& b) {
+bool same_payload(const Event &a, const Event &b) {
     return a.operand_bits[0] == b.operand_bits[0] &&
            a.operand_bits[1] == b.operand_bits[1] &&
            a.result_bits == b.result_bits;
@@ -16,14 +16,14 @@ bool same_payload(const Event& a, const Event& b) {
 
 } // namespace
 
-AlignmentResult align_traces(const Trace& clean, const Trace& injected) {
+AlignmentResult align_traces(const Trace &clean, const Trace &injected) {
     AlignmentResult result;
-    std::size_t ci = 0;
-    std::size_t ii = 0;
+    std::size_t     ci = 0;
+    std::size_t     ii = 0;
 
     while (ci < clean.events.size() && ii < injected.events.size()) {
-        const Event& c = clean.events[ci];
-        const Event& j = injected.events[ii];
+        const Event &c = clean.events[ci];
+        const Event &j = injected.events[ii];
         if (!same_key(c, j) || !same_payload(c, j)) {
             result.diverged = true;
             result.clean_index = ci;

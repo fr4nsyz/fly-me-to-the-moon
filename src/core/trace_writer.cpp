@@ -1,14 +1,14 @@
 #include "trace_writer.hpp"
-#include <fcntl.h>
-#include <unistd.h>
 #include <cstring>
+#include <fcntl.h>
 #include <string>
+#include <unistd.h>
 
 namespace sdc {
 
 #pragma pack(push, 1)
 struct Header {
-    char magic[8];
+    char     magic[8];
     uint32_t version;
     uint32_t flags;
     uint32_t meta_len;
@@ -17,14 +17,14 @@ struct Header {
 };
 #pragma pack(pop)
 
-TraceWriter::~TraceWriter() {
-    close();
-}
+TraceWriter::~TraceWriter() { close(); }
 
-bool TraceWriter::open(const std::string& path, const std::string& metadata_json) {
+bool TraceWriter::open(const std::string &path,
+                       const std::string &metadata_json) {
     close();
     fd_ = ::open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (fd_ < 0) return false;
+    if (fd_ < 0)
+        return false;
 
     Header hdr;
     memcpy(hdr.magic, "SDCTRACE", 8);
@@ -39,7 +39,8 @@ bool TraceWriter::open(const std::string& path, const std::string& metadata_json
         return false;
     }
     if (hdr.meta_len > 0) {
-        if (write(fd_, metadata_json.data(), hdr.meta_len) != static_cast<ssize_t>(hdr.meta_len)) {
+        if (write(fd_, metadata_json.data(), hdr.meta_len) !=
+            static_cast<ssize_t>(hdr.meta_len)) {
             close();
             return false;
         }
@@ -47,8 +48,9 @@ bool TraceWriter::open(const std::string& path, const std::string& metadata_json
     return true;
 }
 
-void TraceWriter::write_event(const Event& event) {
-    if (fd_ < 0 || wrote_exit_) return;
+void TraceWriter::write_event(const Event &event) {
+    if (fd_ < 0 || wrote_exit_)
+        return;
     struct {
         uint32_t type;
         uint32_t op_id;
@@ -66,8 +68,9 @@ void TraceWriter::write_event(const Event& event) {
     write(fd_, &rec, sizeof(rec));
 }
 
-void TraceWriter::write_exit(const ExitRecord& exit_rec) {
-    if (fd_ < 0 || wrote_exit_) return;
+void TraceWriter::write_exit(const ExitRecord &exit_rec) {
+    if (fd_ < 0 || wrote_exit_)
+        return;
     struct {
         uint32_t type;
         uint32_t op_id;
@@ -79,12 +82,16 @@ void TraceWriter::write_exit(const ExitRecord& exit_rec) {
     rec.type = 1; // EXIT
     rec.op_id = 0;
     rec.occurrence = 0;
-    rec.operand0 = static_cast<uint64_t>(static_cast<uint32_t>(exit_rec.exit_code));
+    rec.operand0 =
+        static_cast<uint64_t>(static_cast<uint32_t>(exit_rec.exit_code));
     // ADR-0011: operand1 is an outcome flag set. Bit 0 is DETECTED, bit 1 is
-    // CORRECTED. Bit 0 keeps the meaning the original version 1 definition gave it.
+    // CORRECTED. Bit 0 keeps the meaning the original version 1 definition gave
+    // it.
     rec.operand1 = 0;
-    if (exit_rec.detected_by_workload) rec.operand1 |= 1ULL;
-    if (exit_rec.corrected_by_mechanism) rec.operand1 |= 2ULL;
+    if (exit_rec.detected_by_workload)
+        rec.operand1 |= 1ULL;
+    if (exit_rec.corrected_by_mechanism)
+        rec.operand1 |= 2ULL;
     rec.result = exit_rec.final_result_bits;
     write(fd_, &rec, sizeof(rec));
     wrote_exit_ = true;
