@@ -1,14 +1,14 @@
 #include "trace_reader.hpp"
-#include <fcntl.h>
-#include <unistd.h>
 #include <cstring>
+#include <fcntl.h>
 #include <string>
+#include <unistd.h>
 
 namespace sdc {
 
 #pragma pack(push, 1)
 struct Header {
-    char magic[8];
+    char     magic[8];
     uint32_t version;
     uint32_t flags;
     uint32_t meta_len;
@@ -25,7 +25,7 @@ struct Rec {
 };
 #pragma pack(pop)
 
-Trace TraceReader::read(const std::string& path) {
+Trace TraceReader::read(const std::string &path) {
     Trace trace;
     error_.clear();
     int fd = ::open(path.c_str(), O_RDONLY);
@@ -34,7 +34,7 @@ Trace TraceReader::read(const std::string& path) {
         return trace;
     }
 
-    Header hdr;
+    Header  hdr;
     ssize_t n = ::read(fd, &hdr, sizeof(hdr));
     if (n != sizeof(hdr)) {
         error_ = "short header";
@@ -76,7 +76,8 @@ Trace TraceReader::read(const std::string& path) {
     while (true) {
         Rec r;
         n = ::read(fd, &r, sizeof(r));
-        if (n == 0) break;
+        if (n == 0)
+            break;
         if (n < static_cast<ssize_t>(sizeof(r))) {
             // torn final record - discard
             break;
@@ -98,7 +99,8 @@ Trace TraceReader::read(const std::string& path) {
             trace.events.push_back(ev);
         } else if (r.type == 1) { // EXIT
             trace.has_exit = true;
-            trace.exit_record.exit_code = static_cast<int>(static_cast<uint32_t>(r.operand0));
+            trace.exit_record.exit_code =
+                static_cast<int>(static_cast<uint32_t>(r.operand0));
             trace.exit_record.detected_by_workload = (r.operand1 & 1ULL) != 0;
             trace.exit_record.corrected_by_mechanism = (r.operand1 & 2ULL) != 0;
             trace.exit_record.final_result_bits = r.result;

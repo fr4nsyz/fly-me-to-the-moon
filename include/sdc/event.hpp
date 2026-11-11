@@ -14,12 +14,12 @@ enum class OpKind : std::uint8_t {
     Unknown = 255,
 };
 
-const char* op_kind_name(OpKind kind);
-bool op_kind_from_name(const char* name, OpKind& out);
+const char *op_kind_name(OpKind kind);
+bool        op_kind_from_name(const char *name, OpKind &out);
 
 struct Event {
-    OpId       op_id;
-    Occurrence occurrence;
+    OpId          op_id;
+    Occurrence    occurrence;
     std::uint64_t operand_bits[2]; // left, right (or unary)
     std::uint64_t result_bits;
 };
