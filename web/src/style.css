@@ -1,11 +1,13 @@
 :root {
-  --bg: #000;
-  --panel: rgba(12, 14, 18, 0.92);
-  --line: #262b33;
-  --text: #d8dde6;
-  --muted: #8a93a2;
-  --accent: #e0a43a;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  --bg: #0d0b08;
+  --panel: #1a120a;
+  --line: #3a2a0f;
+  --text: #e8b86d;
+  --muted: #8a6a2a;
+  --accent: #f4c842;
+  --glow: rgba(232, 184, 109, 0.12);
+  --hover: rgba(232, 184, 109, 0.08);
+  font-family: "Fira Code", "Courier New", monospace;
   font-size: 14px;
   color: var(--text);
   background: var(--bg);
@@ -18,6 +20,7 @@
 body {
   margin: 0;
   background: var(--bg);
+  text-shadow: 0 0 3px var(--glow), 0 0 8px var(--glow);
 }
 
 #app {
@@ -42,19 +45,22 @@ body {
 #scene canvas { display: block; width: 100%; height: 100%; }
 #timeline { grid-area: timeline; border-top: 1px solid var(--line); }
 
-h1 { font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 16px; color: var(--accent); }
-h2 { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 16px 0 8px; }
+h1 { font-size: 15px; font-weight: 700; margin: 0 0 16px; color: var(--text); }
+h2 { font-size: 13px; font-weight: 700; color: var(--text); margin: 16px 0 8px; }
+h1::before, h2::before { content: "> "; color: var(--accent); }
 
 dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; }
 dt { color: var(--muted); }
 dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
 
-label { display: grid; gap: 6px; color: var(--muted); }
-select, button, input { font: inherit; color: var(--text); background: #171a20; border: 1px solid var(--line); border-radius: 3px; padding: 4px 8px; }
-button.on { border-color: var(--accent); color: var(--accent); }
+label { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; color: var(--muted); }
+select, button, input { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 4px 8px; }
+button:hover { background: var(--hover); }
+button.on { background: var(--text); color: var(--bg); text-shadow: none; }
+::selection { background: var(--text); color: var(--bg); }
 .buttons { display: flex; gap: 6px; flex-wrap: wrap; }
 .controls { display: flex; gap: 12px; align-items: center; }
-#scrub { flex: 1; padding: 0; }
+#scrub { flex: 1; padding: 0; accent-color: var(--accent); }
 #clock { font-variant-numeric: tabular-nums; min-width: 88px; }
 .note { color: var(--muted); font-size: 12px; line-height: 1.4; margin: 8px 0 0; }
 
