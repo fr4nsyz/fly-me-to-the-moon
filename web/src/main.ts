@@ -35,6 +35,7 @@ function makeControls(up: THREE.Vector3): OrbitControls {
   camera.up.copy(up);
   const next = new OrbitControls(camera, renderer.domElement);
   next.enableDamping = true;
+  next.zoomToCursor = true;
   return next;
 }
 

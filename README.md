@@ -107,6 +107,8 @@ cd web && npm ci && npm run dev
 
 The display plays committed data for the featured trials, so it needs no native build. `npm run prepare-data` regenerates `web/public/data/` from `build/moon/moon_instr` and the stored sweeps.
 
+The viewer in `web/` is vibecoded: it was generated with an AI assistant and not reviewed line by line. The project's focus is the fault injection and analysis, not the visuals.
+
 ## Plot the figures
 
 ```bash
