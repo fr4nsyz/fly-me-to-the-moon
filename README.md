@@ -53,7 +53,7 @@ The undefended run's speeds: the fault takes over during braking at t = 261 s, a
 
 ### Viewer
 
-The web display replaying three outcomes from t = 240 s, seen from the side of the flight plane: clean run in amber, faulty run in red.
+The web display replaying three outcomes from t = 240 s, seen from the side of the flight plane: clean run in amber, faulty run in red. The right panel shows each run of the faulted operation: its operands, the faulty and clean results, their difference, and which bits differ.
 
 SDC, no defense (trial 35), the replay at the top of this page: the fault becomes visible at 261 s and the lander strikes the surface at 113.5 m/s.
 
