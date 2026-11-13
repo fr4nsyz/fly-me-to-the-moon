@@ -88,7 +88,7 @@ Experiment driver (Python/Rust) orchestrates:
 
 Two traces always feed the analyzer: the clean baseline and the single-fault run.
 
-The web display is a read-only consumer: it renders the `trajectory.json` files and evidence summaries that `tools/scene_data.py` writes. It never feeds back into the analyzer.
+The web display is a read-only consumer: it renders the `trajectory.json` files, evidence summaries, and injected-op runs from the traces that `tools/scene_data.py` writes. It never feeds back into the analyzer.
 
 ---
 

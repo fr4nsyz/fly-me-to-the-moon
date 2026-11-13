@@ -43,9 +43,21 @@ export interface Evidence {
   function: string;
 }
 
+export interface OpRun {
+  t: number;
+  occurrence: number;
+  operand0: string;
+  operand1: string;
+  result: string;
+  clean: string | null;
+}
+
+type RawOpRun = [number, number, string, string, string, string | null];
+
 export interface Run {
   trajectory: Trajectory;
   evidence: Evidence | null;
+  opRuns: OpRun[];
 }
 
 export interface TrialEntry {
@@ -64,8 +76,23 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 export async function loadRun(file: string): Promise<Run> {
-  const data = await fetchJson<Trajectory | { evidence: Evidence; faulty: Trajectory }>(file);
-  return "faulty" in data ? { trajectory: data.faulty, evidence: data.evidence } : { trajectory: data, evidence: null };
+  const data = await fetchJson<Trajectory | { evidence: Evidence; faulty: Trajectory; op_runs: RawOpRun[] }>(file);
+  if (!("faulty" in data)) return { trajectory: data, evidence: null, opRuns: [] };
+  const opRuns = data.op_runs.map(([t, occurrence, operand0, operand1, result, clean]) => ({
+    t,
+    occurrence,
+    operand0,
+    operand1,
+    result,
+    clean,
+  }));
+  return { trajectory: data.faulty, evidence: data.evidence, opRuns };
+}
+
+export function bitsToDouble(hex: string): number {
+  const view = new DataView(new ArrayBuffer(8));
+  view.setBigUint64(0, BigInt(hex));
+  return view.getFloat64(0);
 }
 
 export const loadTrialIndex = () => fetchJson<TrialEntry[]>("index.json");
