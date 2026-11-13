@@ -1,15 +1,28 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { createPath, type Path } from "./paths";
-import { renderStatus, renderTelemetry } from "./telemetry";
-import { hasPosition, lastIndexAtOrBefore, loadTrajectory, positionAt, type Positioned, type Trajectory } from "./trajectory";
+import { renderOperation, renderStatus, renderTelemetry } from "./telemetry";
+import {
+  hasPosition,
+  lastIndexAtOrBefore,
+  loadRun,
+  loadTrialIndex,
+  positionAt,
+  type Evidence,
+  type OpRun,
+  type Positioned,
+  type Trajectory,
+} from "./trajectory";
 import { createWireMoon } from "./wire";
 import "./style.css";
 
-type CameraMode = "orbital" | "chase" | "overview";
+type CameraMode = "orbital" | "chase" | "side" | "overview";
 
-const NOMINAL_COLOR = 0x5aa9ff;
-const GRID_COLOR = 0x3fbf8f;
+const NOMINAL_COLOR = 0xe8b86d;
+const FAULTY_COLOR = 0xe0806a;
+const GRID_COLOR = 0x8a6a2a;
+const SIDE_DISTANCE_KM = 20;
+const DEFENSE_LABEL: Record<string, string> = { none: "single computer", "tmr-lockstep": "TMR + lockstep" };
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const container = $<HTMLElement>("scene");
@@ -17,9 +30,11 @@ const scrub = $<HTMLInputElement>("scrub");
 const playButton = $<HTMLButtonElement>("play");
 const clockLabel = $<HTMLSpanElement>("clock");
 const speedSelect = $<HTMLSelectElement>("speed");
-const defenseSelect = $<HTMLSelectElement>("defense");
+const runSelect = $<HTMLSelectElement>("run");
+const runNote = $<HTMLElement>("run-note");
 const telemetryEl = $<HTMLElement>("telemetry");
 const statusEl = $<HTMLElement>("status");
+const operationEl = $<HTMLElement>("operation");
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -41,13 +56,16 @@ function makeControls(up: THREE.Vector3): OrbitControls {
 
 const marker = new THREE.Points(
   new THREE.BufferGeometry().setAttribute("position", new THREE.Float32BufferAttribute([0, 0, 0], 3)),
-  new THREE.PointsMaterial({ color: 0xffc861, size: 7, sizeAttenuation: false }),
+  new THREE.PointsMaterial({ color: 0x9ccb6a, size: 7, sizeAttenuation: false }),
 );
 scene.add(marker);
 
 let trajectory: Trajectory;
+let evidence: Evidence | null = null;
+let opRuns: OpRun[] = [];
 let track: Positioned[] = [];
 let path: Path | null = null;
+let reference: Path | null = null;
 let t = 0;
 let playing = false;
 let mode: CameraMode = "orbital";
@@ -70,7 +88,8 @@ function setCamera(next: CameraMode): void {
   const here = positionAt(track, t);
   const up = here.clone().normalize();
   controls.dispose();
-  controls = makeControls(next === "chase" ? up : new THREE.Vector3(0, 1, 0));
+  const follows = next === "chase" || next === "side";
+  controls = makeControls(follows ? up : new THREE.Vector3(0, 1, 0));
   if (next === "orbital") {
     controls.target.set(0, 0, 0);
     const tilt = THREE.MathUtils.degToRad(35);
@@ -82,6 +101,10 @@ function setCamera(next: CameraMode): void {
     if (back.lengthSq() === 0) back.set(0, 1, 0).addScaledVector(up, -up.y);
     back.normalize();
     camera.position.copy(here).addScaledVector(back, 0.03).addScaledVector(up, 0.012);
+  } else if (next === "side") {
+    controls.target.copy(here);
+    const normal = positionAt(track, endTime()).cross(positionAt(track, 0)).normalize();
+    camera.position.copy(here).addScaledVector(normal, SIDE_DISTANCE_KM);
   } else {
     const first = positionAt(track, 0);
     const last = positionAt(track, endTime());
@@ -94,26 +117,41 @@ function setCamera(next: CameraMode): void {
 
 function update(): void {
   const here = positionAt(track, t);
-  if (mode === "chase") {
+  if (mode === "chase" || mode === "side") {
     camera.position.add(here.clone().sub(controls.target));
     controls.target.copy(here);
   }
   marker.position.copy(here);
   path?.setTime(t);
+  reference?.setTime(t);
 
   const sample = trajectory.samples[lastIndexAtOrBefore(trajectory.samples, t)];
   renderTelemetry(telemetryEl, sample, track[0]);
   if (failure === null) renderStatus(statusEl, trajectory, sample, t);
+  renderOperation(operationEl, evidence, opRuns, t);
   scrub.value = String(Math.round((1000 * t) / endTime()));
   clockLabel.textContent = `T+${t.toFixed(1).padStart(5, "0")} s`;
 }
 
-async function useTrajectory(defense: string): Promise<void> {
-  trajectory = await loadTrajectory(defense);
+function describe(e: Evidence | null): string {
+  if (e === null) return "No fault injected.";
+  const model = e.persistent ? "Persistent" : "Transient";
+  return `${e.classification}. ${model} flip of bit ${e.bit} in ${e.kind} op ${e.op_id} (${e.function}, ${e.file}:${e.line}) from occurrence ${e.occurrence}. Clean run shown in amber.`;
+}
+
+async function useTrajectory(file: string): Promise<void> {
+  const run = await loadRun(file);
+  const clean = run.evidence ? await loadRun(`clean_${run.trajectory.defense}.json`) : null;
+  trajectory = run.trajectory;
+  evidence = run.evidence;
+  opRuns = run.opRuns;
+  runNote.textContent = describe(run.evidence);
   track = trajectory.samples.filter(hasPosition);
   path?.dispose();
-  path = createPath(scene, track, NOMINAL_COLOR);
-  path.setResolution(container.clientWidth, container.clientHeight);
+  reference?.dispose();
+  reference = clean && createPath(scene, clean.trajectory.samples.filter(hasPosition), NOMINAL_COLOR);
+  path = createPath(scene, track, clean ? FAULTY_COLOR : NOMINAL_COLOR);
+  resize();
   t = Math.min(t, endTime());
 }
 
@@ -124,10 +162,14 @@ function resize(): void {
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
   path?.setResolution(w, h);
+  reference?.setResolution(w, h);
 }
 
 async function start(): Promise<void> {
-  await useTrajectory("none");
+  for (const e of await loadTrialIndex()) {
+    runSelect.add(new Option(`Trial ${e.trial}, ${DEFENSE_LABEL[e.defense]}: ${e.classification}`, e.file));
+  }
+  await useTrajectory("clean_none.json");
   scene.add(createWireMoon(GRID_COLOR));
 
   resize();
@@ -137,8 +179,8 @@ async function start(): Promise<void> {
   scrub.addEventListener("input", () => {
     t = (Number(scrub.value) / 1000) * endTime();
   });
-  defenseSelect.addEventListener("change", () => {
-    useTrajectory(defenseSelect.value).catch(fail);
+  runSelect.addEventListener("change", () => {
+    useTrajectory(runSelect.value).catch(fail);
   });
   document.querySelectorAll<HTMLButtonElement>("[data-camera]").forEach((b) => {
     b.addEventListener("click", () => setCamera(b.dataset.camera as CameraMode));

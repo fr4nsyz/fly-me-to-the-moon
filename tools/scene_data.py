@@ -15,16 +15,18 @@ import shutil
 import subprocess
 import tempfile
 
+import sdctrace
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORES = 6
 RUN_TIMEOUT = 600
+# Must equal kDt in workloads/moon/sim/main.cpp.
+DT = 0.1
 
 
-def fly(binary, env_extra, args, trajectory_path):
-    with tempfile.NamedTemporaryFile(suffix=".sdct", delete=False) as handle:
-        trace = handle.name
+def fly(binary, env_extra, args, trajectory_path, trace_path):
     env = dict(os.environ)
-    env.update({"SDC_TRACE": trace, "SDC_WORKLOAD": "moon"})
+    env.update({"SDC_TRACE": trace_path, "SDC_WORKLOAD": "moon"})
     env.update(env_extra)
     try:
         result = subprocess.run(
@@ -33,9 +35,6 @@ def fly(binary, env_extra, args, trajectory_path):
         )
     except subprocess.TimeoutExpired:
         raise SystemExit(f"scene_data: {binary} did not finish within {RUN_TIMEOUT} s")
-    finally:
-        if os.path.exists(trace):
-            os.remove(trace)
     with open(trajectory_path) as handle:
         return result.stdout, json.load(handle)
 
@@ -103,19 +102,20 @@ def injection(evidence):
 
 
 def fly_clean(binary, defense, tmp):
-    """Fly the clean landing; returns (trajectory, spot) where spot is the faulty run's --reference."""
-    stdout, clean = fly(binary, {}, ["--defense", defense], os.path.join(tmp, f"clean_{defense}.json"))
+    """Fly the clean landing; returns (trajectory, spot, trace path) where spot is the faulty run's --reference."""
+    trace = os.path.join(tmp, f"clean_{defense}.sdct")
+    stdout, clean = fly(binary, {}, ["--defense", defense], os.path.join(tmp, f"clean_{defense}.json"), trace)
     match = re.search(r"spot=(\S+)", stdout)
     if not match:
         raise SystemExit(f"scene_data: the clean landing printed no spot: {stdout.strip()}")
-    return clean, match.group(1)
+    return clean, match.group(1), trace
 
 
-def fly_faulty(binary, defense, spot, inject, path):
+def fly_faulty(binary, defense, spot, inject, path, trace_path):
     fault_env = {"SDC_INJECT": f"op={inject['op_id']},occ={inject['occurrence']},bit={inject['bit']}"}
     if inject.get("persistent"):
         fault_env["SDC_INJECT_PERSIST"] = "1"
-    _, faulty = fly(binary, fault_env, ["--defense", defense, "--reference", spot], path)
+    _, faulty = fly(binary, fault_env, ["--defense", defense, "--reference", spot], path, trace_path)
     return faulty
 
 
@@ -124,9 +124,37 @@ def refly(args):
     evidence = load_trial(args)
     inject = injection(evidence)
     with tempfile.TemporaryDirectory() as tmp:
-        clean, spot = fly_clean(args.binary, args.defense, tmp)
-        faulty = fly_faulty(args.binary, args.defense, spot, inject, os.path.join(tmp, "faulty.json"))
+        clean, spot, _ = fly_clean(args.binary, args.defense, tmp)
+        faulty = fly_faulty(args.binary, args.defense, spot, inject, os.path.join(tmp, "faulty.json"),
+                            os.path.join(tmp, "faulty.sdct"))
     return evidence, clean, faulty
+
+
+def steps_flown(trajectory):
+    """Number of flight software steps in a landed run; touchdown falls inside the last step."""
+    if trajectory["touchdown"] is None:
+        raise SystemExit("scene_data: the clean landing did not touch down")
+    return math.ceil(trajectory["touchdown"]["t"] / DT)
+
+
+def op_runs(clean_trace, faulty_trace, op_id, steps):
+    """Each faulty-run execution of op_id as [t, occurrence, operand0, operand1, result, clean result], bits in hex."""
+    clean = sdctrace.read(clean_trace).events
+    # The tick's first instrumented op runs once per flight software step, so its count is the step number.
+    clock = clean[0].op_id
+    ticks = sum(1 for e in clean if e.op_id == clock)
+    if ticks != steps:
+        raise SystemExit(f"scene_data: clock op {clock} ran {ticks} times in the clean trace, not once per step ({steps})")
+    reference = {e.occurrence: e.result for e in clean if e.op_id == op_id}
+    runs, steps = [], 0
+    for e in sdctrace.read(faulty_trace).events:
+        if e.op_id == clock:
+            steps += 1
+        if e.op_id == op_id:
+            expected = reference.get(e.occurrence)
+            runs.append([round((steps - 1) * DT, 1), e.occurrence, f"0x{e.operand0:016x}", f"0x{e.operand1:016x}",
+                         f"0x{e.result:016x}", None if expected is None else f"0x{expected:016x}"])
+    return runs
 
 
 def event_bits(event):
@@ -197,18 +225,22 @@ def main():
     index = []
     with tempfile.TemporaryDirectory() as tmp:
         cleans = {mode: fly_clean(args.binary, mode, tmp) for mode in {job.defense for job in jobs}}
-        for mode, (clean, _) in cleans.items():
+        for mode, (clean, _, _) in cleans.items():
             write(os.path.join(args.out, f"clean_{mode}.json"), clean)
         for job in jobs:
             evidence = load_trial(job)
-            faulty = fly_faulty(args.binary, job.defense, cleans[job.defense][1], injection(evidence),
-                                os.path.join(tmp, "faulty.json"))
+            inject = injection(evidence)
+            faulty_trace = os.path.join(tmp, "faulty.sdct")
+            faulty = fly_faulty(args.binary, job.defense, cleans[job.defense][1], inject,
+                                os.path.join(tmp, "faulty.json"), faulty_trace)
             summary = summarize(evidence, job)
             warning = check_consistency(summary["classification"], faulty["touchdown"])
             if warning:
                 raise SystemExit(f"scene_data: trial {job.trial}: {warning}")
             name = f"trial_{job.trial}_{job.defense}.json"
-            write(os.path.join(args.out, name), {"evidence": summary, "faulty": faulty})
+            clean, _, clean_trace = cleans[job.defense]
+            runs = op_runs(clean_trace, faulty_trace, inject["op_id"], steps_flown(clean))
+            write(os.path.join(args.out, name), {"evidence": summary, "faulty": faulty, "op_runs": runs})
             index.append({"file": name, "trial": job.trial, "defense": job.defense,
                           "classification": summary["classification"]})
     write(os.path.join(args.out, "index.json"), index)

@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SDC Investigator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="app">
@@ -12,19 +15,20 @@
         <section>
           <h2>Experiment</h2>
           <label>
-            Flight computer
-            <select id="defense">
-              <option value="none">Single computer</option>
-              <option value="tmr-lockstep">TMR + lockstep</option>
+            Run
+            <select id="run">
+              <option value="clean_none.json">Clean, single computer</option>
+              <option value="clean_tmr-lockstep.json">Clean, TMR + lockstep</option>
             </select>
           </label>
-          <p class="note">Clean landing from the native instrumented build. Fault injection is not connected yet.</p>
+          <p class="note" id="run-note"></p>
         </section>
         <section>
           <h2>Camera</h2>
           <div class="buttons">
             <button data-camera="orbital" class="on">Orbital</button>
             <button data-camera="chase">Chase</button>
+            <button data-camera="side">Side</button>
             <button data-camera="overview">Overview</button>
           </div>
         </section>
@@ -35,6 +39,9 @@
         <dl id="status"></dl>
         <h2>Telemetry</h2>
         <dl id="telemetry"></dl>
+        <h2>Faulted operation</h2>
+        <dl id="operation"></dl>
+        <p class="note">Clean result: the same run of this operation in the clean flight. After the paths diverge, the inputs differ too.</p>
       </aside>
       <footer id="timeline">
         <div class="controls">
