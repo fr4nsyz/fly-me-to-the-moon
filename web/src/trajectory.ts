@@ -31,13 +31,44 @@ export interface Trajectory {
 
 export type Positioned = Sample & { position: Vec3m };
 
-export async function loadTrajectory(defense: string): Promise<Trajectory> {
-  const response = await fetch(`data/clean_${defense}.json`);
+export interface Evidence {
+  classification: string;
+  op_id: number;
+  occurrence: number;
+  bit: number;
+  persistent: boolean;
+  kind: string;
+  file: string;
+  line: number;
+  function: string;
+}
+
+export interface Run {
+  trajectory: Trajectory;
+  evidence: Evidence | null;
+}
+
+export interface TrialEntry {
+  file: string;
+  trial: number;
+  defense: string;
+  classification: string;
+}
+
+async function fetchJson<T>(path: string): Promise<T> {
+  const response = await fetch(`data/${path}`);
   if (!response.ok || !response.headers.get("content-type")?.includes("json")) {
-    throw new Error(`data/clean_${defense}.json: HTTP ${response.status}`);
+    throw new Error(`data/${path}: HTTP ${response.status}`);
   }
   return response.json();
 }
+
+export async function loadRun(file: string): Promise<Run> {
+  const data = await fetchJson<Trajectory | { evidence: Evidence; faulty: Trajectory }>(file);
+  return "faulty" in data ? { trajectory: data.faulty, evidence: data.evidence } : { trajectory: data, evidence: null };
+}
+
+export const loadTrialIndex = () => fetchJson<TrialEntry[]>("index.json");
 
 export function hasPosition(s: Sample): s is Positioned {
   return s.position.every((v) => v !== null && Number.isFinite(v));
