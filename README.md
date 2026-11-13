@@ -4,13 +4,13 @@ Flip one bit in one floating-point result inside a compiled C++ program, then tr
 
 ![A single persistent bit flip silently crashes the lander](docs/img/viewer_sdc.gif)
 
-On a lunar landing computer, one persistent bit flip in the flight software silently ruins the landing in 28 of 200 trials. A TMR and lockstep flight-computer design, modeled on real rocket avionics, brings that to 0 of 200 when the fault is confined to one core. Faults that hit several computers at once are not measured yet.
+On a lunar landing computer, one persistent bit flip in the flight software silently ruins the landing in 28 of 200 trials. A TMR and lockstep flight-computer design, modeled on real rocket avionics, brings that to 0 of 200 when the fault stays in one core. Faults that hit several computers at once are not measured yet.
 
-An LLVM IR pass rewrites every double-precision add, subtract, multiply, divide, and square root into a runtime hook. The runtime records each operation in a bit-exact binary trace and can flip one bit of one result, either once (transient) or on every later execution of that operation (persistent, like a defective core). The analyzer compares a clean run against an injected run and classifies the outcome as MASKED, SDC, DETECTED, CORRECTED, CRASH, HANG, or INCONCLUSIVE, with an evidence package that cites the events behind the verdict.
+An LLVM IR pass rewrites every double-precision add, subtract, multiply, divide, and square root into a runtime hook. The runtime records each operation in a bit-exact binary trace and can flip one bit of one result: once (transient), or on every later execution of that operation (persistent, like a defective core). The analyzer compares a clean run against an injected run and classifies the outcome as MASKED, SDC, DETECTED, CORRECTED, CRASH, HANG, or INCONCLUSIVE, with evidence that cites the events behind the verdict.
 
 ## The demo
 
-A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its flight software (navigation and guidance) is built at -O2 and instrumented; the physics plant is not. Each fault-injection run is judged on the true touchdown state against the Lunar Module's landing-gear envelope.
+A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its flight software (FSW) is built at -O2 and instrumented: navigation and guidance. The physics plant is not instrumented. Each run is judged on the true touchdown state against the landing-gear envelope.
 
 | Experiment | Result |
 |---|---|
@@ -19,49 +19,31 @@ A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its 
 | 200 persistent faults, no defense | 28 SDC (14%), 172 MASKED: 172 safe landings |
 | 200 persistent faults, TMR and lockstep hybrid | 0 SDC, 170 CORRECTED, 30 MASKED: 200 safe landings |
 
-The defense is a hybrid of TMR and lockstep that mimics real rocket flight computers: three computers, each a lockstep pair of cores, with commands compared across computers.
-
-## Results
+The defense mimics real rocket flight computers: three computers, each a lockstep pair of cores, with commands compared across computers.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/defense_outcomes_dark.png">
   <img alt="Defense outcomes" src="docs/img/defense_outcomes_light.png">
 </picture>
 
-With no defense, about one in seven persistent single-bit faults silently ruins the landing: 20 crash and 8 touch down softly but more than 1 km off target. With the TMR and lockstep hybrid, all 200 land safely: in 170 the defense silenced or outvoted the broken core, and in 30 the fault was absorbed before it could change the engine command — 21 hit an operation whose result structurally cannot change the command (10 the sign-test dot product, 11 an always-zero z term), and 9 diverged but cancelled before the command.
+With no defense, about one in seven persistent single-bit faults silently ruins the landing: 20 crash and 8 touch down softly but more than 1 km off target. With the defense, all 200 land safely: in 170 the defense silenced or outvoted the broken core, and in 30 the fault was absorbed before it could change the engine command.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/same_fault_dark.png">
   <img alt="The same fault without and with the defense" src="docs/img/same_fault_light.png">
 </picture>
 
-The same persistent exponent flip in navigation (trial 35), side by side. Without a defense (left) the trajectories match until t = 261 s, then the lander falls short and strikes the surface at 113.5 m/s down and 355 m/s sideways, 16 km from the clean landing spot. With the defense (right) the same fault lands on core 5 and the landing is identical to the clean one.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/computers_dark.png">
-  <img alt="Flight computer status in the defended run" src="docs/img/computers_light.png">
-</picture>
-
-What the defense did: core 5's two-core computer (computer 2) disagrees with itself from t = 261 s, so it is silenced and computers 0 and 1 fly the rest of the descent.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/descent_speeds_dark.png">
-  <img alt="Vertical and horizontal speed without a defense" src="docs/img/descent_speeds_light.png">
-</picture>
-
-The undefended run's speeds: the fault takes over during braking at t = 261 s, and the descent rate runs away while the lander still has 355 m/s of horizontal speed.
+The same persistent exponent flip in navigation (trial 35), side by side. Without a defense (left) the trajectories match until t = 261 s, then the lander falls short and strikes the surface 16 km from the clean landing spot. With the defense (right) the fault lands on one core of one computer, which is silenced, and the landing matches the clean one.
 
 ### Viewer
 
-The web display replaying three outcomes from t = 240 s, seen from the side of the flight plane: clean run in amber, faulty run in red. The right panel shows each run of the faulted operation: its operands, the faulty and clean results, their difference, and which bits differ.
+The web display replays the featured trials from the side of the flight plane. Clean runs are amber, faulty runs red.
 
-SDC, no defense (trial 35), the replay at the top of this page: the fault becomes visible at 261 s and the lander strikes the surface at 113.5 m/s.
-
-MASKED, no defense (trial 0): the fault never changes the trajectory and the lander touches down like the clean run.
+MASKED, no defense (trial 0): the fault never changes the trajectory.
 
 ![MASKED replay](docs/img/viewer_masked.gif)
 
-CORRECTED, TMR and lockstep (trial 35): computer 3 is silenced at 261 s and the landing matches the clean run.
+CORRECTED, TMR and lockstep (trial 35): one computer is silenced at 261 s and the landing matches the clean run.
 
 ![CORRECTED replay](docs/img/viewer_corrected.gif)
 
@@ -107,7 +89,7 @@ cd web && npm ci && npm run dev
 
 The display plays committed data for the featured trials, so it needs no native build. `npm run prepare-data` regenerates `web/public/data/` from `build/moon/moon_instr` and the stored sweeps.
 
-The viewer in `web/` is vibecoded: it was generated with an AI assistant and not reviewed line by line. The project's focus is the fault injection and analysis, not the visuals.
+The viewer in `web/` was generated with an AI assistant and not reviewed line by line. The project's focus is the fault injection and analysis, not the visuals.
 
 ## Plot the figures
 
@@ -127,11 +109,12 @@ The viewer in `web/` is vibecoded: it was generated with an AI assistant and not
 | [`docs/math/moon-mission-math.pdf`](docs/math/moon-mission-math.pdf) | The mathematics of the lander's plant, navigation, guidance, and judge. |
 | [`STATE.md`](STATE.md) | Current state, measurements, and the next move. |
 
-## How changes happen
+## Background
 
-1. Edit `docs/architecture.md`.
-2. Record the decision in `docs/audit-log.md`: add an entry for a new decision, or rewrite the existing entry when a decision changes. Git history keeps earlier versions.
-3. Record the decision ID in the tables in `docs/architecture.md`.
+Two NASA space computing papers shaped the defense model and the question of where to harden:
+
+- [Enhancing Fault-Tolerant Space Computing: GNC and LVS Implementations on Next-Gen Multi-Core Processors](https://arxiv.org/abs/2511.04052) (Yun et al., 2025) introduces ARBITER, a multi-core voting mechanism that detects and corrects faults across redundant cores, and reports a bit-level fault injection study that found the most sensitive stage of a guidance algorithm.
+- [NASA's HPSC white paper](https://www.nasa.gov/wp-content/uploads/2024/07/hpsc-white-paper-tmg-26jun2024-final.pdf) documents the dual core lockstep configuration: two cores form a lockstep domain, their outputs are compared every clock cycle, and any difference is flagged immediately.
 
 ## Design principles
 
