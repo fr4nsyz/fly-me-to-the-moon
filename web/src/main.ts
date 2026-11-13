@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { createPath, type Path } from "./paths";
-import { renderStatus, renderTelemetry } from "./telemetry";
+import { renderOperation, renderStatus, renderTelemetry } from "./telemetry";
 import {
   hasPosition,
   lastIndexAtOrBefore,
@@ -9,6 +9,7 @@ import {
   loadTrialIndex,
   positionAt,
   type Evidence,
+  type OpRun,
   type Positioned,
   type Trajectory,
 } from "./trajectory";
@@ -33,6 +34,7 @@ const runSelect = $<HTMLSelectElement>("run");
 const runNote = $<HTMLElement>("run-note");
 const telemetryEl = $<HTMLElement>("telemetry");
 const statusEl = $<HTMLElement>("status");
+const operationEl = $<HTMLElement>("operation");
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -59,6 +61,8 @@ const marker = new THREE.Points(
 scene.add(marker);
 
 let trajectory: Trajectory;
+let evidence: Evidence | null = null;
+let opRuns: OpRun[] = [];
 let track: Positioned[] = [];
 let path: Path | null = null;
 let reference: Path | null = null;
@@ -124,6 +128,7 @@ function update(): void {
   const sample = trajectory.samples[lastIndexAtOrBefore(trajectory.samples, t)];
   renderTelemetry(telemetryEl, sample, track[0]);
   if (failure === null) renderStatus(statusEl, trajectory, sample, t);
+  renderOperation(operationEl, evidence, opRuns, t);
   scrub.value = String(Math.round((1000 * t) / endTime()));
   clockLabel.textContent = `T+${t.toFixed(1).padStart(5, "0")} s`;
 }
@@ -138,6 +143,8 @@ async function useTrajectory(file: string): Promise<void> {
   const run = await loadRun(file);
   const clean = run.evidence ? await loadRun(`clean_${run.trajectory.defense}.json`) : null;
   trajectory = run.trajectory;
+  evidence = run.evidence;
+  opRuns = run.opRuns;
   runNote.textContent = describe(run.evidence);
   track = trajectory.samples.filter(hasPosition);
   path?.dispose();

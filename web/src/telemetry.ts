@@ -1,8 +1,10 @@
 import { MOON_RADIUS_KM } from "./wire";
-import type { Positioned, Sample, Trajectory } from "./trajectory";
+import { bitsToDouble, lastIndexAtOrBefore } from "./trajectory";
+import type { Evidence, OpRun, Positioned, Sample, Trajectory } from "./trajectory";
 
 // Must equal moon::kLanderDryMass in workloads/moon/common/lander.hpp.
 const DRY_MASS_KG = 7000;
+const SYMBOL: Record<string, string> = { fadd: "+", fsub: "-", fmul: "*", fdiv: "/" };
 
 function fmt(v: number | null, digits: number, unit: string): string {
   return v === null || !Number.isFinite(v) ? "n/a" : `${v.toFixed(digits)} ${unit}`;
@@ -56,6 +58,52 @@ export function renderStatus(el: HTMLElement, trajectory: Trajectory, s: Sample,
     );
   } else if (!td && t >= trajectory.samples[trajectory.samples.length - 1].t) {
     entries.push(["Outcome", "no touchdown within the time limit"]);
+  }
+  el.innerHTML = rows(entries);
+}
+
+function double(v: number): string {
+  return v === 0 ? "0" : v.toPrecision(10);
+}
+
+function num(hex: string | null): string {
+  return hex === null ? "n/a" : double(bitsToDouble(hex));
+}
+
+function differingBits(a: string, b: string | null): string {
+  if (b === null) return "n/a";
+  const bits: number[] = [];
+  let x = BigInt(a) ^ BigInt(b);
+  for (let i = 0; x !== 0n; ++i, x >>= 1n) if (x & 1n) bits.push(i);
+  if (bits.length === 0) return "none";
+  return bits.length <= 4 ? bits.join(", ") : `${bits.length} bits`;
+}
+
+export function renderOperation(el: HTMLElement, e: Evidence | null, runs: OpRun[], t: number): void {
+  if (e === null) {
+    el.innerHTML = rows([["Operation", "no fault injected"]]);
+    return;
+  }
+  const unary = e.kind === "sqrt";
+  const entries: [string, string][] = [
+    ["Operation", unary ? "sqrt(a)" : `a ${SYMBOL[e.kind] ?? e.kind} b`],
+    ["Source", `${e.file.split("/").pop()}:${e.line}`],
+  ];
+  const i = lastIndexAtOrBefore(runs, t);
+  const run = runs.length > 0 && runs[i].t <= t ? runs[i] : null;
+  if (run === null) {
+    entries.push(["Run", "not yet executed"]);
+  } else {
+    entries.push(
+      ["Run", `#${run.occurrence}${i === runs.length - 1 ? " (last)" : ""}`],
+      ["Executed at", fmt(run.t, 1, "s")],
+      ["a", num(run.operand0)],
+      ...(unary ? [] : ([["b", num(run.operand1)]] as [string, string][])),
+      ["Result", num(run.result)],
+      ["Clean result", num(run.clean)],
+      ["Difference", run.clean === null ? "n/a" : double(bitsToDouble(run.result) - bitsToDouble(run.clean))],
+      ["Bits differ", differingBits(run.result, run.clean)],
+    );
   }
   el.innerHTML = rows(entries);
 }

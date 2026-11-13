@@ -265,7 +265,7 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 
 ### ADR-0010 — Trajectory log + web display on committed data
 
-**Date:** 2026-10-31, rewritten 2026-11-10
+**Date:** 2026-10-31, rewritten 2026-11-12
 **Status:** Accepted (ADR-0013)
 
 **Proposed.** How to visualize a mission so that people can try it without the native toolchain.
@@ -273,18 +273,20 @@ Both are line 1, column 46, function `helper`, opcode `fmul`. `atomGroup` and `a
 **Decision.**
 - `trajectory.json` stays separate from `SDCTRACE`.
 - The display is the `web/` static site (ADR-0025). Vite bundles three.js; there is no CDN.
-- `tools/scene_data.py` re-flies each defense's clean landing and the featured trials natively and writes `web/public/data/`: `clean_<defense>.json`, `trial_<n>_<defense>.json` (faulty trajectory + evidence summary with the injected and clean operand and result bits), and `index.json`. The output is committed, so `npm ci && npm run dev` needs no LLVM build.
+- `tools/scene_data.py` re-flies each defense's clean landing and the featured trials natively and writes `web/public/data/`: `clean_<defense>.json`, `trial_<n>_<defense>.json`, and `index.json`. A trial file holds the faulty trajectory, the evidence summary with the injected and clean operand and result bits, and `op_runs`. The output is committed, so `npm ci && npm run dev` needs no LLVM build.
+- `op_runs` lists every execution of the injected op in the faulty run as `[t, occurrence, operand0, operand1, result, clean result]`, with the values as 64-bit hex. The clean result is the clean trace's event with the same op and occurrence. The time `t` comes from counting the trace's first op, which runs once per flight software step: core 0 runs first, and its first floating-point op is the unconditional `norm` in `navigate`. `scene_data.py` stops if it does not.
+- The traces are read while `scene_data.py` runs and are not committed.
 - `viewer/` and `tools/view.py` are removed.
 
 **Why.** The trace format stays unchanged and the display is a read-only consumer. Committed data removes LLVM 23 and the instrumented build from the path of anyone who only wants to look.
 
-**Evidence.** The featured set (trial 35 under `none` and `tmr-lockstep`, trial 0 under `none`, both clean landings, the index) is 515,220 bytes, about 109 KB per trajectory.
+**Evidence.** The featured set (trial 35 under `none` and `tmr-lockstep`, trial 0 under `none`, both clean landings, the index) is 1,888,557 bytes. A clean landing is about 109 KB. A trial is 431 to 620 KB, mostly `op_runs`. At each trial's injection occurrence, `op_runs` matches the evidence summary's injected and clean bits. The step-counting op runs 5,278 times in both clean traces, once per step of the 527.8 s landing.
 
-**Rejected.** Embedding the trajectory in `SDCTRACE`. Fetching from a CDN. Committing every sweep trial: about 44 MB at 109 KB each (estimated). Keeping the single-file HTML viewer next to `web/`: two viewers to maintain.
+**Rejected.** Embedding the trajectory in `SDCTRACE`. Fetching from a CDN. Committing every sweep trial: about 44 MB at 109 KB each (estimated). Committing the traces of the featured set: about 225 MB (estimated; the clean traces alone are 15.3 MB and 91.6 MB). Keeping the single-file HTML viewer next to `web/`: two viewers to maintain.
 
 **Impact.** `docs/architecture.md` sections 3, 4, 9.7, 18. `web/`, `tools/scene_data.py`, `tools/plot.py`.
 
-**Follow-up.** Choosing a fault in the browser needs a WebAssembly build of the instrumented flight software; the data files keep the shape such a build would write.
+**Follow-up.** Choosing a fault in the browser needs a WebAssembly build of the instrumented flight software. The data files keep the shape such a build would write, but the build would also have to produce `op_runs` from its own trace.
 
 ### ADR-0011 — The exit record's detection word becomes a flag set
 
