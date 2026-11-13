@@ -1,4 +1,4 @@
-# SDC Investigator
+## SDC Investigator
 
 Flip one bit in one floating-point result inside a compiled C++ program, then trace bit for bit whether the damage is masked, caught by a defense, or silently changes the answer.
 
