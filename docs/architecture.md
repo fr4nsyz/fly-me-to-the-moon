@@ -8,6 +8,21 @@ This document is the single source of truth for building the system. It is writt
 
 ---
 
+## Terminology
+
+| Term | Meaning |
+| --- | --- |
+| FSW | Flight software. The navigation and guidance code the instrumented lander runs. The plant (dynamics and the landing judge) is not FSW and is not instrumented (ADR-0009). |
+| SDC | Silent data corruption. The program's output changed and nothing reported it. |
+| TMR | Triple modular redundancy. Three computers run the same software, and the majority command wins. |
+| Lockstep | Two cores execute the same instruction on the same clock cycle and their outputs are compared. A mismatch means one core is broken. |
+| Op id | The index of an operation in the instrumented module, assigned in module order (ADR-0003). |
+| Occurrence | How many times that operation has executed, counting from 1. |
+| Bit position | 0 is the LSB of the uint64 IEEE-754 pattern, bit 63 is the sign bit (ADR-0006). |
+| Evidence package | The JSON file the analyzer writes per trial: the outcome, the reasons, and the events behind them. |
+
+---
+
 ## 1. Project Goal
 
 SDC Investigator is an offline, deterministic experiment platform that answers:
@@ -408,11 +423,14 @@ The same seed always produces the same campaign. See ADR-0012 for how the inject
 
 ## 10. Key Learning Resources (in recommended order)
 
-1. LLVM “Writing an LLVM Pass” + “How to use the new PassManager”
+1. LLVM "Writing an LLVM Pass" + "How to use the new PassManager"
 2. IEEE-754 bit patterns and `std::bit_cast` (C++20)
 3. Binary trace design: framing, fixed-size records, torn-record recovery, and why the payload does not want to be JSON
 4. Deterministic builds and content-addressable operation IDs
 5. Basic numerical analysis: condition numbers, error magnification, masking
+6. Prior work on fault-tolerant space computing, read while designing the defense (ADR-0008):
+   - [Enhancing Fault-Tolerant Space Computing: GNC and LVS Implementations on Next-Gen Multi-Core Processors](https://arxiv.org/abs/2511.04052) (Yun et al., 2025). ARBITER, a multi-core voting mechanism, and a bit-level fault injection study that located the most sensitive stage of a guidance algorithm.
+   - [NASA's HPSC white paper](https://www.nasa.gov/wp-content/uploads/2024/07/hpsc-white-paper-tmg-26jun2024-final.pdf). The dual core lockstep configuration: two cores share a lockstep domain, their outputs are compared every clock cycle, and a difference is flagged immediately.
 
 ---
 
@@ -471,7 +489,7 @@ and obtain a reproducible, cited verdict (MASKED / SDC / DETECTED / CORRECTED / 
 - Stuck-at faults (a bit forced to 0 or 1) alongside flips
 - Running the defense's cores on threads, with per-core trace buffers merged in core order each tick to keep clean runs byte-identical (ADR-0008)
 - Memory faults (corrupting stored values, not computed results), with checksums as the matching defense
-- Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening
+- Integration with an “arbiter” that uses the evidence packages to decide which regions need hardening. ARBITER (arXiv:2511.04052) is the prior art for this: it votes across redundant cores and uses a fault injection study to find the regions worth protecting.
 - Visualization of value propagation (data-flow graph extracted from the two traces)
 - Support for integer arithmetic or mixed-precision codes; faulting integer and compare instructions would also make the voter faultable
 - Attitude dynamics in the moon plant
