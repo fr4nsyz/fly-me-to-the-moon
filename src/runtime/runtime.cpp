@@ -337,29 +337,20 @@ double runtime_f64_sqrt(OpId op_id, double x) {
 
 } // namespace sdc
 
-extern "C" double sdc_runtime_f64_add_hook(std::uint32_t op_id, double lhs,
-                                           double rhs) {
-    return sdc::runtime_f64_add(static_cast<sdc::OpId>(op_id), lhs, rhs);
-}
-
-extern "C" double sdc_runtime_f64_sub_hook(std::uint32_t op_id, double lhs,
-                                           double rhs) {
-    return sdc::runtime_f64_sub(static_cast<sdc::OpId>(op_id), lhs, rhs);
-}
-
-extern "C" double sdc_runtime_f64_mul_hook(std::uint32_t op_id, double lhs,
-                                           double rhs) {
-    return sdc::runtime_f64_mul(static_cast<sdc::OpId>(op_id), lhs, rhs);
-}
-
-extern "C" double sdc_runtime_f64_div_hook(std::uint32_t op_id, double lhs,
-                                           double rhs) {
-    return sdc::runtime_f64_div(static_cast<sdc::OpId>(op_id), lhs, rhs);
-}
-
-extern "C" double sdc_runtime_f64_sqrt_hook(std::uint32_t op_id, double x) {
-    return sdc::runtime_f64_sqrt(static_cast<sdc::OpId>(op_id), x);
-}
+#define SDC_F64_BINARY_OP(suffix, kind, enumerator)                            \
+    extern "C" double sdc_runtime_f64_##suffix##_hook(                         \
+        std::uint32_t op_id, double lhs, double rhs) {                         \
+        return sdc::runtime_f64_##suffix(static_cast<sdc::OpId>(op_id), lhs,   \
+                                         rhs);                                 \
+    }
+#define SDC_F64_UNARY_OP(suffix, kind, enumerator)                             \
+    extern "C" double sdc_runtime_f64_##suffix##_hook(std::uint32_t op_id,     \
+                                                      double        x) {       \
+        return sdc::runtime_f64_##suffix(static_cast<sdc::OpId>(op_id), x);    \
+    }
+#include "sdc/op_table.def"
+#undef SDC_F64_BINARY_OP
+#undef SDC_F64_UNARY_OP
 
 extern "C" void sdc_report_result(double value) {
     if (!sdc::g_inited)

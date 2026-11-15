@@ -5,16 +5,15 @@ namespace sdc {
 
 const char *op_kind_name(OpKind kind) {
     switch (kind) {
-    case OpKind::FAdd:
-        return "fadd";
-    case OpKind::FSub:
-        return "fsub";
-    case OpKind::FMul:
-        return "fmul";
-    case OpKind::FDiv:
-        return "fdiv";
-    case OpKind::FSqrt:
-        return "sqrt";
+#define SDC_F64_BINARY_OP(suffix, kind_str, enumerator)                        \
+    case OpKind::enumerator:                                                   \
+        return #kind_str;
+#define SDC_F64_UNARY_OP(suffix, kind_str, enumerator)                         \
+    case OpKind::enumerator:                                                   \
+        return #kind_str;
+#include "sdc/op_table.def"
+#undef SDC_F64_BINARY_OP
+#undef SDC_F64_UNARY_OP
     default:
         return "unknown";
     }
@@ -23,26 +22,19 @@ const char *op_kind_name(OpKind kind) {
 bool op_kind_from_name(const char *name, OpKind &out) {
     if (!name)
         return false;
-    if (std::strcmp(name, "fadd") == 0) {
-        out = OpKind::FAdd;
-        return true;
+#define SDC_F64_BINARY_OP(suffix, kind_str, enumerator)                        \
+    if (std::strcmp(name, #kind_str) == 0) {                                   \
+        out = OpKind::enumerator;                                              \
+        return true;                                                           \
     }
-    if (std::strcmp(name, "fsub") == 0) {
-        out = OpKind::FSub;
-        return true;
+#define SDC_F64_UNARY_OP(suffix, kind_str, enumerator)                         \
+    if (std::strcmp(name, #kind_str) == 0) {                                   \
+        out = OpKind::enumerator;                                              \
+        return true;                                                           \
     }
-    if (std::strcmp(name, "fmul") == 0) {
-        out = OpKind::FMul;
-        return true;
-    }
-    if (std::strcmp(name, "fdiv") == 0) {
-        out = OpKind::FDiv;
-        return true;
-    }
-    if (std::strcmp(name, "sqrt") == 0) {
-        out = OpKind::FSqrt;
-        return true;
-    }
+#include "sdc/op_table.def"
+#undef SDC_F64_BINARY_OP
+#undef SDC_F64_UNARY_OP
     return false;
 }
 

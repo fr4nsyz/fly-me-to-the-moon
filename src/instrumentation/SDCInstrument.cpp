@@ -11,6 +11,7 @@
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_ostream.h"
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,18 @@ struct OpEntry {
     std::string function;
     std::string kind;
 };
+
+// Kind strings come from the shared table so the pass, the runtime hooks, and
+// the analyzer all name an operation the same way.
+namespace kind_name {
+#define SDC_F64_BINARY_OP(suffix, kind_str, enumerator)                        \
+    inline constexpr const char *suffix = #kind_str;
+#define SDC_F64_UNARY_OP(suffix, kind_str, enumerator)                         \
+    inline constexpr const char *suffix = #kind_str;
+#include "sdc/op_table.def"
+#undef SDC_F64_BINARY_OP
+#undef SDC_F64_UNARY_OP
+} // namespace kind_name
 
 std::string json_escape_local(const std::string &s) {
     std::string out;
@@ -48,16 +61,30 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
         Type        *DoubleTy = Type::getDoubleTy(Ctx);
         Type        *OpIdTy = Type::getInt32Ty(Ctx);
 
-        FunctionCallee addHook = M.getOrInsertFunction(
-            "sdc_runtime_f64_add_hook", DoubleTy, OpIdTy, DoubleTy, DoubleTy);
-        FunctionCallee subHook = M.getOrInsertFunction(
-            "sdc_runtime_f64_sub_hook", DoubleTy, OpIdTy, DoubleTy, DoubleTy);
-        FunctionCallee mulHook = M.getOrInsertFunction(
-            "sdc_runtime_f64_mul_hook", DoubleTy, OpIdTy, DoubleTy, DoubleTy);
-        FunctionCallee divHook = M.getOrInsertFunction(
-            "sdc_runtime_f64_div_hook", DoubleTy, OpIdTy, DoubleTy, DoubleTy);
-        FunctionCallee sqrtHook = M.getOrInsertFunction(
-            "sdc_runtime_f64_sqrt_hook", DoubleTy, OpIdTy, DoubleTy);
+        struct HookDef {
+            const char    *kind;
+            FunctionCallee callee;
+        };
+        std::vector<HookDef> hooks;
+
+#define SDC_F64_BINARY_OP(suffix, kind_str, enumerator)                        \
+    hooks.push_back({#kind_str, M.getOrInsertFunction(                         \
+                                    "sdc_runtime_f64_" #suffix "_hook",        \
+                                    DoubleTy, OpIdTy, DoubleTy, DoubleTy)});
+#define SDC_F64_UNARY_OP(suffix, kind_str, enumerator)                         \
+    hooks.push_back(                                                           \
+        {#kind_str, M.getOrInsertFunction("sdc_runtime_f64_" #suffix "_hook",  \
+                                          DoubleTy, OpIdTy, DoubleTy)});
+#include "sdc/op_table.def"
+#undef SDC_F64_BINARY_OP
+#undef SDC_F64_UNARY_OP
+
+        auto hook_for_kind = [&hooks](const char *kind) -> FunctionCallee {
+            for (const HookDef &h : hooks)
+                if (std::strcmp(h.kind, kind) == 0)
+                    return h.callee;
+            llvm_unreachable("sdc-instrument: unknown f64 op kind");
+        };
 
         std::vector<OpEntry> ops;
         unsigned             opId = 0;
@@ -79,36 +106,32 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
                     if (!I.getType()->isDoubleTy())
                         continue;
 
-                    FunctionCallee hook;
-                    const char    *kind = nullptr;
+                    const char *kind = nullptr;
                     if (auto *BO = dyn_cast<BinaryOperator>(&I)) {
                         switch (BO->getOpcode()) {
                         case Instruction::FAdd:
-                            hook = addHook;
-                            kind = "fadd";
+                            kind = kind_name::add;
                             break;
                         case Instruction::FSub:
-                            hook = subHook;
-                            kind = "fsub";
+                            kind = kind_name::sub;
                             break;
                         case Instruction::FMul:
-                            hook = mulHook;
-                            kind = "fmul";
+                            kind = kind_name::mul;
                             break;
                         case Instruction::FDiv:
-                            hook = divHook;
-                            kind = "fdiv";
+                            kind = kind_name::div;
                             break;
                         default:
                             continue;
                         }
                     } else if (auto *II = dyn_cast<IntrinsicInst>(&I);
                                II && II->getIntrinsicID() == Intrinsic::sqrt) {
-                        hook = sqrtHook;
-                        kind = "sqrt";
+                        kind = kind_name::sqrt;
                     } else {
                         continue;
                     }
+
+                    FunctionCallee hook = hook_for_kind(kind);
 
                     // ADR-0002: an instruction carrying a fast-math flag
                     // changes the arithmetic, so it must not be instrumented
