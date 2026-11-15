@@ -116,6 +116,10 @@ Two NASA space computing papers shaped the defense model and the question of whe
 - [Enhancing Fault-Tolerant Space Computing: GNC and LVS Implementations on Next-Gen Multi-Core Processors](https://arxiv.org/abs/2511.04052) (Yun et al., 2025) introduces ARBITER, a multi-core voting mechanism that detects and corrects faults across redundant cores, and reports a bit-level fault injection study that found the most sensitive stage of a guidance algorithm.
 - [NASA's HPSC white paper](https://www.nasa.gov/wp-content/uploads/2024/07/hpsc-white-paper-tmg-26jun2024-final.pdf) documents the dual core lockstep configuration: two cores form a lockstep domain, their outputs are compared every clock cycle, and any difference is flagged immediately.
 
+## Scope
+
+The platform is the work here: the LLVM pass, the runtime that flips the bit, the trace format, the aligner, the audit, the classifier, and the campaign driver. The lunar descent is the scenario it is measured on. That scenario was built from published sources and its derivations are written up in [`docs/math/moon-mission-math.tex`](docs/math/moon-mission-math.tex), but it is a simplified model chosen to make a good SDC test case, not a flight program, and it is not aerospace work I can defend from first principles.
+
 ## Design principles
 
 - The deterministic layer is the source of truth. The analyzer decides the outcome.
