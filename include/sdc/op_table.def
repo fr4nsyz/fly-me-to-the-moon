@@ -1,0 +1,18 @@
+// Single source of truth for the instrumented f64 operations.
+//
+// Consumers define SDC_F64_BINARY_OP / SDC_F64_UNARY_OP and re-include this
+// file, then #undef them. The three fields are:
+//
+//   suffix      symbol fragment: sdc_runtime_f64_<suffix>_hook, the runtime
+//               entry point the instrumentation pass inserts a call to
+//   kind        the string written to ops.json and parsed by op_kind.cpp
+//   enumerator  the sdc::OpKind value
+//
+// Add or rename an operation here and every site follows: the pass, the
+// runtime hooks, and the kind name table. A new row is the only edit needed.
+
+SDC_F64_BINARY_OP(add, fadd, FAdd)
+SDC_F64_BINARY_OP(sub, fsub, FSub)
+SDC_F64_BINARY_OP(mul, fmul, FMul)
+SDC_F64_BINARY_OP(div, fdiv, FDiv)
+SDC_F64_UNARY_OP(sqrt, sqrt, FSqrt)
