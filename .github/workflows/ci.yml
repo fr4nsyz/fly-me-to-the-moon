@@ -6,6 +6,18 @@ on:
   pull_request:
 
 jobs:
+  docs:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Check doc references
+        run: python tools/check_docs.py
+
   linux:
     runs-on: ubuntu-24.04
     env:
