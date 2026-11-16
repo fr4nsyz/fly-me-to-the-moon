@@ -1,8 +1,12 @@
 # SDC Investigator: project state
 
-Current as of 2026-11-05. Read this before doing anything in the repository. Decisions and their evidence live in `docs/audit-log.md`; earlier versions of this file are in git history.
+Current as of 2026-11-05. Read this before doing anything in the repository. The code is the source of truth for what exists; earlier versions of this file are in git history.
 
-## Where things are
+The repository layout is not written here: it is generated into [`docs/repo-map.md`](docs/repo-map.md) by `tools/gen_repo_map.py`, and CI fails if that map is stale. This file holds what the tree cannot say: the decisions, the measurements, and the next move.
+
+## This machine only
+
+Local paths and versions. Nothing here is a property of the repository, and none of it should be relied on by anyone else.
 
 | Path | What it is |
 |---|---|
@@ -30,18 +34,17 @@ Notes that will save time later:
 - Build the pass plugin and the workloads with the same Homebrew clang 23. A plugin built against a different LLVM will not load into `opt`.
 
 ## Decisions (locked)
-- Platform: LLVM IR pass hooks double `fadd`, `fsub`, `fmul`, `fdiv`, and `llvm.sqrt` (ADR-0019); binary `SDCTRACE` traces (ADR-0001); analyzer with prefix-scan alignment (ADR-0014) and seven outcome classes including CORRECTED (ADR-0005) and HANG (ADR-0022).
-- Fault models: transient (one flip) and persistent (the same bit on every execution of the op from a chosen occurrence on, ADR-0023).
-- Injection sites: `SDC_INJECT` takes one or more `;`-separated sites, each `op=,occ=,bit=` with optional `persist=0|1`. Sites hitting the same bit flip it once. Any invalid site exits 2 at init, before the trace opens. The multi-site ADR is not written yet.
-- Workload: powered lunar descent in a Moon-centered frame (ADR-0007, ADR-0016), Lunar Module class vehicle and touchdown envelope (ADR-0020), flight software instrumented with the canonical -O2 flags, replicas made by the build (ADR-0017), plant not instrumented (ADR-0009).
-- Defenses: `none` and `tmr-lockstep`, a TMR and lockstep hybrid that mimics real rocket flight computers (ADR-0008): three computers, each a lockstep pair of cores, commands compared across computers. Each core is a separate copy of the same flight software made by the build (`instrument.sh --replicate`, per-copy internalize), so each has its own operations. The voter is assumed reliable (integer comparisons are outside the fault model).
-- Viewer: `web/` vector wireframe display on committed featured-trial data written by `tools/scene_data.py` (ADR-0010, ADR-0025). Static site, to be hosted on GitHub Pages.
-- Audit-log entries are rewritten when a decision changes; a new entry is added only for a new decision.
+- Platform: LLVM IR pass hooks double `fadd`, `fsub`, `fmul`, `fdiv`, and `llvm.sqrt`; binary `SDCTRACE` traces; analyzer with prefix-scan alignment and seven outcome classes including CORRECTED and HANG.
+- Fault models: transient (one flip) and persistent (the same bit on every execution of the op from a chosen occurrence on).
+- Injection sites: `SDC_INJECT` takes one or more `;`-separated sites, each `op=,occ=,bit=` with optional `persist=0|1`. Sites hitting the same bit flip it once. Any invalid site exits 2 at init, before the trace opens.
+- Workload: powered lunar descent in a Moon-centered frame, Lunar Module class vehicle and touchdown envelope, flight software instrumented with the canonical -O2 flags, replicas made by the build, plant not instrumented.
+- Defenses: `none` and `tmr-lockstep`, a TMR and lockstep hybrid that mimics real rocket flight computers: three computers, each a lockstep pair of cores, commands compared across computers. Each core is a separate copy of the same flight software made by the build (`instrument.sh --replicate`, per-copy internalize), so each has its own operations. The voter is assumed reliable (integer comparisons are outside the fault model).
+- Viewer: `web/` vector wireframe display on committed featured-trial data written by `tools/scene_data.py`. Static site, to be hosted on GitHub Pages.
 
 ## Phase status
 - Phases 0 to 5 (skeleton, trace I/O, runtime, LLVM pass, analyzer, drivers): done. `results/sweep_sum_plain/`: 83.0% SDC, 17.0% MASKED.
 - Phase 6 lunar descent and defenses: done. Plant, navigation, guidance, landing judge, hang timeout, persistent faults, the TMR and lockstep hybrid, and the defense comparison.
-- Phase 7 viewer: built (`viewer/`, `tools/view.py`): one offline page with a trial picker, live telemetry, and README replay GIFs. Replaced by the web display; the README GIFs stay until B4.
+- Phase 7 viewer: an offline page with a trial picker, live telemetry, and README replay GIFs. Replaced by the web display; the README GIFs stay until B4.
 - Phase 8 web simulator: M0 TMR claim scoped (PR 14), M1 web scene from native `trajectory.json` (PR 15), M2 multi-site runtime (PR 16) merged. Rest of M2 not started. M3 to M6 dropped for the vector display plan; B0 (teardown + committed data) done.
 
 ## Measured results
@@ -49,7 +52,7 @@ Notes that will save time later:
 - `sum_plain` bit regions: low mantissa masked 30/128, exponent masked 1/35.
 - Clean lunar landing: touchdown at 527.8 s, 1.000 m/s descent, 0.000 m/s horizontal, 1,157.6 kg propellant left, score 0.328. 95 flight software ops executed with `--defense none`, 371,282 events, 14.9 MB trace, 1.1 s per instrumented run. Two clean runs give byte-identical traces.
 - Lunar descent, no defenses, transient faults: 200/200 MASKED (`results/sweep_moon_none/`). The closed loop re-measures the true state every tick, so one bad tick is corrected on the next.
-- Lunar descent, persistent faults, replicated build at -O2, seed 1337: `none` 28 SDC, 172 MASKED, 172/200 safe landings (`results/sweep_moon_persistent_none/`); `tmr-lockstep` 0 SDC, 170 CORRECTED, 30 MASKED, 200/200 safe (`results/sweep_moon_persistent_tmr_lockstep/`). The 30 MASKED are explained in ADR-0017. Every campaign injects one site, so the `tmr-lockstep` result covers faults in one core only.
+- Lunar descent, persistent faults, replicated build at -O2, seed 1337: `none` 28 SDC, 172 MASKED, 172/200 safe landings (`results/sweep_moon_persistent_none/`); `tmr-lockstep` 0 SDC, 170 CORRECTED, 30 MASKED, 200/200 safe (`results/sweep_moon_persistent_tmr_lockstep/`). Every campaign injects one site, so the `tmr-lockstep` result covers faults in one core only.
 - Sweep wall time with `--jobs 8`: transient 3.5 min, persistent `none` 3.6 min, persistent `tmr-lockstep` 20.7 min. On 2026-11-05 the same `tmr-lockstep` sweep took 3 h 13 min; cause not found (machine sleep and hang timeouts not ruled out). Trial traces are deleted after analysis unless `--keep-traces` is passed.
 - Multi-site runtime regression (2026-11-05): the 4 stored sweeps re-run with it give 800/800 per-trial records identical to `results/`. The `sum_plain` summary differs only in `build_id` (bitcode changed since it was stored; runtime is not in the hash) and the later-added `HANG` key.
 
@@ -57,7 +60,7 @@ Notes that will save time later:
 The user wants to understand this phase deeply: explain each problem, decide together, keep them in the loop during code generation.
 1. Vector display B1 to B4: Moon and corridor scenes, computers and op/bit scenes, scripted timeline, then frame capture, GIFs, and GitHub Pages.
 2. Finish M2:
-   - schema 2 for multi-site metadata (trace reader, `docs/trace-format.md`, multi-site ADR);
+   - schema 2 for multi-site metadata (trace reader, `docs/trace-format.md`);
    - `InjectionConfig` as a site list;
    - the analyzer finds every injected site by audit inconsistency (`injected_events[]` in evidence);
    - `sweep.py --sites K --common-mode`;
@@ -70,7 +73,7 @@ Open: math library calls (`sin`, `cos`, `atan2`) are not faulted.
 
 ## Compiler findings (measured, Homebrew LLVM 23.1.4)
 
-All commands used `/opt/homebrew/opt/llvm/bin/clang++`. ADR-0002 and ADR-0017 rely on these.
+All commands used `/opt/homebrew/opt/llvm/bin/clang++`.
 
 ### 1. FP contraction fuses two source ops into one
 
@@ -128,7 +131,7 @@ Given a helper with one multiply called from two places, `-O2` produces 3 `fmul`
 
 Only the `inlinedAt` chain distinguishes them. `atomGroup` and `atomRank` are identical on both (1 and 2), so LLVM's newer same-line tracking does not help, and there are no discriminators in this build.
 
-Consequence: the blueprint's proposed op key of "file plus line plus column plus function plus opcode" collides for these two instructions. The prior art avoids this by using module order for op ids.
+Consequence: a key built from "file plus line plus column plus function plus opcode" collides for these two instructions. The prior art avoids this by using module order for op ids.
 
 ### 7. Things that are fine
 

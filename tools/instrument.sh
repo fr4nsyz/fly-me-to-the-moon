@@ -121,7 +121,7 @@ fi
          -passes=sdc-instrument "$BC" -o "$INST_BC"
 )
 
-# ADR-0018: shared headers compile to linkonce_odr functions; without this the
+# Shared headers compile to linkonce_odr functions; without this the
 # linker keeps one copy for both the instrumented and the plain side.
 if [[ ${#KEEP[@]} -gt 0 ]]; then
   KEEP_LIST="$(IFS=,; echo "${KEEP[*]}")"
@@ -139,7 +139,7 @@ FLAG_STRING="${FLAGS[*]}"
 cp "$BUILD_DIR/ops.json" "$OUT_DIR/ops.json"
 
 # A build id derived from the instrumented bitcode, so the analyzer can reject a
-# clean/injected pair that came from different builds (ADR-0002).
+# clean/injected pair that came from different builds.
 BUILD_ID="$(shasum -a 256 "$INST_BC" | cut -c1-16)"
 
 echo "built $OUT_ABS"

@@ -47,6 +47,29 @@ CORRECTED, TMR and lockstep (trial 35): one computer is silenced at 261 s and th
 
 ![CORRECTED replay](docs/img/viewer_corrected.gif)
 
+## Pipeline
+
+From plain workload source to an analyzed result, with the files behind each stage.
+
+```mermaid
+flowchart LR
+    W["<b>Workload program</b><br/>plain C++ source<br/><br/>workloads/reductions/<br/>workloads/moon/fsw/<br/>workloads/moon/sim/<br/>workloads/moon/common/<br/>workloads/moon/plant/ (not instrumented)"]
+    I["<b>Instrumentation</b><br/>LLVM IR pass: rewrites every FP op into a hook call<br/><br/>src/instrumentation/<br/>include/sdc/op_table.def<br/>tools/instrument.sh"]
+    X["<b>Instrumented binary</b><br/>plus ops.json: op ids and source locations<br/><br/>build/moon/moon_instr<br/>build/moon/ops.json"]
+    RT["<b>Runtime witness</b><br/>counts, injects the bit flip, records<br/><br/>src/runtime/<br/>include/sdc/<br/>src/core/trace_writer.cpp<br/>src/core/trace_writer.hpp"]
+    TR["<b>Trace</b><br/>bit-exact SDCTRACE<br/><br/>docs/trace-format.md<br/>src/core/trace_reader.cpp<br/>src/core/trace_reader.hpp<br/>tools/sdctrace.py"]
+    AN["<b>Analyzer</b><br/>aligns, audits, classifies, writes evidence<br/><br/>src/analyzer/"]
+    EV["<b>Evidence</b><br/>evidence.json: outcome and cited events"]
+    DRV["<b>Campaign driver</b><br/>runs trials and calls the analyzer<br/><br/>tools/study/"]
+    VW["<b>Viewer</b><br/><br/>web/<br/>tools/scene_data.py<br/>tools/plot.py"]
+
+    W --> I --> X --> RT --> TR --> AN --> EV
+    DRV -. drives .-> X
+    DRV -. drives .-> AN
+    TR --> VW
+    EV --> VW
+```
+
 ## Build
 
 Requires Homebrew LLVM 23 (`/opt/homebrew/opt/llvm`), CMake, Ninja, GoogleTest 1.18, and Python 3.14.
@@ -102,10 +125,8 @@ The viewer in `web/` was generated with an AI assistant and not reviewed line by
 
 | Document | What it is |
 |---|---|
-| [`docs/architecture.md`](docs/architecture.md) | The living spec. |
-| [`docs/architecture-v1.md`](docs/architecture-v1.md) | The frozen original blueprint. Never edited. |
-| [`docs/audit-log.md`](docs/audit-log.md) | Every architectural decision, with its evidence. |
 | [`docs/trace-format.md`](docs/trace-format.md) | Normative specification of the binary `SDCTRACE` trace format. |
+| [`docs/repo-map.md`](docs/repo-map.md) | Generated map of the repository. Regenerate with `tools/gen_repo_map.py`. |
 | [`docs/math/moon-mission-math.pdf`](docs/math/moon-mission-math.pdf) | The mathematics of the lander's plant, navigation, guidance, and judge. |
 | [`STATE.md`](STATE.md) | Current state, measurements, and the next move. |
 
