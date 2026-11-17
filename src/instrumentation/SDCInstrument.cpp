@@ -133,7 +133,7 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
 
                     FunctionCallee hook = hook_for_kind(kind);
 
-                    // ADR-0002: an instruction carrying a fast-math flag
+                    // An instruction carrying a fast-math flag
                     // changes the arithmetic, so it must not be instrumented
                     // silently.
                     //
@@ -178,8 +178,7 @@ struct SDCInstrumentPass : public PassInfoMixin<SDCInstrumentPass> {
         }
 
         // Phase 2: rewrite. Op ids are assigned in module traversal order,
-        // which is deterministic for identical sources, flags, and LLVM version
-        // (ADR-0003).
+        // which is deterministic for identical sources, flags, and LLVM version.
         for (Candidate &c : candidates) {
             Instruction            *I = c.inst;
             IRBuilder<>             Builder(I);

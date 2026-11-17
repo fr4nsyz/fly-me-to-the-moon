@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+"""Generate docs/repo-map.md from the tree.
+
+The map exists so a reader, or an agent, can find the right file without
+reading the whole repository. It is generated rather than written, because a
+hand-written map drifts the moment a file is added or renamed, and a stale
+map is worse than no map: it sends the reader to a file that is gone.
+
+What is mechanical: the file list, the line counts, the byte sizes.
+What is human-owned: RULES below, which says what each area of the tree is
+for. The rules are the part worth reviewing; the table is the part worth
+regenerating.
+
+Usage:
+    python tools/gen_repo_map.py            write docs/repo-map.md
+    python tools/gen_repo_map.py --check    fail if the committed map is stale
+"""
+import argparse
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+OUTPUT = ROOT / "docs" / "repo-map.md"
+
+# The generated map does not list itself.
+SELF = "docs/repo-map.md"
+
+# Vendor and generated trees: not worth navigating, not part of the design.
+SKIP_PREFIXES = ("web/node_modules/", "web/dist/", "build/", "docs/img/")
+
+# (prefix, heading, what it is). Longest prefix wins. This table is the
+# hand-maintained part of the map: the headings and the one-line descriptions.
+# The file lists under them are mechanical.
+RULES = [
+    ("include/sdc/", "Public headers", "Types shared by the pass, the runtime, and the analyzer."),
+    ("src/instrumentation/", "LLVM pass", "The `opt` plugin that rewrites float operations into runtime calls."),
+    ("src/runtime/", "Runtime", "The f64 hooks, the bit-flip injector, and the trace writer."),
+    ("src/core/", "Core", "The trace format, the op-kind vocabulary, and a small JSON reader."),
+    ("src/analyzer/", "Analyzer", "Recomputes every operation, compares against the clean trace, and classifies."),
+    ("tests/unit/", "Tests", "GoogleTest suites for the runtime, the analyzer, and the workload."),
+    ("workloads/moon/", "Moon workload", "Powered lunar descent: plant, flight software, and the simulator entry point."),
+    ("workloads/reductions/", "Reduction workloads", "Small numerical workloads used to measure the instrumentation."),
+    ("tools/study/", "Study scripts", "Sweep drivers and report generation for fault campaigns."),
+    ("tools/", "Tools", "Build driver, trace reader, plotting, and the doc checks."),
+    ("web/src/", "Viewer source", "The TypeScript viewer: scene, telemetry, and wireframe rendering."),
+    ("web/scripts/", "Viewer data pipeline", "Regenerates the committed viewer data from a trace."),
+    ("web/public/", "Viewer data", "Committed viewer data and assets."),
+    ("web/", "Viewer build", "The static site: entry point, dependencies, and build config."),
+    ("docs/", "Documents", "Documents. The trace format is normative; the rest is reference."),
+    ("results/", "Stored results", "Committed results of the stored fault campaigns."),
+    (".github/workflows/", "CI", "Build, test, and doc-reference checks."),
+]
+
+# Files at the repository root.
+ROOT_FILES = {
+    "README.md": "Overview, the demo, and how to build and run.",
+    "STATE.md": "Where the work stands, what was measured, and the next move.",
+    "AGENTS.md": "Instructions for an agent working in this repository.",
+    "CMakeLists.txt": "Build definition for the pass, the runtime, the analyzer, and the tests.",
+    ".clang-format": "C++ formatting rules.",
+    ".gitignore": "Ignored build and run output.",
+}
+
+# The rule that covers a path: the longest matching prefix.
+def rule_for(path):
+    best = ("", "", "")
+    for prefix, heading, description in RULES:
+        if path.startswith(prefix) and len(prefix) > len(best[0]):
+            best = (prefix, heading, description)
+    return best
+
+
+def area_of(path):
+    _, heading, _ = rule_for(path)
+    if heading:
+        return heading
+    return "Root files" if "/" not in path else "Other"
+
+
+def tracked_files():
+    out = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True,
+                         text=True, check=True)
+    files = []
+    for line in out.stdout.splitlines():
+        path = line.strip()
+        if not path or path == SELF:
+            continue
+        if path.startswith(SKIP_PREFIXES):
+            continue
+        files.append(path)
+    return sorted(files)
+
+
+def count_lines(path):
+    try:
+        with open(ROOT / path, "rb") as handle:
+            return sum(1 for _ in handle)
+    except OSError:
+        return 0
+
+
+def count_bytes(path):
+    try:
+        return (ROOT / path).stat().st_size
+    except OSError:
+        return 0
+
+
+def describe(path):
+    _, _, description = rule_for(path)
+    if description:
+        return description
+    return ROOT_FILES.get(path, "")
+
+
+def human_bytes(n):
+    if n < 1024:
+        return f"{n} B"
+    if n < 1024 * 1024:
+        return f"{n / 1024:.1f} KB"
+    return f"{n / (1024 * 1024):.1f} MB"
+
+
+def render():
+    files = tracked_files()
+
+    out = []
+    out.append("# Repository map")
+    out.append("")
+    out.append("Generated by `tools/gen_repo_map.py`. Do not edit by hand.")
+    out.append("Run `python tools/gen_repo_map.py` to regenerate, or")
+    out.append("`python tools/gen_repo_map.py --check` to fail if this file is stale.")
+    out.append("")
+    out.append("The tree has five parts: the pass rewrites float operations, the runtime")
+    out.append("executes and corrupts them, the analyzer recomputes and compares, the")
+    out.append("workloads are what get corrupted, and the tools build and drive it all.")
+    out.append("")
+
+    # Sections in pipeline order, then the supporting trees.
+    order = ["Public headers", "LLVM pass", "Runtime", "Core", "Analyzer",
+             "Moon workload", "Reduction workloads", "Tests", "Tools",
+             "Study scripts", "Viewer source", "Viewer data pipeline",
+             "Viewer data", "Viewer build", "Documents", "Stored results",
+             "CI", "Other", "Root files"]
+
+    groups = {}
+    for path in files:
+        groups.setdefault(area_of(path), []).append(path)
+
+    seen = set()
+    for heading in order:
+        paths = groups.get(heading)
+        if not paths:
+            continue
+        seen.add(heading)
+        out.append(f"## {heading}")
+        out.append("")
+        if heading == "Root files":
+            out.append("| Path | Lines | Size | What it is |")
+            out.append("|---|---|---|---|")
+            for path in paths:
+                out.append(f"| [`{path}`](../{path}) | {count_lines(path)} | "
+                           f"{human_bytes(count_bytes(path))} | "
+                           f"{describe(path)} |")
+            out.append("")
+            continue
+        description = describe(paths[0])
+        if description:
+            out.append(description)
+            out.append("")
+        out.append("| Path | Lines | Size |")
+        out.append("|---|---|---|")
+        for path in paths:
+            out.append(f"| [`{path}`](../{path}) | {count_lines(path)} | "
+                       f"{human_bytes(count_bytes(path))} |")
+        out.append("")
+
+    for heading in sorted(set(groups) - seen):
+        out.append(f"## {heading}")
+        out.append("")
+        out.append("| Path | Lines | Size |")
+        out.append("|---|---|---|")
+        for path in groups[heading]:
+            out.append(f"| [`{path}`](../{path}) | {count_lines(path)} | "
+                       f"{human_bytes(count_bytes(path))} |")
+        out.append("")
+
+    total_lines = sum(count_lines(p) for p in files)
+    out.append(f"{len(files)} tracked files, {total_lines} lines.")
+    out.append("")
+    return "\n".join(out)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true",
+                        help="exit non-zero if the committed map is stale")
+    args = parser.parse_args()
+
+    rendered = render()
+
+    if args.check:
+        if not OUTPUT.exists():
+            print(f"{OUTPUT.relative_to(ROOT)} is missing; run tools/gen_repo_map.py")
+            return 1
+        current = OUTPUT.read_text(encoding="utf-8")
+        if current != rendered:
+            print(f"{OUTPUT.relative_to(ROOT)} is stale; run tools/gen_repo_map.py")
+            return 1
+        print("repo map: up to date")
+        return 0
+
+    OUTPUT.write_text(rendered, encoding="utf-8")
+    print(f"wrote {OUTPUT.relative_to(ROOT)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

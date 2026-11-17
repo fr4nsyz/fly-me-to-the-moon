@@ -2,7 +2,7 @@
 
 Normative specification for the trace artifact produced by the runtime and read by the analyzer.
 
-Status: accepted under [ADR-0001](audit-log.md#adr-0001--trace-format-moves-from-jsonl-to-binary-sdctrace). Byte layout is normative for version 1. An earlier revision promised reader and writer behavior the implementation does not have; [ADR-0026](audit-log.md#adr-0026--trace-format-v1-the-spec-describes-the-implemented-reader) narrowed this document to the implementation. The code and this document now describe the same artifact.
+Status: accepted. Byte layout is normative for version 1. An earlier revision promised reader and writer behavior the implementation does not have; this document was narrowed to the implementation. The code and this document now describe the same artifact.
 
 ## 1. Purpose and constraints
 
@@ -56,7 +56,7 @@ The header prefix is 32 bytes. Records begin at offset `32 + meta_len`.
 | `schema` | integer | yes | Trace schema version, independent of the file format version |
 | `inject` | object | yes | The injection configuration, or `{"enabled":false}` when disabled |
 
-A single site carries `op_id`, `occurrence`, `bit`, and `enabled`. Random mode adds `mode:"random"` and `seed`. Persistent mode adds `persistent:true` (ADR-0023). When more than one manual site is configured, `inject` also carries a `sites` array of `{op_id, occurrence, bit, persistent}`; `schema` stays `1`.
+A single site carries `op_id`, `occurrence`, `bit`, and `enabled`. Random mode adds `mode:"random"` and `seed`. Persistent mode adds `persistent:true`. When more than one manual site is configured, `inject` also carries a `sites` array of `{op_id, occurrence, bit, persistent}`; `schema` stays `1`.
 
 The core reader treats the metadata as opaque bytes. The analyzer parses the injected trace's metadata to copy the injection configuration into the evidence package. `build_id` and `compiler_flags` are recorded for the sweep report; the analyzer does not currently compare them between the clean and injected traces.
 
@@ -81,7 +81,7 @@ Every integer is little-endian. The writer writes the host's byte order and sets
 
 | Value | Name | Interpretation |
 | --- | --- | --- |
-| 0 | `EVENT` | `op_id` is the operation, `occurrence` is its visit count, `operand0` and `operand1` are operand bit patterns, `result` is the delivered result bits. For a one-operand operation such as `sqrt` (ADR-0019), `operand1` is zero |
+| 0 | `EVENT` | `op_id` is the operation, `occurrence` is its visit count, `operand0` and `operand1` are operand bit patterns, `result` is the delivered result bits. For a one-operand operation such as `sqrt`, `operand1` is zero |
 | 1 | `EXIT` | The final record. `operand0` holds the exit code, `operand1` holds the outcome flags, `result` holds the final result bits, and `op_id` and `occurrence` are zero |
 
 The writer sets `op_id` and `occurrence` to zero in an `EXIT` record. `operand0` holds the exit code, but the runtime writes `0`; a nonzero value is reserved for a future signal handler or a workload that writes its own exit record. In version 1, CRASH is the absence of an `EXIT` record, not a nonzero code.
@@ -94,7 +94,7 @@ The `operand1` word in an `EXIT` record is a flag set, not a boolean:
 | 1 | `CORRECTED` | A redundancy mechanism repaired the fault |
 | 2..63 | | Reserved, must be zero |
 
-Version 1 originally defined `operand1` as a single detected boolean. It was widened to a flag set under ADR-0011 so that `CORRECTED` can be recorded distinctly from `DETECTED`, which the outcome taxonomy requires (ADR-0005). Bit 0 keeps its original meaning, so a reader written against the earlier definition still reads the detection signal correctly.
+Version 1 originally defined `operand1` as a single detected boolean. It was widened to a flag set so that `CORRECTED` can be recorded distinctly from `DETECTED`, which the outcome taxonomy requires. Bit 0 keeps its original meaning, so a reader written against the earlier definition still reads the detection signal correctly.
 
 The writer leaves bits 2..63 of `operand1` zero; the reader ignores them.
 
@@ -157,8 +157,3 @@ For two clean runs to produce byte-identical files:
 - `compiler_flags` must be the canonical flag string, identical across both runs.
 - Record order must be a function of execution order alone.
 - The occurrence counter must be per `op_id` and must not depend on thread scheduling.
-
-## 6. Related documents
-
-- [`architecture.md`](architecture.md), the living spec, section 7.3.
-- [`audit-log.md`](audit-log.md), ADR-0001 and ADR-0026, the decisions and their rationale.

@@ -1,6 +1,6 @@
 // A plain numerical workload. No annotations, no macros, no runtime calls:
-// the instrumentation is added entirely by the build (see docs/architecture.md,
-// design principle "Workload source stays plain").
+// the instrumentation is added entirely by the build (design principle
+// "workload source stays plain").
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
