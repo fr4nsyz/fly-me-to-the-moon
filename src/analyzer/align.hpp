@@ -6,7 +6,7 @@
 
 namespace sdc {
 
-// ADR-0014: the first divergence is the first index where key or payload
+// The first divergence is the first index where key or payload
 // differs. A single fault always mismatches on payload before control flow can
 // change.
 struct AlignmentResult {

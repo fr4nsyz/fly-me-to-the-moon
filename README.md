@@ -12,6 +12,13 @@ An LLVM IR pass rewrites every double-precision add, subtract, multiply, divide,
 
 A Lunar Module class lander descends from a 15 km lunar orbit to touchdown. Its flight software (FSW) is built at -O2 and instrumented: navigation and guidance. The physics plant is not instrumented. Each run is judged on the true touchdown state against the landing-gear envelope.
 
+| Scope | Covered | Total | Coverage |
+| --- | ---: | ---: | ---: |
+| `sum_plain` | 6 | 6 | 100% |
+| Moon FSW | 570 | 582 | 97.9% |
+
+The 12 uncovered Moon FSW operations are `fneg`, which the pass does not hook.
+
 | Experiment | Result |
 |---|---|
 | Clean landing | Touchdown at 527.8 s, 1.0 m/s down, 0.0 m/s sideways, 1,158 kg propellant left |
@@ -46,6 +53,29 @@ MASKED, no defense (trial 0): the fault never changes the trajectory.
 CORRECTED, TMR and lockstep (trial 35): one computer is silenced at 261 s and the landing matches the clean run.
 
 ![CORRECTED replay](docs/img/viewer_corrected.gif)
+
+## Pipeline
+
+From plain workload source to an analyzed result, with the files behind each stage.
+
+```mermaid
+flowchart LR
+    W["<b>Workload program</b><br/>plain C++ source<br/><br/>workloads/reductions/<br/>workloads/moon/fsw/<br/>workloads/moon/sim/<br/>workloads/moon/common/<br/>workloads/moon/plant/ (not instrumented)"]
+    I["<b>Instrumentation</b><br/>LLVM IR pass: rewrites every FP op into a hook call<br/><br/>src/instrumentation/<br/>include/sdc/op_table.def<br/>tools/instrument.sh"]
+    X["<b>Instrumented binary</b><br/>plus ops.json: op ids and source locations<br/><br/>build/moon/moon_instr<br/>build/moon/ops.json"]
+    RT["<b>Runtime witness</b><br/>counts, injects the bit flip, records<br/><br/>src/runtime/<br/>include/sdc/<br/>src/core/trace_writer.cpp<br/>src/core/trace_writer.hpp"]
+    TR["<b>Trace</b><br/>bit-exact SDCTRACE<br/><br/>docs/trace-format.md<br/>src/core/trace_reader.cpp<br/>src/core/trace_reader.hpp<br/>tools/sdctrace.py"]
+    AN["<b>Analyzer</b><br/>aligns, audits, classifies, writes evidence<br/><br/>src/analyzer/"]
+    EV["<b>Evidence</b><br/>evidence.json: outcome and cited events"]
+    DRV["<b>Campaign driver</b><br/>runs trials and calls the analyzer<br/><br/>tools/study/"]
+    VW["<b>Viewer</b><br/><br/>web/<br/>tools/scene_data.py<br/>tools/plot.py"]
+
+    W --> I --> X --> RT --> TR --> AN --> EV
+    DRV -. drives .-> X
+    DRV -. drives .-> AN
+    TR --> VW
+    EV --> VW
+```
 
 ## Build
 
@@ -102,12 +132,10 @@ The viewer in `web/` was generated with an AI assistant and not reviewed line by
 
 | Document | What it is |
 |---|---|
-| [`docs/architecture.md`](docs/architecture.md) | The living spec. |
-| [`docs/architecture-v1.md`](docs/architecture-v1.md) | The frozen original blueprint. Never edited. |
-| [`docs/audit-log.md`](docs/audit-log.md) | Every architectural decision, with its evidence. |
 | [`docs/trace-format.md`](docs/trace-format.md) | Normative specification of the binary `SDCTRACE` trace format. |
+| [`docs/repo-map.md`](docs/repo-map.md) | Generated map of the repository. Regenerate with `tools/gen_repo_map.py`. |
 | [`docs/math/moon-mission-math.pdf`](docs/math/moon-mission-math.pdf) | The mathematics of the lander's plant, navigation, guidance, and judge. |
-| [`STATE.md`](STATE.md) | Current state, measurements, and the next move. |
+| [`results/overhead.md`](results/overhead.md) | Measured cost of the instrumentation. |
 
 ## Background
 

@@ -24,7 +24,7 @@ Vec3 moon_fixed(Vec3 p, double t) {
 }
 
 double landing_score(double descent_speed, double horizontal_speed, double distance) {
-    // ADR-0020: Lunar Module touchdown envelope.
+    // Lunar Module touchdown envelope.
     const double vertical_limit = 3.05 - (3.05 - 2.13) * horizontal_speed / 1.22;
     return std::fmax(std::fmax(descent_speed / vertical_limit, horizontal_speed / 1.22), distance / 1000.0);
 }
